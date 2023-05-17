@@ -69,8 +69,8 @@ This trick can be performed not only with strings, but also with slice, map or
 struct data types.
 
 Another thing to note is that if we want to use a real connection instead of 
-`bytes.Buffer`, we will have to use the `bufio` package. This is because the 
-`bufio.Writer` and `bufio.Reader` implement the `mustrm.Writer` and 
+`bytes.Buffer`, we will have, for example, to use the `bufio` package. This is 
+because the `bufio.Writer` and `bufio.Reader` implement the `mustrm.Writer` and 
 `mustrm.Reader` interfaces we need.
 
 
