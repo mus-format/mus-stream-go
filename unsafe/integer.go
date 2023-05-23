@@ -1,6 +1,7 @@
 package unsafe
 
 import (
+	"io"
 	unsafe_mod "unsafe"
 
 	muscom "github.com/mus-format/mus-common-go"
@@ -35,7 +36,7 @@ func marshalInteger8[T muscom.Integer8](t T, w mustrm.Writer) (n int,
 func unmarshalInteger64[T muscom.Integer64](r mustrm.Reader) (t T, n int,
 	err error) {
 	bs := make([]byte, muscom.Num64RawSize)
-	n, err = r.Read(bs)
+	n, err = io.ReadFull(r, bs)
 	if err != nil {
 		return
 	}
@@ -46,7 +47,7 @@ func unmarshalInteger64[T muscom.Integer64](r mustrm.Reader) (t T, n int,
 func unmarshalInteger32[T muscom.Integer32](r mustrm.Reader) (t T, n int,
 	err error) {
 	bs := make([]byte, muscom.Num32RawSize)
-	n, err = r.Read(bs)
+	n, err = io.ReadFull(r, bs)
 	if err != nil {
 		return
 	}
@@ -57,7 +58,7 @@ func unmarshalInteger32[T muscom.Integer32](r mustrm.Reader) (t T, n int,
 func unmarshalInteger16[T muscom.Integer16](r mustrm.Reader) (t T, n int,
 	err error) {
 	bs := make([]byte, muscom.Num16RawSize)
-	n, err = r.Read(bs)
+	n, err = io.ReadFull(r, bs)
 	if err != nil {
 		return
 	}
@@ -68,7 +69,7 @@ func unmarshalInteger16[T muscom.Integer16](r mustrm.Reader) (t T, n int,
 func unmarshalInteger8[T muscom.Integer8](r mustrm.Reader) (t T, n int,
 	err error) {
 	bs := make([]byte, muscom.Num8RawSize)
-	n, err = r.Read(bs)
+	n, err = io.ReadFull(r, bs)
 	if err != nil {
 		return
 	}

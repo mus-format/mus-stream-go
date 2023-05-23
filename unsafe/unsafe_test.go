@@ -2,6 +2,7 @@ package unsafe
 
 import (
 	"errors"
+	"io"
 	"testing"
 
 	muscom "github.com/mus-format/mus-common-go"
@@ -132,6 +133,26 @@ func TestUnsafe(t *testing.T) {
 			t)
 	})
 
+	t.Run("unmarshalInteger64 - unexpected EOF", func(t *testing.T) {
+		var (
+			wantV   uint64 = 0
+			wantN          = 4
+			wantErr error  = io.ErrUnexpectedEOF
+			r              = mock.NewReader().RegisterRead(
+				func(p []byte) (n int, err error) {
+					return wantN, nil
+				},
+			).RegisterRead(
+				func(p []byte) (n int, err error) { return 0, io.EOF },
+			)
+			mocks     = []*mok.Mock{r.Mock}
+			v, n, err = unmarshalInteger64[uint64](r)
+		)
+		muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			mocks,
+			t)
+	})
+
 	t.Run("unmarshalInteger32 - read error", func(t *testing.T) {
 		var (
 			wantV   uint32 = 0
@@ -141,6 +162,26 @@ func TestUnsafe(t *testing.T) {
 				func(p []byte) (n int, err error) {
 					return 0, wantErr
 				},
+			)
+			mocks     = []*mok.Mock{r.Mock}
+			v, n, err = unmarshalInteger32[uint32](r)
+		)
+		muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			mocks,
+			t)
+	})
+
+	t.Run("unmarshalInteger32 - unexpected EOF", func(t *testing.T) {
+		var (
+			wantV   uint32 = 0
+			wantN          = 2
+			wantErr error  = io.ErrUnexpectedEOF
+			r              = mock.NewReader().RegisterRead(
+				func(p []byte) (n int, err error) {
+					return wantN, nil
+				},
+			).RegisterRead(
+				func(p []byte) (n int, err error) { return 0, io.EOF },
 			)
 			mocks     = []*mok.Mock{r.Mock}
 			v, n, err = unmarshalInteger32[uint32](r)
@@ -168,6 +209,26 @@ func TestUnsafe(t *testing.T) {
 			t)
 	})
 
+	t.Run("unmarshalInteger16 - unexpected EOF", func(t *testing.T) {
+		var (
+			wantV   uint16 = 0
+			wantN          = 1
+			wantErr error  = io.ErrUnexpectedEOF
+			r              = mock.NewReader().RegisterRead(
+				func(p []byte) (n int, err error) {
+					return wantN, nil
+				},
+			).RegisterRead(
+				func(p []byte) (n int, err error) { return 0, io.EOF },
+			)
+			mocks     = []*mok.Mock{r.Mock}
+			v, n, err = unmarshalInteger16[uint16](r)
+		)
+		muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			mocks,
+			t)
+	})
+
 	t.Run("unmarshalInteger8 - read error", func(t *testing.T) {
 		var (
 			wantV   uint8 = 0
@@ -177,6 +238,22 @@ func TestUnsafe(t *testing.T) {
 				func(p []byte) (n int, err error) {
 					return 0, wantErr
 				},
+			)
+			mocks     = []*mok.Mock{r.Mock}
+			v, n, err = unmarshalInteger8[uint8](r)
+		)
+		muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			mocks,
+			t)
+	})
+
+	t.Run("unmarshalInteger8 - unexpected EOF", func(t *testing.T) {
+		var (
+			wantV   uint8 = 0
+			wantN         = 0
+			wantErr error = io.EOF
+			r             = mock.NewReader().RegisterRead(
+				func(p []byte) (n int, err error) { return 0, io.EOF },
 			)
 			mocks     = []*mok.Mock{r.Mock}
 			v, n, err = unmarshalInteger8[uint8](r)
@@ -224,6 +301,28 @@ func TestUnsafe(t *testing.T) {
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
+				)
+				mocks     = []*mok.Mock{r.Mock}
+				v, n, err = UnmarshalString(r)
+			)
+			muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				mocks,
+				t)
+		})
+
+		t.Run("Unmarshal - unexpected EOF", func(t *testing.T) {
+			var (
+				wantV   string = ""
+				wantN          = 5
+				wantErr error  = io.ErrUnexpectedEOF
+				r              = mock.NewReader().RegisterReadByte(
+					func() (b byte, err error) { return 22, nil },
+				).RegisterRead(
+					func(p []byte) (n int, err error) {
+						return copy(p, "long"), nil
+					},
+				).RegisterRead(
+					func(p []byte) (n int, err error) { return 0, io.EOF },
 				)
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = UnmarshalString(r)

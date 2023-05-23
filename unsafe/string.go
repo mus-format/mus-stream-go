@@ -1,6 +1,7 @@
 package unsafe
 
 import (
+	"io"
 	unsafe_mod "unsafe"
 
 	muscom "github.com/mus-format/mus-common-go"
@@ -62,7 +63,7 @@ func UnmarshalValidString(maxLength muscom.Validator[int], skip bool,
 			return
 		}
 	}
-	n1, err = r.Read(c)
+	n1, err = io.ReadFull(r, c)
 	n += n1
 	if err != nil {
 		return
