@@ -8,7 +8,7 @@ import (
 	muscom "github.com/mus-format/mus-common-go"
 	muscom_testdata "github.com/mus-format/mus-common-go/testdata"
 	muscom_mock "github.com/mus-format/mus-common-go/testdata/mock"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/raw"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/testdata/mock"
@@ -267,10 +267,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("Marshal, Unmarshal, Size, Skip", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[string](MarshalString)
-				u  = mustrm.UnmarshalerFn[string](UnmarshalString)
-				s  = mustrm.SizerFn[string](SizeString)
-				sk = mustrm.SkipperFn(SkipString)
+				m  = muss.MarshalerFn[string](MarshalString)
+				u  = muss.UnmarshalerFn[string](UnmarshalString)
+				s  = muss.SizerFn[string](SizeString)
+				sk = muss.SkipperFn(SkipString)
 			)
 			testdata.Test[string](muscom_testdata.StringTestCases, m, u, s, t)
 			testdata.TestSkip[string](muscom_testdata.StringTestCases, m, sk, s, t)
@@ -468,10 +468,10 @@ func TestUnsafe(t *testing.T) {
 
 	t.Run("byte", func(t *testing.T) {
 		var (
-			m  = mustrm.MarshalerFn[byte](MarshalByte)
-			u  = mustrm.UnmarshalerFn[byte](UnmarshalByte)
-			s  = mustrm.SizerFn[byte](SizeByte)
-			sk = mustrm.SkipperFn(SkipByte)
+			m  = muss.MarshalerFn[byte](MarshalByte)
+			u  = muss.UnmarshalerFn[byte](UnmarshalByte)
+			s  = muss.SizerFn[byte](SizeByte)
+			sk = muss.SkipperFn(SkipByte)
 		)
 		testdata.Test[byte](muscom_testdata.ByteTestCases, m, u, s, t)
 		testdata.TestSkip[byte](muscom_testdata.ByteTestCases, m, sk, s, t)
@@ -481,10 +481,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("uint64", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[uint64](MarshalUint64)
-				u  = mustrm.UnmarshalerFn[uint64](UnmarshalUint64)
-				s  = mustrm.SizerFn[uint64](SizeUint64)
-				sk = mustrm.SkipperFn(SkipUint64)
+				m  = muss.MarshalerFn[uint64](MarshalUint64)
+				u  = muss.UnmarshalerFn[uint64](UnmarshalUint64)
+				s  = muss.SizerFn[uint64](SizeUint64)
+				sk = muss.SkipperFn(SkipUint64)
 			)
 			testdata.Test[uint64](muscom_testdata.Uint64TestCases, m, u, s, t)
 			testdata.TestSkip[uint64](muscom_testdata.Uint64TestCases, m, sk, s, t)
@@ -492,10 +492,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("uint32", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[uint32](MarshalUint32)
-				u  = mustrm.UnmarshalerFn[uint32](UnmarshalUint32)
-				s  = mustrm.SizerFn[uint32](SizeUint32)
-				sk = mustrm.SkipperFn(SkipUint32)
+				m  = muss.MarshalerFn[uint32](MarshalUint32)
+				u  = muss.UnmarshalerFn[uint32](UnmarshalUint32)
+				s  = muss.SizerFn[uint32](SizeUint32)
+				sk = muss.SkipperFn(SkipUint32)
 			)
 			testdata.Test[uint32](muscom_testdata.Uint32TestCases, m, u, s, t)
 			testdata.TestSkip[uint32](muscom_testdata.Uint32TestCases, m, sk, s, t)
@@ -503,10 +503,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("uint16", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[uint16](MarshalUint16)
-				u  = mustrm.UnmarshalerFn[uint16](UnmarshalUint16)
-				s  = mustrm.SizerFn[uint16](SizeUint16)
-				sk = mustrm.SkipperFn(SkipUint16)
+				m  = muss.MarshalerFn[uint16](MarshalUint16)
+				u  = muss.UnmarshalerFn[uint16](UnmarshalUint16)
+				s  = muss.SizerFn[uint16](SizeUint16)
+				sk = muss.SkipperFn(SkipUint16)
 			)
 			testdata.Test[uint16](muscom_testdata.Uint16TestCases, m, u, s, t)
 			testdata.TestSkip[uint16](muscom_testdata.Uint16TestCases, m, sk, s, t)
@@ -514,10 +514,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("uint8", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[uint8](MarshalUint8)
-				u  = mustrm.UnmarshalerFn[uint8](UnmarshalUint8)
-				s  = mustrm.SizerFn[uint8](SizeUint8)
-				sk = mustrm.SkipperFn(SkipUint8)
+				m  = muss.MarshalerFn[uint8](MarshalUint8)
+				u  = muss.UnmarshalerFn[uint8](UnmarshalUint8)
+				s  = muss.SizerFn[uint8](SizeUint8)
+				sk = muss.SkipperFn(SkipUint8)
 			)
 			testdata.Test[uint8](muscom_testdata.Uint8TestCases, m, u, s, t)
 			testdata.TestSkip[uint8](muscom_testdata.Uint8TestCases, m, sk, s, t)
@@ -525,10 +525,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("uint", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[uint](MarshalUint)
-				u  = mustrm.UnmarshalerFn[uint](UnmarshalUint)
-				s  = mustrm.SizerFn[uint](SizeUint)
-				sk = mustrm.SkipperFn(SkipUint)
+				m  = muss.MarshalerFn[uint](MarshalUint)
+				u  = muss.UnmarshalerFn[uint](UnmarshalUint)
+				s  = muss.SizerFn[uint](SizeUint)
+				sk = muss.SkipperFn(SkipUint)
 			)
 			testdata.Test[uint](muscom_testdata.UintTestCases, m, u, s, t)
 			testdata.TestSkip[uint](muscom_testdata.UintTestCases, m, sk, s, t)
@@ -540,10 +540,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("int64", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[int64](MarshalInt64)
-				u  = mustrm.UnmarshalerFn[int64](UnmarshalInt64)
-				s  = mustrm.SizerFn[int64](SizeInt64)
-				sk = mustrm.SkipperFn(SkipInt64)
+				m  = muss.MarshalerFn[int64](MarshalInt64)
+				u  = muss.UnmarshalerFn[int64](UnmarshalInt64)
+				s  = muss.SizerFn[int64](SizeInt64)
+				sk = muss.SkipperFn(SkipInt64)
 			)
 			testdata.Test[int64](muscom_testdata.Int64TestCases, m, u, s, t)
 			testdata.TestSkip[int64](muscom_testdata.Int64TestCases, m, sk, s, t)
@@ -551,10 +551,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("int32", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[int32](MarshalInt32)
-				u  = mustrm.UnmarshalerFn[int32](UnmarshalInt32)
-				s  = mustrm.SizerFn[int32](SizeInt32)
-				sk = mustrm.SkipperFn(SkipInt32)
+				m  = muss.MarshalerFn[int32](MarshalInt32)
+				u  = muss.UnmarshalerFn[int32](UnmarshalInt32)
+				s  = muss.SizerFn[int32](SizeInt32)
+				sk = muss.SkipperFn(SkipInt32)
 			)
 			testdata.Test[int32](muscom_testdata.Int32TestCases, m, u, s, t)
 			testdata.TestSkip[int32](muscom_testdata.Int32TestCases, m, sk, s, t)
@@ -562,10 +562,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("int16", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[int16](MarshalInt16)
-				u  = mustrm.UnmarshalerFn[int16](UnmarshalInt16)
-				s  = mustrm.SizerFn[int16](SizeInt16)
-				sk = mustrm.SkipperFn(SkipInt16)
+				m  = muss.MarshalerFn[int16](MarshalInt16)
+				u  = muss.UnmarshalerFn[int16](UnmarshalInt16)
+				s  = muss.SizerFn[int16](SizeInt16)
+				sk = muss.SkipperFn(SkipInt16)
 			)
 			testdata.Test[int16](muscom_testdata.Int16TestCases, m, u, s, t)
 			testdata.TestSkip[int16](muscom_testdata.Int16TestCases, m, sk, s, t)
@@ -573,10 +573,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("int8", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[int8](MarshalInt8)
-				u  = mustrm.UnmarshalerFn[int8](UnmarshalInt8)
-				s  = mustrm.SizerFn[int8](SizeInt8)
-				sk = mustrm.SkipperFn(SkipInt8)
+				m  = muss.MarshalerFn[int8](MarshalInt8)
+				u  = muss.UnmarshalerFn[int8](UnmarshalInt8)
+				s  = muss.SizerFn[int8](SizeInt8)
+				sk = muss.SkipperFn(SkipInt8)
 			)
 			testdata.Test[int8](muscom_testdata.Int8TestCases, m, u, s, t)
 			testdata.TestSkip[int8](muscom_testdata.Int8TestCases, m, sk, s, t)
@@ -584,10 +584,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("int", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[int](MarshalInt)
-				u  = mustrm.UnmarshalerFn[int](UnmarshalInt)
-				s  = mustrm.SizerFn[int](SizeInt)
-				sk = mustrm.SkipperFn(SkipInt)
+				m  = muss.MarshalerFn[int](MarshalInt)
+				u  = muss.UnmarshalerFn[int](UnmarshalInt)
+				s  = muss.SizerFn[int](SizeInt)
+				sk = muss.SkipperFn(SkipInt)
 			)
 			testdata.Test[int](muscom_testdata.IntTestCases, m, u, s, t)
 			testdata.TestSkip[int](muscom_testdata.IntTestCases, m, sk, s, t)
@@ -601,10 +601,10 @@ func TestUnsafe(t *testing.T) {
 
 			t.Run("Marshal, Unmarshal, Size, Skip", func(t *testing.T) {
 				var (
-					m  = mustrm.MarshalerFn[float64](MarshalFloat64)
-					u  = mustrm.UnmarshalerFn[float64](UnmarshalFloat64)
-					s  = mustrm.SizerFn[float64](SizeFloat64)
-					sk = mustrm.SkipperFn(SkipFloat64)
+					m  = muss.MarshalerFn[float64](MarshalFloat64)
+					u  = muss.UnmarshalerFn[float64](UnmarshalFloat64)
+					s  = muss.SizerFn[float64](SizeFloat64)
+					sk = muss.SkipperFn(SkipFloat64)
 				)
 				testdata.Test[float64](muscom_testdata.Float64TestCases, m, u, s, t)
 				testdata.TestSkip[float64](muscom_testdata.Float64TestCases, m, sk, s,
@@ -635,10 +635,10 @@ func TestUnsafe(t *testing.T) {
 
 			t.Run("Marshal, Unmarshal, Size, Skip", func(t *testing.T) {
 				var (
-					m  = mustrm.MarshalerFn[float32](MarshalFloat32)
-					u  = mustrm.UnmarshalerFn[float32](UnmarshalFloat32)
-					s  = mustrm.SizerFn[float32](SizeFloat32)
-					sk = mustrm.SkipperFn(SkipFloat32)
+					m  = muss.MarshalerFn[float32](MarshalFloat32)
+					u  = muss.UnmarshalerFn[float32](UnmarshalFloat32)
+					s  = muss.SizerFn[float32](SizeFloat32)
+					sk = muss.SkipperFn(SkipFloat32)
 				)
 				testdata.Test[float32](muscom_testdata.Float32TestCases, m, u, s, t)
 				testdata.TestSkip[float32](muscom_testdata.Float32TestCases, m, sk, s,
@@ -671,10 +671,10 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("Marshal, Unmarshal, Size, Skip", func(t *testing.T) {
 			var (
-				m  = mustrm.MarshalerFn[bool](MarshalBool)
-				u  = mustrm.UnmarshalerFn[bool](UnmarshalBool)
-				s  = mustrm.SizerFn[bool](SizeBool)
-				sk = mustrm.SkipperFn(SkipBool)
+				m  = muss.MarshalerFn[bool](MarshalBool)
+				u  = muss.UnmarshalerFn[bool](UnmarshalBool)
+				s  = muss.SizerFn[bool](SizeBool)
+				sk = muss.SkipperFn(SkipBool)
 			)
 			testdata.Test[bool](muscom_testdata.BoolTestCases, m, u, s, t)
 			testdata.TestSkip[bool](muscom_testdata.BoolTestCases, m, sk, s, t)

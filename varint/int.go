@@ -1,7 +1,7 @@
 package varint
 
 import (
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"golang.org/x/exp/constraints"
 )
 
@@ -9,7 +9,7 @@ import (
 // number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalInt64(v int64, w mustrm.Writer) (n int, err error) {
+func MarshalInt64(v int64, w muss.Writer) (n int, err error) {
 	return marshalUint(uint64(EncodeZigZag(v)), w)
 }
 
@@ -17,7 +17,7 @@ func MarshalInt64(v int64, w mustrm.Writer) (n int, err error) {
 // number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalInt32(v int32, w mustrm.Writer) (n int, err error) {
+func MarshalInt32(v int32, w muss.Writer) (n int, err error) {
 	return marshalUint(uint32(EncodeZigZag(v)), w)
 }
 
@@ -25,7 +25,7 @@ func MarshalInt32(v int32, w mustrm.Writer) (n int, err error) {
 // number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalInt16(v int16, w mustrm.Writer) (n int, err error) {
+func MarshalInt16(v int16, w muss.Writer) (n int, err error) {
 	return marshalUint(uint16(EncodeZigZag(v)), w)
 }
 
@@ -33,7 +33,7 @@ func MarshalInt16(v int16, w mustrm.Writer) (n int, err error) {
 // number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalInt8(v int8, w mustrm.Writer) (n int, err error) {
+func MarshalInt8(v int8, w muss.Writer) (n int, err error) {
 	return marshalUint(uint8(EncodeZigZag(v)), w)
 }
 
@@ -41,7 +41,7 @@ func MarshalInt8(v int8, w mustrm.Writer) (n int, err error) {
 // number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalInt(v int, w mustrm.Writer) (n int, err error) {
+func MarshalInt(v int, w muss.Writer) (n int, err error) {
 	return marshalUint(uint(EncodeZigZag(v)), w)
 }
 
@@ -50,7 +50,7 @@ func MarshalInt(v int, w mustrm.Writer) (n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalInt64(r mustrm.Reader) (v int64, n int, err error) {
+func UnmarshalInt64(r muss.Reader) (v int64, n int, err error) {
 	uv, n, err := UnmarshalUint64(r)
 	if err != nil {
 		return
@@ -62,7 +62,7 @@ func UnmarshalInt64(r mustrm.Reader) (v int64, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalInt32(r mustrm.Reader) (v int32, n int, err error) {
+func UnmarshalInt32(r muss.Reader) (v int32, n int, err error) {
 	uv, n, err := UnmarshalUint32(r)
 	if err != nil {
 		return
@@ -74,7 +74,7 @@ func UnmarshalInt32(r mustrm.Reader) (v int32, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalInt16(r mustrm.Reader) (v int16, n int, err error) {
+func UnmarshalInt16(r muss.Reader) (v int16, n int, err error) {
 	uv, n, err := UnmarshalUint16(r)
 	if err != nil {
 		return
@@ -86,7 +86,7 @@ func UnmarshalInt16(r mustrm.Reader) (v int16, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalInt8(r mustrm.Reader) (v int8, n int, err error) {
+func UnmarshalInt8(r muss.Reader) (v int8, n int, err error) {
 	uv, n, err := UnmarshalUint8(r)
 	if err != nil {
 		return
@@ -98,7 +98,7 @@ func UnmarshalInt8(r mustrm.Reader) (v int8, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalInt(r mustrm.Reader) (v int, n int, err error) {
+func UnmarshalInt(r muss.Reader) (v int, n int, err error) {
 	uv, n, err := UnmarshalUint(r)
 	if err != nil {
 		return
@@ -137,7 +137,7 @@ func SizeInt(v int) (size int) {
 // skiped bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipInt64(r mustrm.Reader) (n int, err error) {
+func SkipInt64(r muss.Reader) (n int, err error) {
 	return SkipUint64(r)
 }
 
@@ -145,7 +145,7 @@ func SkipInt64(r mustrm.Reader) (n int, err error) {
 // skiped bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipInt32(r mustrm.Reader) (n int, err error) {
+func SkipInt32(r muss.Reader) (n int, err error) {
 	return SkipUint32(r)
 }
 
@@ -153,7 +153,7 @@ func SkipInt32(r mustrm.Reader) (n int, err error) {
 // skiped bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipInt16(r mustrm.Reader) (n int, err error) {
+func SkipInt16(r muss.Reader) (n int, err error) {
 	return SkipUint16(r)
 }
 
@@ -161,7 +161,7 @@ func SkipInt16(r mustrm.Reader) (n int, err error) {
 // skiped bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipInt8(r mustrm.Reader) (n int, err error) {
+func SkipInt8(r muss.Reader) (n int, err error) {
 	return SkipUint8(r)
 }
 
@@ -169,7 +169,7 @@ func SkipInt8(r mustrm.Reader) (n int, err error) {
 // bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipInt(r mustrm.Reader) (n int, err error) {
+func SkipInt(r muss.Reader) (n int, err error) {
 	return SkipUint(r)
 }
 

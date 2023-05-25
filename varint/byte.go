@@ -2,12 +2,12 @@ package varint
 
 import (
 	muscom "github.com/mus-format/mus-common-go"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 )
 
 // MarshalByte writes the MUS encoding (Varint) of a byte. Returns the
 // number of used bytes and an error.
-func MarshalByte(v byte, w mustrm.Writer) (n int, err error) {
+func MarshalByte(v byte, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -15,7 +15,7 @@ func MarshalByte(v byte, w mustrm.Writer) (n int, err error) {
 // returns the number of used bytes and an error.
 //
 // The error can be one of muscom.ErrOverflow or a Reader error.
-func UnmarshalByte(r mustrm.Reader) (v byte, n int, err error) {
+func UnmarshalByte(r muss.Reader) (v byte, n int, err error) {
 	return unmarshalUint[byte](muscom.Uint8MaxVarintLen, muscom.Uint8MaxLastByte,
 		r)
 }
@@ -29,6 +29,6 @@ func SizeByte(v byte) (size int) {
 // skiped bytes and an error.
 //
 // The error can be one of muscom.ErrOverflow or a Reader error.
-func SkipByte(r mustrm.Reader) (n int, err error) {
+func SkipByte(r muss.Reader) (n int, err error) {
 	return skipUint(muscom.Uint8MaxVarintLen, muscom.Uint8MaxLastByte, r)
 }

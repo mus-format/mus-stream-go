@@ -70,8 +70,8 @@ struct data types.
 
 Another thing to note is that if we want to use a real connection instead of 
 `bytes.Buffer`, we will have, for example, to use the `bufio` package. This is 
-because the `bufio.Writer` and `bufio.Reader` implement the `mustrm.Writer` and 
-`mustrm.Reader` interfaces we need.
+because the `bufio.Writer` and `bufio.Reader` implement the `muss.Writer` and 
+`muss.Reader` interfaces we need.
 
 
 

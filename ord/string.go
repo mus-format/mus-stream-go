@@ -4,13 +4,13 @@ import (
 	"io"
 
 	muscom "github.com/mus-format/mus-common-go"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
 // MarshalString writes the MUS encoding of a string. Returns the number of
 // used bytes.
-func MarshalString(v string, w mustrm.Writer) (n int, err error) {
+func MarshalString(v string, w muss.Writer) (n int, err error) {
 	n, err = varint.MarshalInt(len(v), w)
 	if err != nil {
 		return
@@ -25,7 +25,7 @@ func MarshalString(v string, w mustrm.Writer) (n int, err error) {
 // returns the number of used bytes and an error.
 //
 // The error can be one of muscom.ErrOverflow or muscom.ErrNegativeLength.
-func UnmarshalString(r mustrm.Reader) (v string, n int, err error) {
+func UnmarshalString(r muss.Reader) (v string, n int, err error) {
 	return UnmarshalValidString(nil, false, r)
 }
 
@@ -39,7 +39,7 @@ func UnmarshalString(r mustrm.Reader) (v string, n int, err error) {
 // The error returned by UnmarshalValidString can be one of muscom.ErrOverflow,
 // muscom.ErrNegativeLength, a Validator or Reader error.
 func UnmarshalValidString(maxLength muscom.Validator[int], skip bool,
-	r mustrm.Reader) (v string, n int, err error) {
+	r muss.Reader) (v string, n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil || length == 0 {
 		return
@@ -86,7 +86,7 @@ func SizeString(v string) (n int) {
 //
 // The error can be one of muscom.ErrOverflow, mus.ErrNegativeLength or a
 // Reader error.
-func SkipString(r mustrm.Reader) (n int, err error) {
+func SkipString(r muss.Reader) (n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {
 		return
@@ -105,7 +105,7 @@ func SkipString(r mustrm.Reader) (n int, err error) {
 	return
 }
 
-func skipRemainingString(lenght int, r mustrm.Reader) (n int, err error) {
+func skipRemainingString(lenght int, r muss.Reader) (n int, err error) {
 	for i := 0; i < lenght; i++ {
 		_, err = r.ReadByte()
 		if err != nil {

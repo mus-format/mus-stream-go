@@ -2,7 +2,7 @@ package varint
 
 import (
 	muscom "github.com/mus-format/mus-common-go"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"golang.org/x/exp/constraints"
 )
 
@@ -10,7 +10,7 @@ import (
 // the number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalUint64(v uint64, w mustrm.Writer) (n int, err error) {
+func MarshalUint64(v uint64, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -18,7 +18,7 @@ func MarshalUint64(v uint64, w mustrm.Writer) (n int, err error) {
 // the number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalUint32(v uint32, w mustrm.Writer) (n int, err error) {
+func MarshalUint32(v uint32, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -26,7 +26,7 @@ func MarshalUint32(v uint32, w mustrm.Writer) (n int, err error) {
 // the number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalUint16(v uint16, w mustrm.Writer) (n int, err error) {
+func MarshalUint16(v uint16, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -34,7 +34,7 @@ func MarshalUint16(v uint16, w mustrm.Writer) (n int, err error) {
 // the number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalUint8(v uint8, w mustrm.Writer) (n int, err error) {
+func MarshalUint8(v uint8, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -42,7 +42,7 @@ func MarshalUint8(v uint8, w mustrm.Writer) (n int, err error) {
 // the number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalUint(v uint, w mustrm.Writer) (n int, err error) {
+func MarshalUint(v uint, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -51,7 +51,7 @@ func MarshalUint(v uint, w mustrm.Writer) (n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalUint64(r mustrm.Reader) (v uint64, n int, err error) {
+func UnmarshalUint64(r muss.Reader) (v uint64, n int, err error) {
 	return unmarshalUint[uint64](muscom.Uint64MaxVarintLen,
 		muscom.Uint64MaxLastByte,
 		r)
@@ -61,7 +61,7 @@ func UnmarshalUint64(r mustrm.Reader) (v uint64, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalUint32(r mustrm.Reader) (v uint32, n int, err error) {
+func UnmarshalUint32(r muss.Reader) (v uint32, n int, err error) {
 	return unmarshalUint[uint32](muscom.Uint32MaxVarintLen,
 		muscom.Uint32MaxLastByte,
 		r)
@@ -71,7 +71,7 @@ func UnmarshalUint32(r mustrm.Reader) (v uint32, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalUint16(r mustrm.Reader) (v uint16, n int, err error) {
+func UnmarshalUint16(r muss.Reader) (v uint16, n int, err error) {
 	return unmarshalUint[uint16](muscom.Uint16MaxVarintLen,
 		muscom.Uint16MaxLastByte,
 		r)
@@ -81,7 +81,7 @@ func UnmarshalUint16(r mustrm.Reader) (v uint16, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalUint8(r mustrm.Reader) (v uint8, n int, err error) {
+func UnmarshalUint8(r muss.Reader) (v uint8, n int, err error) {
 	return unmarshalUint[uint8](muscom.Uint8MaxVarintLen,
 		muscom.Uint8MaxLastByte,
 		r)
@@ -91,7 +91,7 @@ func UnmarshalUint8(r mustrm.Reader) (v uint8, n int, err error) {
 // the byte, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalUint(r mustrm.Reader) (v uint, n int, err error) {
+func UnmarshalUint(r muss.Reader) (v uint, n int, err error) {
 	return unmarshalUint[uint](muscom.UintMaxVarintLen(),
 		muscom.UintMaxLastByte(),
 		r)
@@ -128,7 +128,7 @@ func SizeUint(v uint) (size int) {
 // bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipUint64(r mustrm.Reader) (n int, err error) {
+func SkipUint64(r muss.Reader) (n int, err error) {
 	return skipUint(muscom.Uint64MaxVarintLen, muscom.Uint64MaxLastByte, r)
 }
 
@@ -136,7 +136,7 @@ func SkipUint64(r mustrm.Reader) (n int, err error) {
 // bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipUint32(r mustrm.Reader) (n int, err error) {
+func SkipUint32(r muss.Reader) (n int, err error) {
 	return skipUint(muscom.Uint32MaxVarintLen, muscom.Uint32MaxLastByte, r)
 }
 
@@ -144,7 +144,7 @@ func SkipUint32(r mustrm.Reader) (n int, err error) {
 // bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipUint16(r mustrm.Reader) (n int, err error) {
+func SkipUint16(r muss.Reader) (n int, err error) {
 	return skipUint(muscom.Uint16MaxVarintLen, muscom.Uint16MaxLastByte, r)
 }
 
@@ -152,7 +152,7 @@ func SkipUint16(r mustrm.Reader) (n int, err error) {
 // bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipUint8(r mustrm.Reader) (n int, err error) {
+func SkipUint8(r muss.Reader) (n int, err error) {
 	return skipUint(muscom.Uint8MaxVarintLen, muscom.Uint8MaxLastByte, r)
 }
 
@@ -160,11 +160,11 @@ func SkipUint8(r mustrm.Reader) (n int, err error) {
 // bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipUint(r mustrm.Reader) (n int, err error) {
+func SkipUint(r muss.Reader) (n int, err error) {
 	return skipUint(muscom.UintMaxVarintLen(), muscom.UintMaxLastByte(), r)
 }
 
-func marshalUint[T constraints.Unsigned](t T, w mustrm.Writer) (n int,
+func marshalUint[T constraints.Unsigned](t T, w muss.Writer) (n int,
 	err error) {
 	for t >= 0x80 {
 		err = w.WriteByte(byte(t) | 0x80)
@@ -183,7 +183,7 @@ func marshalUint[T constraints.Unsigned](t T, w mustrm.Writer) (n int,
 }
 
 func unmarshalUint[T constraints.Unsigned](maxVarintLen int, maxLastByte byte,
-	r mustrm.Reader) (t T, n int, err error) {
+	r muss.Reader) (t T, n int, err error) {
 	var (
 		b     byte
 		shift int
@@ -214,7 +214,7 @@ func sizeUint[T constraints.Unsigned](t T) (size int) {
 	return size + 1
 }
 
-func skipUint(maxVarintLen int, maxLastByte byte, r mustrm.Reader) (n int,
+func skipUint(maxVarintLen int, maxLastByte byte, r muss.Reader) (n int,
 	err error) {
 	var b byte
 	for {

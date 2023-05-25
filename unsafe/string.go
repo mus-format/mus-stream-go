@@ -5,14 +5,14 @@ import (
 	unsafe_mod "unsafe"
 
 	muscom "github.com/mus-format/mus-common-go"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/ord"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
 // MarshalString writes the MUS encoding of a string. Returns the number of used
 // bytes.
-func MarshalString(v string, w mustrm.Writer) (n int, err error) {
+func MarshalString(v string, w muss.Writer) (n int, err error) {
 	n, err = varint.MarshalInt(len(v), w)
 	if err != nil {
 		return
@@ -28,7 +28,7 @@ func MarshalString(v string, w mustrm.Writer) (n int, err error) {
 //
 // The error can be one of muscom.ErrOverflow, muscom.ErrNegativeLength or
 // Reader error.
-func UnmarshalString(r mustrm.Reader) (v string, n int, err error) {
+func UnmarshalString(r muss.Reader) (v string, n int, err error) {
 	return UnmarshalValidString(nil, false, r)
 }
 
@@ -42,7 +42,7 @@ func UnmarshalString(r mustrm.Reader) (v string, n int, err error) {
 // The error returned by UnmarshalValidString can be one of muscom.ErrOverflow,
 // muscom.ErrNegativeLength, a Validator or Reader error.
 func UnmarshalValidString(maxLength muscom.Validator[int], skip bool,
-	r mustrm.Reader) (v string, n int, err error) {
+	r muss.Reader) (v string, n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil || length == 0 {
 		return
@@ -89,11 +89,11 @@ func SizeString(v string) (n int) {
 //
 // The error can be one of muscom.ErrOverflow, mus.ErrNegativeLength or Reader
 // error.
-func SkipString(r mustrm.Reader) (n int, err error) {
+func SkipString(r muss.Reader) (n int, err error) {
 	return ord.SkipString(r)
 }
 
-func skipRemainingString(lenght int, r mustrm.Reader) (n int, err error) {
+func skipRemainingString(lenght int, r muss.Reader) (n int, err error) {
 	for i := 0; i < lenght; i++ {
 		_, err = r.ReadByte()
 		if err != nil {

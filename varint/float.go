@@ -3,14 +3,14 @@ package varint
 import (
 	"math"
 
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 )
 
 // MarshalFloat64 fills bs with the MUS encoding (Varint) of a float64. Returns
 // the number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalFloat64(v float64, w mustrm.Writer) (n int, err error) {
+func MarshalFloat64(v float64, w muss.Writer) (n int, err error) {
 	return MarshalUint64(math.Float64bits(v), w)
 }
 
@@ -18,7 +18,7 @@ func MarshalFloat64(v float64, w mustrm.Writer) (n int, err error) {
 // the number of used bytes.
 //
 // It will panic if receives too small bs.
-func MarshalFloat32(v float32, w mustrm.Writer) (n int, err error) {
+func MarshalFloat32(v float32, w muss.Writer) (n int, err error) {
 	return MarshalUint32(math.Float32bits(v), w)
 }
 
@@ -27,7 +27,7 @@ func MarshalFloat32(v float32, w mustrm.Writer) (n int, err error) {
 // to the float64, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalFloat64(r mustrm.Reader) (v float64, n int, err error) {
+func UnmarshalFloat64(r muss.Reader) (v float64, n int, err error) {
 	uv, n, err := UnmarshalUint64(r)
 	if err != nil {
 		return
@@ -40,7 +40,7 @@ func UnmarshalFloat64(r mustrm.Reader) (v float64, n int, err error) {
 // to the float32, it returns the number of used bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func UnmarshalFloat32(r mustrm.Reader) (v float32, n int, err error) {
+func UnmarshalFloat32(r muss.Reader) (v float32, n int, err error) {
 	uv, n, err := UnmarshalUint32(r)
 	if err != nil {
 		return
@@ -65,7 +65,7 @@ func SizeFloat32(v float32) (size int) {
 // skiped bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipFloat64(r mustrm.Reader) (n int, err error) {
+func SkipFloat64(r muss.Reader) (n int, err error) {
 	return SkipUint64(r)
 }
 
@@ -73,6 +73,6 @@ func SkipFloat64(r mustrm.Reader) (n int, err error) {
 // skiped bytes and an error.
 //
 // The error can be one of mus.ErrTooSmallByteSlice, or muscom.ErrOverflow.
-func SkipFloat32(r mustrm.Reader) (n int, err error) {
+func SkipFloat32(r muss.Reader) (n int, err error) {
 	return SkipUint32(r)
 }

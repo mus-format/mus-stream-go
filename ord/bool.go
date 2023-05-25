@@ -2,12 +2,12 @@ package ord
 
 import (
 	muscom "github.com/mus-format/mus-common-go"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 )
 
 // MarshalBool writes the MUS encoding of a bool. Returns the number of
 // used bytes and an error.
-func MarshalBool(v bool, w mustrm.Writer) (n int, err error) {
+func MarshalBool(v bool, w muss.Writer) (n int, err error) {
 	if v {
 		err = w.WriteByte(1)
 	} else {
@@ -24,7 +24,7 @@ func MarshalBool(v bool, w mustrm.Writer) (n int, err error) {
 // it returns the number of used bytes and an error.
 //
 // The error can be one of muscom.ErrWrongFormat or Reader error.
-func UnmarshalBool(r mustrm.Reader) (v bool, n int, err error) {
+func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
 		return
@@ -50,7 +50,7 @@ func SizeBool(v bool) (size int) {
 // and an error.
 //
 // The error can be one of muscom.ErrWrongFormat or read error.
-func SkipBool(r mustrm.Reader) (n int, err error) {
+func SkipBool(r muss.Reader) (n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
 		return

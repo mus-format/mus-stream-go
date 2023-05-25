@@ -2,7 +2,7 @@ package ord
 
 import (
 	muscom "github.com/mus-format/mus-common-go"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
@@ -10,7 +10,7 @@ import (
 // used bytes and an error.
 //
 // The m argument specifies the Marshaler for the slice elements.
-func MarshalSlice[T any](v []T, m mustrm.Marshaler[T], w mustrm.Writer) (n int,
+func MarshalSlice[T any](v []T, m muss.Marshaler[T], w muss.Writer) (n int,
 	err error) {
 	if n, err = varint.MarshalInt(len(v), w); err != nil {
 		return
@@ -33,7 +33,7 @@ func MarshalSlice[T any](v []T, m mustrm.Marshaler[T], w mustrm.Writer) (n int,
 //
 // The error returned by UnmarshalSlice can be one of muscom.ErrOverflow,
 // muscom.ErrNegativeLength, an Unmarshaler or Reader error.
-func UnmarshalSlice[T any](u mustrm.Unmarshaler[T], r mustrm.Reader) (v []T,
+func UnmarshalSlice[T any](u muss.Unmarshaler[T], r muss.Reader) (v []T,
 	n int, err error) {
 	return UnmarshalValidSlice(nil, u, nil, nil, r)
 }
@@ -50,10 +50,10 @@ func UnmarshalSlice[T any](u mustrm.Unmarshaler[T], r mustrm.Reader) (v []T,
 // The error returned by UnmarshalValidSlice can be one of muscom.ErrOverflow,
 // muscom.ErrNegativeLength, an Unmarshaler, Validator, Skipper or Reader error.
 func UnmarshalValidSlice[T any](maxLength muscom.Validator[int],
-	u mustrm.Unmarshaler[T],
+	u muss.Unmarshaler[T],
 	vl muscom.Validator[T],
-	sk mustrm.Skipper,
-	r mustrm.Reader,
+	sk muss.Skipper,
+	r muss.Reader,
 ) (v []T, n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {
@@ -104,7 +104,7 @@ SkipRemainingBytes:
 // SizeSlice returns the size of a MUS-encoded slice.
 //
 // The s argument specifies the Sizer for the slice elements.
-func SizeSlice[T any](v []T, s mustrm.Sizer[T]) (size int) {
+func SizeSlice[T any](v []T, s muss.Sizer[T]) (size int) {
 	size = varint.SizeInt(len(v))
 	for i := 0; i < len(v); i++ {
 		size += s.SizeMUS(v[i])
@@ -119,7 +119,7 @@ func SizeSlice[T any](v []T, s mustrm.Sizer[T]) (size int) {
 //
 // The error returned by SkipSlice can be one of muscom.ErrOverflow,
 // muscom.ErrNegativeLength, a Skipper or Reader error.
-func SkipSlice(sk mustrm.Skipper, r mustrm.Reader) (n int, err error) {
+func SkipSlice(sk muss.Skipper, r muss.Reader) (n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {
 		return
@@ -133,8 +133,8 @@ func SkipSlice(sk mustrm.Skipper, r mustrm.Reader) (n int, err error) {
 	return
 }
 
-func skipRemainingSlice(from int, length int, sk mustrm.Skipper,
-	r mustrm.Reader) (
+func skipRemainingSlice(from int, length int, sk muss.Skipper,
+	r muss.Reader) (
 	n int, err error) {
 	var n1 int
 	for i := from; i < length; i++ {

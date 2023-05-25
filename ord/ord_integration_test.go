@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	muscom_testdata "github.com/mus-format/mus-common-go/testdata"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -13,25 +13,25 @@ func TestIntegrationOrd(t *testing.T) {
 
 	t.Run("Marshal, Unmarshal, Size Skip pointer", func(t *testing.T) {
 		var (
-			m = func() mustrm.MarshalerFn[*string] {
-				return func(t *string, w mustrm.Writer) (n int, err error) {
-					return MarshalPtr[string](t, mustrm.MarshalerFn[string](MarshalString),
+			m = func() muss.MarshalerFn[*string] {
+				return func(t *string, w muss.Writer) (n int, err error) {
+					return MarshalPtr[string](t, muss.MarshalerFn[string](MarshalString),
 						w)
 				}
 			}()
-			u = func() mustrm.UnmarshalerFn[*string] {
-				return func(r mustrm.Reader) (t *string, n int, err error) {
-					return UnmarshalPtr[string](mustrm.UnmarshalerFn[string](UnmarshalString), r)
+			u = func() muss.UnmarshalerFn[*string] {
+				return func(r muss.Reader) (t *string, n int, err error) {
+					return UnmarshalPtr[string](muss.UnmarshalerFn[string](UnmarshalString), r)
 				}
 			}()
-			s = func() mustrm.SizerFn[*string] {
+			s = func() muss.SizerFn[*string] {
 				return func(t *string) (size int) {
-					return SizePtr[string](t, mustrm.SizerFn[string](SizeString))
+					return SizePtr[string](t, muss.SizerFn[string](SizeString))
 				}
 			}()
-			sk = func() mustrm.SkipperFn {
-				return func(r mustrm.Reader) (n int, err error) {
-					return SkipPtr(mustrm.SkipperFn(SkipString), r)
+			sk = func() muss.SkipperFn {
+				return func(r muss.Reader) (n int, err error) {
+					return SkipPtr(muss.SkipperFn(SkipString), r)
 				}
 			}()
 		)
@@ -41,26 +41,26 @@ func TestIntegrationOrd(t *testing.T) {
 
 	t.Run("Marshal, Unmarshal, Size, Skip slice", func(t *testing.T) {
 		var (
-			m = func() mustrm.MarshalerFn[[]int] {
-				return func(t []int, w mustrm.Writer) (n int, err error) {
-					return MarshalSlice[int](t, mustrm.MarshalerFn[int](varint.MarshalInt),
+			m = func() muss.MarshalerFn[[]int] {
+				return func(t []int, w muss.Writer) (n int, err error) {
+					return MarshalSlice[int](t, muss.MarshalerFn[int](varint.MarshalInt),
 						w)
 				}
 			}()
-			u = func() mustrm.UnmarshalerFn[[]int] {
-				return func(r mustrm.Reader) (t []int, n int, err error) {
-					return UnmarshalSlice[int](mustrm.UnmarshalerFn[int](varint.UnmarshalInt),
+			u = func() muss.UnmarshalerFn[[]int] {
+				return func(r muss.Reader) (t []int, n int, err error) {
+					return UnmarshalSlice[int](muss.UnmarshalerFn[int](varint.UnmarshalInt),
 						r)
 				}
 			}()
-			s = func() mustrm.SizerFn[[]int] {
+			s = func() muss.SizerFn[[]int] {
 				return func(t []int) (size int) {
-					return SizeSlice[int](t, mustrm.SizerFn[int](varint.SizeInt))
+					return SizeSlice[int](t, muss.SizerFn[int](varint.SizeInt))
 				}
 			}()
-			sk = func() mustrm.SkipperFn {
-				return func(r mustrm.Reader) (n int, err error) {
-					return SkipSlice(mustrm.SkipperFn(varint.SkipInt), r)
+			sk = func() muss.SkipperFn {
+				return func(r muss.Reader) (n int, err error) {
+					return SkipSlice(muss.SkipperFn(varint.SkipInt), r)
 				}
 			}()
 		)
@@ -70,33 +70,33 @@ func TestIntegrationOrd(t *testing.T) {
 
 	t.Run("Marshal, Unmarshal, Size, Skip map", func(t *testing.T) {
 		var (
-			m = func() mustrm.MarshalerFn[map[float32]uint8] {
-				return func(t map[float32]uint8, w mustrm.Writer) (n int, err error) {
+			m = func() muss.MarshalerFn[map[float32]uint8] {
+				return func(t map[float32]uint8, w muss.Writer) (n int, err error) {
 					return MarshalMap[float32, uint8](t,
-						mustrm.MarshalerFn[float32](varint.MarshalFloat32),
-						mustrm.MarshalerFn[uint8](varint.MarshalUint8),
+						muss.MarshalerFn[float32](varint.MarshalFloat32),
+						muss.MarshalerFn[uint8](varint.MarshalUint8),
 						w)
 				}
 			}()
-			u = func() mustrm.UnmarshalerFn[map[float32]uint8] {
-				return func(r mustrm.Reader) (t map[float32]uint8, n int, err error) {
+			u = func() muss.UnmarshalerFn[map[float32]uint8] {
+				return func(r muss.Reader) (t map[float32]uint8, n int, err error) {
 					return UnmarshalMap[float32, uint8](
-						mustrm.UnmarshalerFn[float32](varint.UnmarshalFloat32),
-						mustrm.UnmarshalerFn[uint8](varint.UnmarshalUint8),
+						muss.UnmarshalerFn[float32](varint.UnmarshalFloat32),
+						muss.UnmarshalerFn[uint8](varint.UnmarshalUint8),
 						r)
 				}
 			}()
-			s = func() mustrm.SizerFn[map[float32]uint8] {
+			s = func() muss.SizerFn[map[float32]uint8] {
 				return func(t map[float32]uint8) (size int) {
 					return SizeMap[float32, uint8](t,
-						mustrm.SizerFn[float32](varint.SizeFloat32),
-						mustrm.SizerFn[uint8](varint.SizeUint8))
+						muss.SizerFn[float32](varint.SizeFloat32),
+						muss.SizerFn[uint8](varint.SizeUint8))
 				}
 			}()
-			sk = func() mustrm.SkipperFn {
-				return func(r mustrm.Reader) (n int, err error) {
-					return SkipMap(mustrm.SkipperFn(varint.SkipFloat32),
-						mustrm.SkipperFn(varint.SkipUint8),
+			sk = func() muss.SkipperFn {
+				return func(r muss.Reader) (n int, err error) {
+					return SkipMap(muss.SkipperFn(varint.SkipFloat32),
+						muss.SkipperFn(varint.SkipUint8),
 						r)
 				}
 			}()

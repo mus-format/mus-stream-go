@@ -2,7 +2,7 @@ package ord
 
 import (
 	muscom "github.com/mus-format/mus-common-go"
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
@@ -11,9 +11,9 @@ import (
 //
 // Arguments m1, m2 specify Marshalers for the keys and map values,
 // respectively.
-func MarshalMap[T comparable, V any](v map[T]V, m1 mustrm.Marshaler[T],
-	m2 mustrm.Marshaler[V],
-	w mustrm.Writer,
+func MarshalMap[T comparable, V any](v map[T]V, m1 muss.Marshaler[T],
+	m2 muss.Marshaler[V],
+	w muss.Writer,
 ) (n int, err error) {
 	if n, err = varint.MarshalInt(len(v), w); err != nil {
 		return
@@ -41,9 +41,9 @@ func MarshalMap[T comparable, V any](v map[T]V, m1 mustrm.Marshaler[T],
 // respectively.
 //
 // The error can be one of muscom.ErrNegativeLength or Reader error.
-func UnmarshalMap[T comparable, V any](u1 mustrm.Unmarshaler[T],
-	u2 mustrm.Unmarshaler[V],
-	r mustrm.Reader,
+func UnmarshalMap[T comparable, V any](u1 muss.Unmarshaler[T],
+	u2 muss.Unmarshaler[V],
+	r muss.Reader,
 ) (t map[T]V, n int, err error) {
 	return UnmarshalValidMap(nil, u1, u2, nil, nil, nil, nil, r)
 }
@@ -61,12 +61,12 @@ func UnmarshalMap[T comparable, V any](u1 mustrm.Unmarshaler[T],
 // The error can be one of muscom.ErrOverflow, muscom.ErrNegativeLength,
 // validation or Reader error.
 func UnmarshalValidMap[T comparable, V any](maxLength muscom.Validator[int],
-	u1 mustrm.Unmarshaler[T],
-	u2 mustrm.Unmarshaler[V],
+	u1 muss.Unmarshaler[T],
+	u2 muss.Unmarshaler[V],
 	vl1 muscom.Validator[T],
 	vl2 muscom.Validator[V],
-	sk1, sk2 mustrm.Skipper,
-	r mustrm.Reader,
+	sk1, sk2 muss.Skipper,
+	r muss.Reader,
 ) (v map[T]V, n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {
@@ -138,8 +138,8 @@ SkipRemainingBytes:
 // SizeMap returns the size of a MUS-encoded map.
 //
 // Arguments s1, s2 specify Sizers for the keys and map values respectively.
-func SizeMap[T comparable, V any](v map[T]V, s1 mustrm.Sizer[T],
-	s2 mustrm.Sizer[V]) (size int) {
+func SizeMap[T comparable, V any](v map[T]V, s1 muss.Sizer[T],
+	s2 muss.Sizer[V]) (size int) {
 	size += varint.SizeInt(len(v))
 	for k, v := range v {
 		size += s1.SizeMUS(k)
@@ -156,7 +156,7 @@ func SizeMap[T comparable, V any](v map[T]V, s1 mustrm.Sizer[T],
 //
 // The error returned by SkipMap can be one of muscom.ErrOverflow,
 // muscom.ErrNegativeLength, a Skipper or Reader error.
-func SkipMap(s1, s2 mustrm.Skipper, r mustrm.Reader) (n int, err error) {
+func SkipMap(s1, s2 muss.Skipper, r muss.Reader) (n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {
 		return
@@ -170,8 +170,8 @@ func SkipMap(s1, s2 mustrm.Skipper, r mustrm.Reader) (n int, err error) {
 	return
 }
 
-func skipRemainingMap(from int, length int, sk1, sk2 mustrm.Skipper,
-	r mustrm.Reader) (n int, err error) {
+func skipRemainingMap(from int, length int, sk1, sk2 muss.Skipper,
+	r muss.Reader) (n int, err error) {
 	var n1 int
 	for i := from; i < length; i++ {
 		n1, err = sk1.SkipMUS(r)

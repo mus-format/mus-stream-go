@@ -5,12 +5,12 @@ import (
 	"reflect"
 	"testing"
 
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/ymz-ncnk/mok"
 )
 
-func Test[T any](cases []T, m mustrm.Marshaler[T], u mustrm.Unmarshaler[T],
-	s mustrm.Sizer[T],
+func Test[T any](cases []T, m muss.Marshaler[T], u muss.Unmarshaler[T],
+	s muss.Sizer[T],
 	t *testing.T,
 ) {
 	var err error
@@ -41,8 +41,8 @@ func Test[T any](cases []T, m mustrm.Marshaler[T], u mustrm.Unmarshaler[T],
 	}
 }
 
-func TestSkip[T any](cases []T, m mustrm.Marshaler[T], sk mustrm.Skipper,
-	s mustrm.Sizer[T],
+func TestSkip[T any](cases []T, m muss.Marshaler[T], sk muss.Skipper,
+	s muss.Sizer[T],
 	t *testing.T,
 ) {
 	for i := 0; i < len(cases); i++ {

@@ -3,7 +3,7 @@ package mock
 import (
 	"reflect"
 
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -16,18 +16,18 @@ type Marshaler[T any] struct {
 }
 
 func (m Marshaler[T]) RegisterMarshalMUS(
-	fn func(t T, w mustrm.Writer) (n int, err error)) Marshaler[T] {
+	fn func(t T, w muss.Writer) (n int, err error)) Marshaler[T] {
 	m.Register("MarshalMUS", fn)
 	return m
 }
 
 func (m Marshaler[T]) RegisterNMarshalMUS(n int,
-	fn func(t T, w mustrm.Writer) (n int, err error)) Marshaler[T] {
+	fn func(t T, w muss.Writer) (n int, err error)) Marshaler[T] {
 	m.RegisterN("MarshalMUS", n, fn)
 	return m
 }
 
-func (m Marshaler[T]) MarshalMUS(t T, w mustrm.Writer) (n int, err error) {
+func (m Marshaler[T]) MarshalMUS(t T, w muss.Writer) (n int, err error) {
 	var tVal reflect.Value
 	if v := reflect.ValueOf(t); (v.Kind() == reflect.Ptr) && v.IsNil() {
 		tVal = reflect.Zero(reflect.TypeOf((*T)(nil)).Elem())
@@ -36,7 +36,7 @@ func (m Marshaler[T]) MarshalMUS(t T, w mustrm.Writer) (n int, err error) {
 	}
 	var wVal reflect.Value
 	if w == nil {
-		wVal = reflect.Zero(reflect.TypeOf((*mustrm.Writer)(nil)).Elem())
+		wVal = reflect.Zero(reflect.TypeOf((*muss.Writer)(nil)).Elem())
 	} else {
 		wVal = reflect.ValueOf(w)
 	}

@@ -1,4 +1,4 @@
-package mustrm
+package muss
 
 import "io"
 

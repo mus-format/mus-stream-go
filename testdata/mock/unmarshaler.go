@@ -3,7 +3,7 @@ package mock
 import (
 	"reflect"
 
-	mustrm "github.com/mus-format/mus-stream-go"
+	muss "github.com/mus-format/mus-stream-go"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -16,21 +16,21 @@ type Unmarshaler[T any] struct {
 }
 
 func (u Unmarshaler[T]) RegisterUnmarshalMUS(
-	fn func(r mustrm.Reader) (t T, n int, err error)) Unmarshaler[T] {
+	fn func(r muss.Reader) (t T, n int, err error)) Unmarshaler[T] {
 	u.Register("UnmarshalMUS", fn)
 	return u
 }
 
 func (u Unmarshaler[T]) RegisterNUnmarshalMUS(n int,
-	fn func(r mustrm.Reader) (t T, n int, err error)) Unmarshaler[T] {
+	fn func(r muss.Reader) (t T, n int, err error)) Unmarshaler[T] {
 	u.RegisterN("UnmarshalMUS", n, fn)
 	return u
 }
 
-func (u Unmarshaler[T]) UnmarshalMUS(r mustrm.Reader) (t T, n int, err error) {
+func (u Unmarshaler[T]) UnmarshalMUS(r muss.Reader) (t T, n int, err error) {
 	var rVal reflect.Value
 	if r == nil {
-		rVal = reflect.Zero(reflect.TypeOf((*mustrm.Writer)(nil)).Elem())
+		rVal = reflect.Zero(reflect.TypeOf((*muss.Writer)(nil)).Elem())
 	} else {
 		rVal = reflect.ValueOf(r)
 	}
