@@ -3,6 +3,9 @@ mus-stream-go is a streaming version of [mus-go](https://github.com/mus-format/m
 It completely repeats the structure of mus-go, and differs only in that it uses 
 `Writer`, `Reader` interfaces rather than а slice of bytes.
 
+# Tests
+Test coverage is 100%.
+
 # How To Use
 You can learn more about this in the mus-go [documentation](https://github.com/mus-format/mus-go#how-to-use). 
 Here is just a small example.
