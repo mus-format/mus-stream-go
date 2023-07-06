@@ -25,6 +25,8 @@ func MarshalString(v string, w muss.Writer) (n int, err error) {
 // returns the number of used bytes and an error.
 //
 // The error can be one of muscom.ErrOverflow or muscom.ErrNegativeLength.
+//
+// It will panic if the length of the resulting string is too long.
 func UnmarshalString(r muss.Reader) (v string, n int, err error) {
 	return UnmarshalValidString(nil, false, r)
 }
@@ -38,6 +40,9 @@ func UnmarshalString(r muss.Reader) (v string, n int, err error) {
 //
 // The error returned by UnmarshalValidString can be one of muscom.ErrOverflow,
 // muscom.ErrNegativeLength, a Validator or Reader error.
+//
+// It will panic if there is no maxLength validator and the length of the
+// resulting string is too long.
 func UnmarshalValidString(maxLength muscom.Validator[int], skip bool,
 	r muss.Reader) (v string, n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
@@ -49,7 +54,7 @@ func UnmarshalValidString(maxLength muscom.Validator[int], skip bool,
 		return
 	}
 	var (
-		c  = make([]byte, length)
+		c  []byte
 		n1 int
 	)
 	if maxLength != nil {
@@ -60,6 +65,7 @@ func UnmarshalValidString(maxLength muscom.Validator[int], skip bool,
 			return
 		}
 	}
+	c = make([]byte, length)
 	n1, err = io.ReadFull(r, c)
 	n += n1
 	if err != nil {

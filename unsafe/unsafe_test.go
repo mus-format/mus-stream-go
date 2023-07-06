@@ -1,8 +1,10 @@
 package unsafe
 
 import (
+	"bytes"
 	"errors"
 	"io"
+	"math"
 	"testing"
 
 	muscom "github.com/mus-format/mus-common-go"
@@ -12,6 +14,7 @@ import (
 	"github.com/mus-format/mus-stream-go/raw"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/testdata/mock"
+	"github.com/mus-format/mus-stream-go/varint"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -349,6 +352,38 @@ func TestUnsafe(t *testing.T) {
 				mocks,
 				t)
 		})
+
+		t.Run("UnmarshalValid - MaxLength validator should protect against too much length",
+			func(t *testing.T) {
+				var (
+					wantV     = ""
+					wantN     = 10
+					wantErr   = errors.New("MaxLength validator error")
+					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+						func(v int) (err error) {
+							var wantV = math.MaxInt64
+							if v != wantV {
+								t.Errorf("unexpected v, want '%v' actual '%v'", wantV, v)
+							}
+							return wantErr
+						},
+					)
+					r = func() mock.Reader {
+						buf := &bytes.Buffer{}
+						varint.MarshalInt64(math.MaxInt64, buf)
+						return mock.NewReader().RegisterNReadByte(muscom.Uint64MaxVarintLen,
+							func() (b byte, err error) {
+								return buf.ReadByte()
+							},
+						)
+					}()
+					mocks     = []*mok.Mock{r.Mock}
+					v, n, err = UnmarshalValidString(maxLength, false, r)
+				)
+				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks,
+					t)
+			})
 
 		t.Run("UnmarshalValid - MaxLength validator error, skip == false",
 			func(t *testing.T) {
