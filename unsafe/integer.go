@@ -35,44 +35,28 @@ func marshalInteger8[T muscom.Integer8](t T, w muss.Writer) (n int,
 // -----------------------------------------------------------------------------
 func unmarshalInteger64[T muscom.Integer64](r muss.Reader) (t T, n int,
 	err error) {
-	bs := make([]byte, muscom.Num64RawSize)
-	n, err = io.ReadFull(r, bs)
-	if err != nil {
-		return
-	}
-	t = *(*T)(unsafe_mod.Pointer(&bs[0]))
+	b := (*byte)(unsafe_mod.Pointer(&t))
+	n, err = io.ReadFull(r, unsafe_mod.Slice(b, muscom.Num64RawSize))
 	return
 }
 
 func unmarshalInteger32[T muscom.Integer32](r muss.Reader) (t T, n int,
 	err error) {
-	bs := make([]byte, muscom.Num32RawSize)
-	n, err = io.ReadFull(r, bs)
-	if err != nil {
-		return
-	}
-	t = *(*T)(unsafe_mod.Pointer(&bs[0]))
+	b := (*byte)(unsafe_mod.Pointer(&t))
+	n, err = io.ReadFull(r, unsafe_mod.Slice(b, muscom.Num32RawSize))
 	return
 }
 
 func unmarshalInteger16[T muscom.Integer16](r muss.Reader) (t T, n int,
 	err error) {
-	bs := make([]byte, muscom.Num16RawSize)
-	n, err = io.ReadFull(r, bs)
-	if err != nil {
-		return
-	}
-	t = *(*T)(unsafe_mod.Pointer(&bs[0]))
+	b := (*byte)(unsafe_mod.Pointer(&t))
+	n, err = io.ReadFull(r, unsafe_mod.Slice(b, muscom.Num16RawSize))
 	return
 }
 
 func unmarshalInteger8[T muscom.Integer8](r muss.Reader) (t T, n int,
 	err error) {
-	bs := make([]byte, muscom.Num8RawSize)
-	n, err = io.ReadFull(r, bs)
-	if err != nil {
-		return
-	}
-	t = *(*T)(unsafe_mod.Pointer(&bs[0]))
+	b := (*byte)(unsafe_mod.Pointer(&t))
+	n, err = io.ReadFull(r, unsafe_mod.Slice(b, muscom.Num8RawSize))
 	return
 }
