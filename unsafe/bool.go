@@ -28,7 +28,7 @@ func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	if err != nil {
 		return
 	}
-	if b != 0 && b != 1 {
+	if b > 1 {
 		err = muscom.ErrWrongFormat
 		return
 	}
