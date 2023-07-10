@@ -8,8 +8,8 @@ import (
 // MarshalPtr writes the MUS encoding of a pointer. Returns the number of used
 // bytes and error.
 //
-// The m argument specifies the Marshaler for the pointer base type.
-func MarshalPtr[T any](v *T, m mus.Marshaler[T], w mus.Writer) (n int,
+// The m argument specifies the Marshaller for the pointer base type.
+func MarshalPtr[T any](v *T, m mus.Marshaller[T], w mus.Writer) (n int,
 	err error) {
 	if v == nil {
 		err = w.WriteByte(com.NilFlag)
@@ -30,11 +30,11 @@ func MarshalPtr[T any](v *T, m mus.Marshaler[T], w mus.Writer) (n int,
 // UnmarshalPtr reads a MUS-encoded pointer. In addition to the pointer, it
 // returns the number of used bytes and an error.
 //
-// The u argument specifies the Unmarshaler for the base pointer type.
+// The u argument specifies the UnMarshaller for the base pointer type.
 //
 // The error returned by UnmarshalPtr can be one of com.ErrWrongFormat, an
-// Unarshaler or Reader error.
-func UnmarshalPtr[T any](u mus.Unmarshaler[T], r mus.Reader) (v *T, n int,
+// Unarshaller or Reader error.
+func UnmarshalPtr[T any](u mus.UnMarshaller[T], r mus.Reader) (v *T, n int,
 	err error) {
 	b, err := r.ReadByte()
 	if err != nil {

@@ -23,8 +23,8 @@ func TestOrd(t *testing.T) {
 		t.Run("All MarshalBool, UnmarshalBool, SizeBool, SkipBool functions must work correctly",
 			func(t *testing.T) {
 				var (
-					m  = muss.MarshalerFn[bool](MarshalBool)
-					u  = muss.UnmarshalerFn[bool](UnmarshalBool)
+					m  = muss.MarshallerFn[bool](MarshalBool)
+					u  = muss.UnMarshallerFn[bool](UnmarshalBool)
 					s  = muss.SizerFn[bool](SizeBool)
 					sk = muss.SkipperFn(SkipBool)
 				)
@@ -121,8 +121,8 @@ func TestOrd(t *testing.T) {
 		t.Run("All MarshalString, UnmarshalString, SizeString, SkipString functions must work correctly",
 			func(t *testing.T) {
 				var (
-					m  = muss.MarshalerFn[string](MarshalString)
-					u  = muss.UnmarshalerFn[string](UnmarshalString)
+					m  = muss.MarshallerFn[string](MarshalString)
+					u  = muss.UnMarshallerFn[string](UnmarshalString)
 					s  = muss.SizerFn[string](SizeString)
 					sk = muss.SkipperFn(SkipString)
 				)
@@ -388,12 +388,12 @@ func TestOrd(t *testing.T) {
 		t.Run("All MarshalPtr, UnmarshalPtr, SizePtr, SkipPtr functions must work correctly with nil pointer",
 			func(t *testing.T) {
 				var (
-					m = func() muss.MarshalerFn[*string] {
+					m = func() muss.MarshallerFn[*string] {
 						return func(v *string, w muss.Writer) (n int, err error) {
 							return MarshalPtr(v, nil, w)
 						}
 					}()
-					u = func() muss.UnmarshalerFn[*string] {
+					u = func() muss.UnMarshallerFn[*string] {
 						return func(r muss.Reader) (t *string, n int, err error) {
 							return UnmarshalPtr[string](nil, r)
 						}
@@ -419,8 +419,8 @@ func TestOrd(t *testing.T) {
 					str1    = "one"
 					str1Raw = append([]byte{6}, []byte(str1)...)
 					ptr     = &str1
-					m1      = func() mock.Marshaler[string] {
-						return mock.NewMarshaler[string]().RegisterNMarshalMUS(2,
+					m1      = func() mock.Marshaller[string] {
+						return mock.NewMarshaller[string]().RegisterNMarshalMUS(2,
 							func(v string, w muss.Writer) (n int, err error) {
 								switch v {
 								case str1:
@@ -432,8 +432,8 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					u1 = func() mock.Unmarshaler[string] {
-						return mock.NewUnmarshaler[string]().RegisterNUnmarshalMUS(1,
+					u1 = func() mock.UnMarshaller[string] {
+						return mock.NewUnMarshaller[string]().RegisterNUnmarshalMUS(1,
 							func(r muss.Reader) (v string, n int, err error) {
 								return str1, len(str1Raw), nil
 							},
@@ -459,14 +459,14 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					m = func() muss.MarshalerFn[*string] {
+					m = func() muss.MarshallerFn[*string] {
 						return func(v *string, w muss.Writer) (n int, err error) {
-							return MarshalPtr(v, muss.Marshaler[string](m1), w)
+							return MarshalPtr(v, muss.Marshaller[string](m1), w)
 						}
 					}()
-					u = func() muss.UnmarshalerFn[*string] {
+					u = func() muss.UnMarshallerFn[*string] {
 						return func(r muss.Reader) (t *string, n int, err error) {
-							return UnmarshalPtr(muss.Unmarshaler[string](u1), r)
+							return UnmarshalPtr(muss.UnMarshaller[string](u1), r)
 						}
 					}()
 					s = func() muss.SizerFn[*string] {
@@ -522,7 +522,7 @@ func TestOrd(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					wantN   = 1
-					wantErr = errors.New("Marshaler error")
+					wantErr = errors.New("Marshaller error")
 					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) error {
 							return nil
@@ -536,7 +536,7 @@ func TestOrd(t *testing.T) {
 					str    = "str"
 					strPtr = &str
 					n, err = MarshalPtr[string](strPtr,
-						muss.MarshalerFn[string](MarshalString),
+						muss.MarshallerFn[string](MarshalString),
 						w)
 				)
 				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
@@ -580,18 +580,18 @@ func TestOrd(t *testing.T) {
 				t)
 		})
 
-		t.Run("If Unmarshaler fails with an error, UnmarshalPtr should return it",
+		t.Run("If UnMarshaller fails with an error, UnmarshalPtr should return it",
 			func(t *testing.T) {
 				var (
 					wantV   *string = nil
 					wantN           = 1
-					wantErr         = errors.New("Unmarshaler error")
+					wantErr         = errors.New("UnMarshaller error")
 					r               = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 0, nil
 						},
 					)
-					u = mock.NewUnmarshaler[string]().RegisterUnmarshalMUS(
+					u = mock.NewUnMarshaller[string]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (t string, n int, err error) {
 							return "", 0, wantErr
 						},
@@ -662,12 +662,12 @@ func TestOrd(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					sl = []string{}
-					m  = func() muss.MarshalerFn[[]string] {
+					m  = func() muss.MarshallerFn[[]string] {
 						return func(v []string, w muss.Writer) (n int, err error) {
 							return MarshalSlice(v, nil, w)
 						}
 					}()
-					u = func() muss.UnmarshalerFn[[]string] {
+					u = func() muss.UnMarshallerFn[[]string] {
 						return func(r muss.Reader) (v []string, n int, err error) {
 							return UnmarshalSlice[string](nil, r)
 						}
@@ -696,8 +696,8 @@ func TestOrd(t *testing.T) {
 					str2Raw = append([]byte{6}, []byte(str2)...)
 					sl      = []string{str1, str2}
 
-					m1 = func() mock.Marshaler[string] {
-						return mock.NewMarshaler[string]().RegisterNMarshalMUS(4,
+					m1 = func() mock.Marshaller[string] {
+						return mock.NewMarshaller[string]().RegisterNMarshalMUS(4,
 							func(v string, w muss.Writer) (n int, err error) {
 								switch v {
 								case str1:
@@ -712,8 +712,8 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					u1 = func() mock.Unmarshaler[string] {
-						return mock.NewUnmarshaler[string]().RegisterUnmarshalMUS(
+					u1 = func() mock.UnMarshaller[string] {
+						return mock.NewUnMarshaller[string]().RegisterUnmarshalMUS(
 							func(r muss.Reader) (v string, n int, err error) {
 								return str1, len(str1Raw), nil
 							},
@@ -750,14 +750,14 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					m = func() muss.MarshalerFn[[]string] {
+					m = func() muss.MarshallerFn[[]string] {
 						return func(v []string, w muss.Writer) (n int, err error) {
-							return MarshalSlice(v, muss.Marshaler[string](m1), w)
+							return MarshalSlice(v, muss.Marshaller[string](m1), w)
 						}
 					}()
-					u = func() muss.UnmarshalerFn[[]string] {
+					u = func() muss.UnMarshallerFn[[]string] {
 						return func(r muss.Reader) (t []string, n int, err error) {
-							return UnmarshalSlice(muss.Unmarshaler[string](u1), r)
+							return UnmarshalSlice(muss.UnMarshaller[string](u1), r)
 						}
 					}()
 					s = func() muss.SizerFn[[]string] {
@@ -793,11 +793,11 @@ func TestOrd(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					wantN   = 2
-					wantErr = errors.New("Marshaler error")
+					wantErr = errors.New("Marshaller error")
 					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) error { return nil },
 					)
-					m = mock.NewMarshaler[uint]().RegisterMarshalMUS(
+					m = mock.NewMarshaller[uint]().RegisterMarshalMUS(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, wantErr
 						},
@@ -851,13 +851,13 @@ func TestOrd(t *testing.T) {
 				var (
 					wantV   []string = make([]string, 2)
 					wantN            = 3
-					wantErr          = errors.New("Unmarshaler error")
+					wantErr          = errors.New("UnMarshaller error")
 					r                = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 4, nil
 						},
 					)
-					u = mock.NewUnmarshaler[string]().RegisterUnmarshalMUS(
+					u = mock.NewUnMarshaller[string]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (t string, n int, err error) {
 							return "", 2, wantErr
 						},
@@ -978,7 +978,7 @@ func TestOrd(t *testing.T) {
 							return wantErr
 						},
 					)
-					u = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1019,7 +1019,7 @@ func TestOrd(t *testing.T) {
 							return errors.New("validator error")
 						},
 					)
-					u = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1079,8 +1079,8 @@ func TestOrd(t *testing.T) {
 					int2    uint = 8
 					int2Raw      = []byte{8}
 					mp           = map[string]uint{str1: int1, str2: int2}
-					m1           = func() mock.Marshaler[string] {
-						return mock.NewMarshaler[string]().RegisterNMarshalMUS(4,
+					m1           = func() mock.Marshaller[string] {
+						return mock.NewMarshaller[string]().RegisterNMarshalMUS(4,
 							func(v string, w muss.Writer) (n int, err error) {
 								switch v {
 								case str1:
@@ -1095,8 +1095,8 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					m2 = func() mock.Marshaler[uint] {
-						return mock.NewMarshaler[uint]().RegisterNMarshalMUS(4,
+					m2 = func() mock.Marshaller[uint] {
+						return mock.NewMarshaller[uint]().RegisterNMarshalMUS(4,
 							func(v uint, w muss.Writer) (n int, err error) {
 								switch v {
 								case int1:
@@ -1111,8 +1111,8 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					u1 = func() mock.Unmarshaler[string] {
-						return mock.NewUnmarshaler[string]().RegisterUnmarshalMUS(
+					u1 = func() mock.UnMarshaller[string] {
+						return mock.NewUnMarshaller[string]().RegisterUnmarshalMUS(
 							func(r muss.Reader) (v string, n int, err error) {
 								return str1, len(str1Raw), nil
 							},
@@ -1122,8 +1122,8 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					u2 = func() mock.Unmarshaler[uint] {
-						return mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u2 = func() mock.UnMarshaller[uint] {
+						return mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 							func(r muss.Reader) (v uint, n int, err error) {
 								return int1, len(int1Raw), nil
 							},
@@ -1187,18 +1187,18 @@ func TestOrd(t *testing.T) {
 							},
 						)
 					}()
-					m = func() muss.MarshalerFn[map[string]uint] {
+					m = func() muss.MarshallerFn[map[string]uint] {
 						return func(v map[string]uint, w muss.Writer) (n int, err error) {
-							return MarshalMap(v, muss.Marshaler[string](m1),
-								muss.Marshaler[uint](m2),
+							return MarshalMap(v, muss.Marshaller[string](m1),
+								muss.Marshaller[uint](m2),
 								w)
 						}
 					}()
-					u = func() muss.UnmarshalerFn[map[string]uint] {
+					u = func() muss.UnMarshallerFn[map[string]uint] {
 						return func(r muss.Reader) (t map[string]uint, n int, err error) {
 							return UnmarshalMap(
-								muss.Unmarshaler[string](u1),
-								muss.Unmarshaler[uint](u2),
+								muss.UnMarshaller[string](u1),
+								muss.UnMarshaller[uint](u2),
 								r)
 						}
 					}()
@@ -1242,11 +1242,11 @@ func TestOrd(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					wantN   = 2
-					wantErr = errors.New("key Marshaler error")
+					wantErr = errors.New("key Marshaller error")
 					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) error { return nil },
 					)
-					m1 = mock.NewMarshaler[uint]().RegisterMarshalMUS(
+					m1 = mock.NewMarshaller[uint]().RegisterMarshalMUS(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, wantErr
 						},
@@ -1261,16 +1261,16 @@ func TestOrd(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					wantN   = 3
-					wantErr = errors.New("value Marshaler error")
+					wantErr = errors.New("value Marshaller error")
 					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) error { return nil },
 					)
-					m1 = mock.NewMarshaler[uint]().RegisterMarshalMUS(
+					m1 = mock.NewMarshaller[uint]().RegisterMarshalMUS(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, nil
 						},
 					)
-					m2 = mock.NewMarshaler[uint]().RegisterMarshalMUS(
+					m2 = mock.NewMarshaller[uint]().RegisterMarshalMUS(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, wantErr
 						},
@@ -1324,13 +1324,13 @@ func TestOrd(t *testing.T) {
 				var (
 					wantV   = make(map[uint]uint, 1)
 					wantN   = 3
-					wantErr = errors.New("key Unmarshaler error")
+					wantErr = errors.New("key UnMarshaller error")
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 2, nil
 						},
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 0, 2, wantErr
 						},
@@ -1348,18 +1348,18 @@ func TestOrd(t *testing.T) {
 				var (
 					wantV   = make(map[uint]uint, 1)
 					wantN   = 4
-					wantErr = errors.New("value Unmarshaler error")
+					wantErr = errors.New("value UnMarshaller error")
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 2, nil
 						},
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 1, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 
 							return 0, 2, wantErr
@@ -1551,7 +1551,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1597,7 +1597,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1629,7 +1629,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1658,7 +1658,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1697,12 +1697,12 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 11, 1, nil
 						},
@@ -1745,12 +1745,12 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 11, 1, nil
 						},
@@ -1785,12 +1785,12 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaler[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnMarshaller[uint]().RegisterUnmarshalMUS(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 11, 1, nil
 						},

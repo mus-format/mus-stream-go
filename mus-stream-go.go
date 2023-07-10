@@ -16,33 +16,33 @@ type Reader interface {
 	io.Reader
 }
 
-// Marshaler is the interface that wraps the MarshalMUS method.
+// Marshaller is the interface that wraps the MarshalMUS method.
 //
 // MarshalMUS marshals data to the MUS format. Returns the number of used
 // bytes and an error.
-type Marshaler[T any] interface {
+type Marshaller[T any] interface {
 	MarshalMUS(t T, w Writer) (n int, err error)
 }
 
-// MarshalerFn is a functional implementation of the Marshaler interface.
-type MarshalerFn[T any] func(t T, w Writer) (n int, err error)
+// MarshallerFn is a functional implementation of the Marshaller interface.
+type MarshallerFn[T any] func(t T, w Writer) (n int, err error)
 
-func (fn MarshalerFn[T]) MarshalMUS(t T, w Writer) (n int, err error) {
+func (fn MarshallerFn[T]) MarshalMUS(t T, w Writer) (n int, err error) {
 	return fn(t, w)
 }
 
-// Unmarshaler is the interface that wraps the UnmarshalMUS method.
+// UnMarshaller is the interface that wraps the UnmarshalMUS method.
 //
 // UnmarshalMUS unmarshals data from the MUS format. Returns data, the number of
 // used bytes and an error.
-type Unmarshaler[T any] interface {
+type UnMarshaller[T any] interface {
 	UnmarshalMUS(r Reader) (t T, n int, err error)
 }
 
-// UnmarshalerFn is a functional implementation of the Unmarshaler interface.
-type UnmarshalerFn[T any] func(r Reader) (t T, n int, err error)
+// UnMarshallerFn is a functional implementation of the UnMarshaller interface.
+type UnMarshallerFn[T any] func(r Reader) (t T, n int, err error)
 
-func (fn UnmarshalerFn[T]) UnmarshalMUS(r Reader) (t T, n int, err error) {
+func (fn UnMarshallerFn[T]) UnmarshalMUS(r Reader) (t T, n int, err error) {
 	return fn(r)
 }
 

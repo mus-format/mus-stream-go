@@ -9,8 +9,8 @@ import (
 // MarshalSlice writes the MUS encoding of a slice. Returns the number of
 // used bytes and an error.
 //
-// The m argument specifies the Marshaler for the slice elements.
-func MarshalSlice[T any](v []T, m muss.Marshaler[T], w muss.Writer) (n int,
+// The m argument specifies the Marshaller for the slice elements.
+func MarshalSlice[T any](v []T, m muss.Marshaller[T], w muss.Writer) (n int,
 	err error) {
 	if n, err = varint.MarshalInt(len(v), w); err != nil {
 		return
@@ -29,11 +29,11 @@ func MarshalSlice[T any](v []T, m muss.Marshaler[T], w muss.Writer) (n int,
 // UnmarshalSlice reads a MUS-encoded slice. In addition to the slice, it
 // returns the number of used bytes and an error.
 //
-// The u argument specifies the Unmarshaler for the slice elements.
+// The u argument specifies the UnMarshaller for the slice elements.
 //
 // The error returned by UnmarshalSlice can be one of com.ErrOverflow,
-// com.ErrNegativeLength, an Unmarshaler or Reader error.
-func UnmarshalSlice[T any](u muss.Unmarshaler[T], r muss.Reader) (v []T,
+// com.ErrNegativeLength, an UnMarshaller or Reader error.
+func UnmarshalSlice[T any](u muss.UnMarshaller[T], r muss.Reader) (v []T,
 	n int, err error) {
 	return UnmarshalValidSlice(nil, u, nil, nil, r)
 }
@@ -42,15 +42,15 @@ func UnmarshalSlice[T any](u muss.Unmarshaler[T], r muss.Reader) (v []T,
 // slice, it returns the number of used bytes and an error.
 //
 // The maxLength argument specifies the slice length Validator. Arguments u,
-// vl, sk - the Unmarshaler, Validator and Skipper for slice elements. If one
+// vl, sk - the UnMarshaller, Validator and Skipper for slice elements. If one
 // of the Validators returns an error, UnmarshalValidSlice uses the Skipper to
 // skip the remaining bytes of the slice. If the value of the Skipper is nil, it
 // immediately returns the validation error.
 //
 // The error returned by UnmarshalValidSlice can be one of com.ErrOverflow,
-// com.ErrNegativeLength, an Unmarshaler, Validator, Skipper or Reader error.
+// com.ErrNegativeLength, an UnMarshaller, Validator, Skipper or Reader error.
 func UnmarshalValidSlice[T any](maxLength com.Validator[int],
-	u muss.Unmarshaler[T],
+	u muss.UnMarshaller[T],
 	vl com.Validator[T],
 	sk muss.Skipper,
 	r muss.Reader,

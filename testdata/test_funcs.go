@@ -9,7 +9,7 @@ import (
 	"github.com/ymz-ncnk/mok"
 )
 
-func Test[T any](cases []T, m muss.Marshaler[T], u muss.Unmarshaler[T],
+func Test[T any](cases []T, m muss.Marshaller[T], u muss.UnMarshaller[T],
 	s muss.Sizer[T],
 	t *testing.T,
 ) {
@@ -41,7 +41,7 @@ func Test[T any](cases []T, m muss.Marshaler[T], u muss.Unmarshaler[T],
 	}
 }
 
-func TestSkip[T any](cases []T, m muss.Marshaler[T], sk muss.Skipper,
+func TestSkip[T any](cases []T, m muss.Marshaller[T], sk muss.Skipper,
 	s muss.Sizer[T],
 	t *testing.T,
 ) {

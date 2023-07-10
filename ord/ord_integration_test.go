@@ -13,15 +13,15 @@ func TestIntegrationOrd(t *testing.T) {
 
 	t.Run("pointer", func(t *testing.T) {
 		var (
-			m = func() muss.MarshalerFn[*string] {
+			m = func() muss.MarshallerFn[*string] {
 				return func(t *string, w muss.Writer) (n int, err error) {
-					return MarshalPtr[string](t, muss.MarshalerFn[string](MarshalString),
+					return MarshalPtr[string](t, muss.MarshallerFn[string](MarshalString),
 						w)
 				}
 			}()
-			u = func() muss.UnmarshalerFn[*string] {
+			u = func() muss.UnMarshallerFn[*string] {
 				return func(r muss.Reader) (t *string, n int, err error) {
-					return UnmarshalPtr[string](muss.UnmarshalerFn[string](UnmarshalString), r)
+					return UnmarshalPtr[string](muss.UnMarshallerFn[string](UnmarshalString), r)
 				}
 			}()
 			s = func() muss.SizerFn[*string] {
@@ -41,15 +41,15 @@ func TestIntegrationOrd(t *testing.T) {
 
 	t.Run("slice", func(t *testing.T) {
 		var (
-			m = func() muss.MarshalerFn[[]int] {
+			m = func() muss.MarshallerFn[[]int] {
 				return func(t []int, w muss.Writer) (n int, err error) {
-					return MarshalSlice[int](t, muss.MarshalerFn[int](varint.MarshalInt),
+					return MarshalSlice[int](t, muss.MarshallerFn[int](varint.MarshalInt),
 						w)
 				}
 			}()
-			u = func() muss.UnmarshalerFn[[]int] {
+			u = func() muss.UnMarshallerFn[[]int] {
 				return func(r muss.Reader) (t []int, n int, err error) {
-					return UnmarshalSlice[int](muss.UnmarshalerFn[int](varint.UnmarshalInt),
+					return UnmarshalSlice[int](muss.UnMarshallerFn[int](varint.UnmarshalInt),
 						r)
 				}
 			}()
@@ -70,19 +70,19 @@ func TestIntegrationOrd(t *testing.T) {
 
 	t.Run("map", func(t *testing.T) {
 		var (
-			m = func() muss.MarshalerFn[map[float32]uint8] {
+			m = func() muss.MarshallerFn[map[float32]uint8] {
 				return func(t map[float32]uint8, w muss.Writer) (n int, err error) {
 					return MarshalMap[float32, uint8](t,
-						muss.MarshalerFn[float32](varint.MarshalFloat32),
-						muss.MarshalerFn[uint8](varint.MarshalUint8),
+						muss.MarshallerFn[float32](varint.MarshalFloat32),
+						muss.MarshallerFn[uint8](varint.MarshalUint8),
 						w)
 				}
 			}()
-			u = func() muss.UnmarshalerFn[map[float32]uint8] {
+			u = func() muss.UnMarshallerFn[map[float32]uint8] {
 				return func(r muss.Reader) (t map[float32]uint8, n int, err error) {
 					return UnmarshalMap[float32, uint8](
-						muss.UnmarshalerFn[float32](varint.UnmarshalFloat32),
-						muss.UnmarshalerFn[uint8](varint.UnmarshalUint8),
+						muss.UnMarshallerFn[float32](varint.UnmarshalFloat32),
+						muss.UnMarshallerFn[uint8](varint.UnmarshalUint8),
 						r)
 				}
 			}()
