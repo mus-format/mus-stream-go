@@ -69,18 +69,19 @@ func TestRaw(t *testing.T) {
 
 	t.Run("setUpIntFuncs", func(t *testing.T) {
 
-		t.Run("If the system int size is not 32 or 64, setUpIntFuncs should panic with ErrUnsupportedIntSize", func(t *testing.T) {
-			wantErr := muscom.ErrUnsupportedIntSize
-			defer func() {
-				if r := recover(); r != nil {
-					err := r.(error)
-					if err != wantErr {
-						t.Errorf("unexpected error, want '%v' actual '%v'", wantErr, err)
+		t.Run("If the system int size is not 32 or 64, setUpIntFuncs should panic with ErrUnsupportedIntSize",
+			func(t *testing.T) {
+				wantErr := muscom.ErrUnsupportedIntSize
+				defer func() {
+					if r := recover(); r != nil {
+						err := r.(error)
+						if err != wantErr {
+							t.Errorf("unexpected error, want '%v' actual '%v'", wantErr, err)
+						}
 					}
-				}
-			}()
-			setUpIntFuncs(16)
-		})
+				}()
+				setUpIntFuncs(16)
+			})
 
 		t.Run("If the system int size is equal to 32, setUpIntFuncs should initialize the uint functions with 32-bit versions",
 			func(t *testing.T) {

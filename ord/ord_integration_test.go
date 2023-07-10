@@ -11,7 +11,7 @@ import (
 
 func TestIntegrationOrd(t *testing.T) {
 
-	t.Run("Marshal, Unmarshal, Size Skip pointer", func(t *testing.T) {
+	t.Run("pointer", func(t *testing.T) {
 		var (
 			m = func() muss.MarshalerFn[*string] {
 				return func(t *string, w muss.Writer) (n int, err error) {
@@ -39,7 +39,7 @@ func TestIntegrationOrd(t *testing.T) {
 		testdata.TestSkip[*string](muscom_testdata.PointerTestCases, m, sk, s, t)
 	})
 
-	t.Run("Marshal, Unmarshal, Size, Skip slice", func(t *testing.T) {
+	t.Run("slice", func(t *testing.T) {
 		var (
 			m = func() muss.MarshalerFn[[]int] {
 				return func(t []int, w muss.Writer) (n int, err error) {
@@ -68,7 +68,7 @@ func TestIntegrationOrd(t *testing.T) {
 		testdata.TestSkip[[]int](muscom_testdata.SliceTestCases, m, sk, s, t)
 	})
 
-	t.Run("Marshal, Unmarshal, Size, Skip map", func(t *testing.T) {
+	t.Run("map", func(t *testing.T) {
 		var (
 			m = func() muss.MarshalerFn[map[float32]uint8] {
 				return func(t map[float32]uint8, w muss.Writer) (n int, err error) {

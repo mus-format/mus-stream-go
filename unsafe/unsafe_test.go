@@ -282,7 +282,7 @@ func TestUnsafe(t *testing.T) {
 
 	t.Run("string", func(t *testing.T) {
 
-		t.Run("All MarshalString, UnmarshalStringString, SizeString, SkipString functions must work correctly",
+		t.Run("All MarshalString, UnmarshalString, SizeString, SkipString functions must work correctly",
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshalerFn[string](MarshalString)
