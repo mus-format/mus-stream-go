@@ -1,7 +1,7 @@
 package ord
 
 import (
-	muscom "github.com/mus-format/mus-common-go"
+	com "github.com/mus-format/common-go"
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -40,7 +40,7 @@ func MarshalMap[T comparable, V any](v map[T]V, m1 muss.Marshaler[T],
 // Arguments u1, u2 specify Unmarshalers for the keys and map values,
 // respectively.
 //
-// The error can be one of muscom.ErrNegativeLength or Reader error.
+// The error can be one of com.ErrNegativeLength or Reader error.
 func UnmarshalMap[T comparable, V any](u1 muss.Unmarshaler[T],
 	u2 muss.Unmarshaler[V],
 	r muss.Reader,
@@ -58,13 +58,13 @@ func UnmarshalMap[T comparable, V any](u1 muss.Unmarshaler[T],
 // Skippers to skip the remaining bytes of the map. If one of the Skippers is
 // nil, it immediately returns a validation error.
 //
-// The error can be one of muscom.ErrOverflow, muscom.ErrNegativeLength,
+// The error can be one of com.ErrOverflow, com.ErrNegativeLength,
 // validation or Reader error.
-func UnmarshalValidMap[T comparable, V any](maxLength muscom.Validator[int],
+func UnmarshalValidMap[T comparable, V any](maxLength com.Validator[int],
 	u1 muss.Unmarshaler[T],
 	u2 muss.Unmarshaler[V],
-	vl1 muscom.Validator[T],
-	vl2 muscom.Validator[V],
+	vl1 com.Validator[T],
+	vl2 com.Validator[V],
 	sk1, sk2 muss.Skipper,
 	r muss.Reader,
 ) (v map[T]V, n int, err error) {
@@ -73,7 +73,7 @@ func UnmarshalValidMap[T comparable, V any](maxLength muscom.Validator[int],
 		return
 	}
 	if length < 0 {
-		err = muscom.ErrNegativeLength
+		err = com.ErrNegativeLength
 		return
 	}
 	var (
@@ -154,15 +154,15 @@ func SizeMap[T comparable, V any](v map[T]V, s1 muss.Sizer[T],
 // Arguments sk1, sk2 specify Skippers for the keys and map values,
 // respectively.
 //
-// The error returned by SkipMap can be one of muscom.ErrOverflow,
-// muscom.ErrNegativeLength, a Skipper or Reader error.
+// The error returned by SkipMap can be one of com.ErrOverflow,
+// com.ErrNegativeLength, a Skipper or Reader error.
 func SkipMap(s1, s2 muss.Skipper, r muss.Reader) (n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {
 		return
 	}
 	if length < 0 {
-		err = muscom.ErrNegativeLength
+		err = com.ErrNegativeLength
 		return
 	}
 	n1, err := skipRemainingMap(0, length, s1, s2, r)

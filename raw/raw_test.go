@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	muscom "github.com/mus-format/mus-common-go"
-	muscom_testdata "github.com/mus-format/mus-common-go/testdata"
+	com "github.com/mus-format/common-go"
+	com_testdata "github.com/mus-format/common-go/testdata"
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/testdata/mock"
@@ -19,7 +19,7 @@ func TestRaw(t *testing.T) {
 
 		t.Run("If the system int size is not 32 or 64, setUpUintFuncs should panic with ErrUnsupportedIntSize",
 			func(t *testing.T) {
-				wantErr := muscom.ErrUnsupportedIntSize
+				wantErr := com.ErrUnsupportedIntSize
 				defer func() {
 					if r := recover(); r != nil {
 						err := r.(error)
@@ -34,16 +34,16 @@ func TestRaw(t *testing.T) {
 		t.Run("If the system int size is equal to 32, setUpUintFuncs should initialize the uint functions with 32-bit versions",
 			func(t *testing.T) {
 				setUpUintFuncs(32)
-				if !muscom_testdata.ComparePtrs(marshalUint, marshalInteger32[uint]) {
+				if !com_testdata.ComparePtrs(marshalUint, marshalInteger32[uint]) {
 					t.Error("unexpected marshalUint func")
 				}
-				if !muscom_testdata.ComparePtrs(unmarshalUint, unmarshalInteger32[uint]) {
+				if !com_testdata.ComparePtrs(unmarshalUint, unmarshalInteger32[uint]) {
 					t.Error("unexpected unmarshalUint func")
 				}
-				if !muscom_testdata.ComparePtrs(sizeUint, sizeNum32[uint]) {
+				if !com_testdata.ComparePtrs(sizeUint, sizeNum32[uint]) {
 					t.Error("unexpected sizeUint func")
 				}
-				if !muscom_testdata.ComparePtrs(skipUint, skipInteger32) {
+				if !com_testdata.ComparePtrs(skipUint, skipInteger32) {
 					t.Error("unexpected skipUint func")
 				}
 			})
@@ -51,16 +51,16 @@ func TestRaw(t *testing.T) {
 		t.Run("If the system int size is equal to 64, setUpUintFuncs should initialize the uint functions with 64-bit versions",
 			func(t *testing.T) {
 				setUpUintFuncs(64)
-				if !muscom_testdata.ComparePtrs(marshalUint, marshalInteger64[uint]) {
+				if !com_testdata.ComparePtrs(marshalUint, marshalInteger64[uint]) {
 					t.Error("unexpected marshalUint func")
 				}
-				if !muscom_testdata.ComparePtrs(unmarshalUint, unmarshalInteger64[uint]) {
+				if !com_testdata.ComparePtrs(unmarshalUint, unmarshalInteger64[uint]) {
 					t.Error("unexpected unmarshalUint func")
 				}
-				if !muscom_testdata.ComparePtrs(sizeUint, sizeNum64[uint]) {
+				if !com_testdata.ComparePtrs(sizeUint, sizeNum64[uint]) {
 					t.Error("unexpected sizeUint func")
 				}
-				if !muscom_testdata.ComparePtrs(skipUint, skipInteger64) {
+				if !com_testdata.ComparePtrs(skipUint, skipInteger64) {
 					t.Error("unexpected skipUint func")
 				}
 			})
@@ -71,7 +71,7 @@ func TestRaw(t *testing.T) {
 
 		t.Run("If the system int size is not 32 or 64, setUpIntFuncs should panic with ErrUnsupportedIntSize",
 			func(t *testing.T) {
-				wantErr := muscom.ErrUnsupportedIntSize
+				wantErr := com.ErrUnsupportedIntSize
 				defer func() {
 					if r := recover(); r != nil {
 						err := r.(error)
@@ -86,16 +86,16 @@ func TestRaw(t *testing.T) {
 		t.Run("If the system int size is equal to 32, setUpIntFuncs should initialize the uint functions with 32-bit versions",
 			func(t *testing.T) {
 				setUpIntFuncs(32)
-				if !muscom_testdata.ComparePtrs(marshalInt, marshalInteger32[int]) {
+				if !com_testdata.ComparePtrs(marshalInt, marshalInteger32[int]) {
 					t.Error("unexpected marshalInt func")
 				}
-				if !muscom_testdata.ComparePtrs(unmarshalInt, unmarshalInteger32[int]) {
+				if !com_testdata.ComparePtrs(unmarshalInt, unmarshalInteger32[int]) {
 					t.Error("unexpected unmarshalInt func")
 				}
-				if !muscom_testdata.ComparePtrs(sizeInt, sizeNum32[int]) {
+				if !com_testdata.ComparePtrs(sizeInt, sizeNum32[int]) {
 					t.Error("unexpected sizeInt func")
 				}
-				if !muscom_testdata.ComparePtrs(skipInt, skipInteger32) {
+				if !com_testdata.ComparePtrs(skipInt, skipInteger32) {
 					t.Error("unexpected skipInt func")
 				}
 			})
@@ -103,16 +103,16 @@ func TestRaw(t *testing.T) {
 		t.Run("If the system int size is equal to 64, setUpIntFuncs should initialize the uint functions with 64-bit versions",
 			func(t *testing.T) {
 				setUpIntFuncs(64)
-				if !muscom_testdata.ComparePtrs(marshalInt, marshalInteger64[int]) {
+				if !com_testdata.ComparePtrs(marshalInt, marshalInteger64[int]) {
 					t.Error("unexpected marshalInt func")
 				}
-				if !muscom_testdata.ComparePtrs(unmarshalInt, unmarshalInteger64[int]) {
+				if !com_testdata.ComparePtrs(unmarshalInt, unmarshalInteger64[int]) {
 					t.Error("unexpected unmarshalInt func")
 				}
-				if !muscom_testdata.ComparePtrs(sizeInt, sizeNum64[int]) {
+				if !com_testdata.ComparePtrs(sizeInt, sizeNum64[int]) {
 					t.Error("unexpected sizeInt func")
 				}
-				if !muscom_testdata.ComparePtrs(skipInt, skipInteger64) {
+				if !com_testdata.ComparePtrs(skipInt, skipInteger64) {
 					t.Error("unexpected skipInt func")
 				}
 			})
@@ -155,7 +155,7 @@ func TestRaw(t *testing.T) {
 				)
 				n, err = skipInteger64(r)
 			)
-			muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger32 should return an error",
@@ -186,7 +186,7 @@ func TestRaw(t *testing.T) {
 				)
 				n, err = skipInteger32(r)
 			)
-			muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger16 should return an error",
@@ -213,7 +213,7 @@ func TestRaw(t *testing.T) {
 				)
 				n, err = skipInteger16(r)
 			)
-			muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger8 should return it",
@@ -238,7 +238,7 @@ func TestRaw(t *testing.T) {
 				)
 				n, err = skipInteger8(r)
 			)
-			muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 		})
 
 	t.Run("All MarshalByte, UnmarshalByte, SizeByte, SkipByte functions must work correctly",
@@ -249,8 +249,8 @@ func TestRaw(t *testing.T) {
 				s  = muss.SizerFn[byte](SizeByte)
 				sk = muss.SkipperFn(SkipByte)
 			)
-			testdata.Test[byte](muscom_testdata.ByteTestCases, m, u, s, t)
-			testdata.TestSkip[byte](muscom_testdata.ByteTestCases, m, sk, s, t)
+			testdata.Test[byte](com_testdata.ByteTestCases, m, u, s, t)
+			testdata.TestSkip[byte](com_testdata.ByteTestCases, m, sk, s, t)
 		})
 
 	t.Run("Unsigned", func(t *testing.T) {
@@ -263,8 +263,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[uint64](SizeUint64)
 					sk = muss.SkipperFn(SkipUint64)
 				)
-				testdata.Test[uint64](muscom_testdata.Uint64TestCases, m, u, s, t)
-				testdata.TestSkip[uint64](muscom_testdata.Uint64TestCases, m, sk, s, t)
+				testdata.Test[uint64](com_testdata.Uint64TestCases, m, u, s, t)
+				testdata.TestSkip[uint64](com_testdata.Uint64TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalUint32, UnmarshalUint32, SizeUint32, SkipUint32 functions must work correctly",
@@ -275,8 +275,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[uint32](SizeUint32)
 					sk = muss.SkipperFn(SkipUint32)
 				)
-				testdata.Test[uint32](muscom_testdata.Uint32TestCases, m, u, s, t)
-				testdata.TestSkip[uint32](muscom_testdata.Uint32TestCases, m, sk, s, t)
+				testdata.Test[uint32](com_testdata.Uint32TestCases, m, u, s, t)
+				testdata.TestSkip[uint32](com_testdata.Uint32TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalUint16, UnmarshalUint16, SizeUint16, SkipUint16 functions must work correctly",
@@ -287,8 +287,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[uint16](SizeUint16)
 					sk = muss.SkipperFn(SkipUint16)
 				)
-				testdata.Test[uint16](muscom_testdata.Uint16TestCases, m, u, s, t)
-				testdata.TestSkip[uint16](muscom_testdata.Uint16TestCases, m, sk, s, t)
+				testdata.Test[uint16](com_testdata.Uint16TestCases, m, u, s, t)
+				testdata.TestSkip[uint16](com_testdata.Uint16TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalUint8, UnmarshalUint8, SizeUint8, SkipUint8 functions must work correctly",
@@ -299,8 +299,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[uint8](SizeUint8)
 					sk = muss.SkipperFn(SkipUint8)
 				)
-				testdata.Test[uint8](muscom_testdata.Uint8TestCases, m, u, s, t)
-				testdata.TestSkip[uint8](muscom_testdata.Uint8TestCases, m, sk, s, t)
+				testdata.Test[uint8](com_testdata.Uint8TestCases, m, u, s, t)
+				testdata.TestSkip[uint8](com_testdata.Uint8TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalUint, UnmarshalUint, SizeUint, SkipUint functions must work correctly",
@@ -311,8 +311,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[uint](SizeUint)
 					sk = muss.SkipperFn(SkipUint)
 				)
-				testdata.Test[uint](muscom_testdata.UintTestCases, m, u, s, t)
-				testdata.TestSkip[uint](muscom_testdata.UintTestCases, m, sk, s, t)
+				testdata.Test[uint](com_testdata.UintTestCases, m, u, s, t)
+				testdata.TestSkip[uint](com_testdata.UintTestCases, m, sk, s, t)
 			})
 
 	})
@@ -327,8 +327,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[int64](SizeInt64)
 					sk = muss.SkipperFn(SkipInt64)
 				)
-				testdata.Test[int64](muscom_testdata.Int64TestCases, m, u, s, t)
-				testdata.TestSkip[int64](muscom_testdata.Int64TestCases, m, sk, s, t)
+				testdata.Test[int64](com_testdata.Int64TestCases, m, u, s, t)
+				testdata.TestSkip[int64](com_testdata.Int64TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalInt32, UnmarshalInt32, SizeInt32, SkipInt32 functions must work correctly",
@@ -339,8 +339,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[int32](SizeInt32)
 					sk = muss.SkipperFn(SkipInt32)
 				)
-				testdata.Test[int32](muscom_testdata.Int32TestCases, m, u, s, t)
-				testdata.TestSkip[int32](muscom_testdata.Int32TestCases, m, sk, s, t)
+				testdata.Test[int32](com_testdata.Int32TestCases, m, u, s, t)
+				testdata.TestSkip[int32](com_testdata.Int32TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalInt16, UnmarshalInt16, SizeInt16, SkipInt16 functions must work correctly",
@@ -351,8 +351,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[int16](SizeInt16)
 					sk = muss.SkipperFn(SkipInt16)
 				)
-				testdata.Test[int16](muscom_testdata.Int16TestCases, m, u, s, t)
-				testdata.TestSkip[int16](muscom_testdata.Int16TestCases, m, sk, s, t)
+				testdata.Test[int16](com_testdata.Int16TestCases, m, u, s, t)
+				testdata.TestSkip[int16](com_testdata.Int16TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalInt8, UnmarshalInt8, SizeInt8, SkipInt8 functions must work correctly",
@@ -363,8 +363,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[int8](SizeInt8)
 					sk = muss.SkipperFn(SkipInt8)
 				)
-				testdata.Test[int8](muscom_testdata.Int8TestCases, m, u, s, t)
-				testdata.TestSkip[int8](muscom_testdata.Int8TestCases, m, sk, s, t)
+				testdata.Test[int8](com_testdata.Int8TestCases, m, u, s, t)
+				testdata.TestSkip[int8](com_testdata.Int8TestCases, m, sk, s, t)
 			})
 
 		t.Run("All MarshalInt, UnmarshalInt, SizeInt, SkipInt functions must work correctly",
@@ -375,8 +375,8 @@ func TestRaw(t *testing.T) {
 					s  = muss.SizerFn[int](SizeInt)
 					sk = muss.SkipperFn(SkipInt)
 				)
-				testdata.Test[int](muscom_testdata.IntTestCases, m, u, s, t)
-				testdata.TestSkip[int](muscom_testdata.IntTestCases, m, sk, s, t)
+				testdata.Test[int](com_testdata.IntTestCases, m, u, s, t)
+				testdata.TestSkip[int](com_testdata.IntTestCases, m, sk, s, t)
 			})
 
 	})
@@ -393,8 +393,8 @@ func TestRaw(t *testing.T) {
 						s  = muss.SizerFn[float64](SizeFloat64)
 						sk = muss.SkipperFn(SkipFloat64)
 					)
-					testdata.Test[float64](muscom_testdata.Float64TestCases, m, u, s, t)
-					testdata.TestSkip[float64](muscom_testdata.Float64TestCases, m, sk, s,
+					testdata.Test[float64](com_testdata.Float64TestCases, m, u, s, t)
+					testdata.TestSkip[float64](com_testdata.Float64TestCases, m, sk, s,
 						t)
 				})
 
@@ -411,7 +411,7 @@ func TestRaw(t *testing.T) {
 						)
 						v, n, err = UnmarshalFloat64(r)
 					)
-					muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						nil,
 						t)
 				})
@@ -428,7 +428,7 @@ func TestRaw(t *testing.T) {
 						)
 						n, err = SkipFloat64(r)
 					)
-					muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+					com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 				})
 
 		})
@@ -443,8 +443,8 @@ func TestRaw(t *testing.T) {
 						s  = muss.SizerFn[float32](SizeFloat32)
 						sk = muss.SkipperFn(SkipFloat32)
 					)
-					testdata.Test[float32](muscom_testdata.Float32TestCases, m, u, s, t)
-					testdata.TestSkip[float32](muscom_testdata.Float32TestCases, m, sk, s,
+					testdata.Test[float32](com_testdata.Float32TestCases, m, u, s, t)
+					testdata.TestSkip[float32](com_testdata.Float32TestCases, m, sk, s,
 						t)
 				})
 
@@ -461,7 +461,7 @@ func TestRaw(t *testing.T) {
 						)
 						v, n, err = UnmarshalFloat32(r)
 					)
-					muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						nil,
 						t)
 				})
@@ -478,7 +478,7 @@ func TestRaw(t *testing.T) {
 						)
 						n, err = SkipFloat32(r)
 					)
-					muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+					com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 				})
 
 		})
@@ -521,6 +521,6 @@ func testUnmarshalIntegerError[T constraints.Integer](k int,
 		mocks     = []*mok.Mock{r.Mock}
 		v, n, err = fn(r)
 	)
-	muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks,
+	com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks,
 		t)
 }

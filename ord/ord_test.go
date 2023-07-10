@@ -6,9 +6,9 @@ import (
 	"math"
 	"testing"
 
-	muscom "github.com/mus-format/mus-common-go"
-	muscom_testdata "github.com/mus-format/mus-common-go/testdata"
-	muscom_mock "github.com/mus-format/mus-common-go/testdata/mock"
+	com "github.com/mus-format/common-go"
+	com_testdata "github.com/mus-format/common-go/testdata"
+	com_mock "github.com/mus-format/common-go/testdata/mock"
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/testdata/mock"
@@ -28,8 +28,8 @@ func TestOrd(t *testing.T) {
 					s  = muss.SizerFn[bool](SizeBool)
 					sk = muss.SkipperFn(SkipBool)
 				)
-				testdata.Test[bool](muscom_testdata.BoolTestCases, m, u, s, t)
-				testdata.TestSkip[bool](muscom_testdata.BoolTestCases, m, sk, s, t)
+				testdata.Test[bool](com_testdata.BoolTestCases, m, u, s, t)
+				testdata.TestSkip[bool](com_testdata.BoolTestCases, m, sk, s, t)
 			})
 
 		t.Run("If Writer fails to write a byte, MarshalBool should return error",
@@ -60,7 +60,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalBool(r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -70,7 +70,7 @@ func TestOrd(t *testing.T) {
 				var (
 					wantV   bool = false
 					wantN        = 1
-					wantErr      = muscom.ErrWrongFormat
+					wantErr      = com.ErrWrongFormat
 					r            = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 3, nil
@@ -79,7 +79,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalBool(r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -96,14 +96,14 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipBool(r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 		t.Run("SkipBool should return ErrWrongFormat if meets wrong format",
 			func(t *testing.T) {
 				var (
 					wantN   = 1
-					wantErr = muscom.ErrWrongFormat
+					wantErr = com.ErrWrongFormat
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 3, nil
@@ -111,7 +111,7 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipBool(r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 	})
@@ -126,8 +126,8 @@ func TestOrd(t *testing.T) {
 					s  = muss.SizerFn[string](SizeString)
 					sk = muss.SkipperFn(SkipString)
 				)
-				testdata.Test[string](muscom_testdata.StringTestCases, m, u, s, t)
-				testdata.TestSkip[string](muscom_testdata.StringTestCases, m, sk, s, t)
+				testdata.Test[string](com_testdata.StringTestCases, m, u, s, t)
+				testdata.TestSkip[string](com_testdata.StringTestCases, m, sk, s, t)
 			})
 
 		t.Run("If Writer fails to write string length, MarshalString should return error",
@@ -160,7 +160,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalString(r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -170,7 +170,7 @@ func TestOrd(t *testing.T) {
 				var (
 					wantV   = ""
 					wantN   = 1
-					wantErr = muscom.ErrNegativeLength
+					wantErr = com.ErrNegativeLength
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 1, nil
@@ -179,7 +179,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalString(r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -204,7 +204,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalString(r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -215,7 +215,7 @@ func TestOrd(t *testing.T) {
 					wantV     = ""
 					wantN     = 10
 					wantErr   = errors.New("MaxLength validator error")
-					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							var wantV = math.MaxInt64
 							if v != wantV {
@@ -227,7 +227,7 @@ func TestOrd(t *testing.T) {
 					r = func() mock.Reader {
 						buf := &bytes.Buffer{}
 						varint.MarshalInt64(math.MaxInt64, buf)
-						return mock.NewReader().RegisterNReadByte(muscom.Uint64MaxVarintLen,
+						return mock.NewReader().RegisterNReadByte(com.Uint64MaxVarintLen,
 							func() (b byte, err error) {
 								return buf.ReadByte()
 							},
@@ -236,7 +236,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalValidString(maxLength, false, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -248,7 +248,7 @@ func TestOrd(t *testing.T) {
 					wantN      = 1
 					wantErr    = errors.New("MaxLength validator error")
 					wantLength = 3
-					maxLength  = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength  = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != wantLength {
 								t.Errorf("unexpected length, want '%v' actual '%v'", wantLength,
@@ -265,7 +265,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalValidString(maxLength, false, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -277,7 +277,7 @@ func TestOrd(t *testing.T) {
 					wantN      = 4
 					wantErr    = errors.New("MaxLength validator error")
 					wantLength = 3
-					maxLength  = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength  = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != wantLength {
 								t.Errorf("unexpected length, want '%v' actual '%v'", wantLength,
@@ -294,7 +294,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalValidString(maxLength, true, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -306,7 +306,7 @@ func TestOrd(t *testing.T) {
 					wantN      = 2
 					wantErr    = errors.New("skip error")
 					wantLength = 3
-					maxLength  = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength  = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != wantLength {
 								t.Errorf("unexpected length, want '%v' actual '%v'", wantLength,
@@ -327,7 +327,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalValidString(maxLength, true, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -344,14 +344,14 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipString(r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 		t.Run("SkipString should return ErrNegativeLength if meets negative length",
 			func(t *testing.T) {
 				var (
 					wantN   = 1
-					wantErr = muscom.ErrNegativeLength
+					wantErr = com.ErrNegativeLength
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 1, nil
@@ -359,7 +359,7 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipString(r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 		t.Run("If Reader fails to read string content, SkipString should return error",
@@ -378,7 +378,7 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipString(r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 	})
@@ -556,7 +556,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalPtr[string](nil, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr,
 					err,
 					mocks,
 					t)
@@ -566,7 +566,7 @@ func TestOrd(t *testing.T) {
 			var (
 				wantV   *string = nil
 				wantN           = 1
-				wantErr         = muscom.ErrWrongFormat
+				wantErr         = com.ErrWrongFormat
 				r               = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 2, nil
@@ -575,7 +575,7 @@ func TestOrd(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = UnmarshalPtr[string](nil, r)
 			)
-			muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks,
 				t)
 		})
@@ -599,7 +599,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock, u.Mock}
 					v, n, err = UnmarshalPtr[string](u, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -616,14 +616,14 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipPtr(nil, r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 		t.Run("Skip should return ErrWrongFormat if meets wrong format",
 			func(t *testing.T) {
 				var (
 					wantN   = 1
-					wantErr = muscom.ErrWrongFormat
+					wantErr = com.ErrWrongFormat
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 3, nil
@@ -631,7 +631,7 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipPtr(nil, r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 		t.Run("If Skipper fails with an error, Skip should return it",
@@ -651,7 +651,7 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipPtr(sk, r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 	})
@@ -822,7 +822,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalSlice[string](nil, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -832,7 +832,7 @@ func TestOrd(t *testing.T) {
 				var (
 					wantV   []string = nil
 					wantN            = 1
-					wantErr          = muscom.ErrNegativeLength
+					wantErr          = com.ErrNegativeLength
 					r                = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 1, nil
@@ -841,7 +841,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalSlice[string](nil, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -865,7 +865,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalSlice[string](u, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -876,7 +876,7 @@ func TestOrd(t *testing.T) {
 					wantV     []uint = nil
 					wantN            = 5
 					wantErr          = errors.New("MaxLength validator error")
-					maxLength        = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength        = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 2, v)
@@ -893,7 +893,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock, sk.Mock}
 					v, n, err = UnmarshalValidSlice[uint](maxLength, nil, nil, sk, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -909,7 +909,7 @@ func TestOrd(t *testing.T) {
 							return 4, nil
 						},
 					)
-					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 5, v)
@@ -923,7 +923,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{sk.Mock}
 					v, n, err = UnmarshalValidSlice[uint](maxLength, nil, nil, sk, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -934,7 +934,7 @@ func TestOrd(t *testing.T) {
 					wantV     []uint = nil
 					wantN            = 1
 					wantErr          = errors.New("MaxLength Validator error")
-					maxLength        = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength        = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							return wantErr
 						},
@@ -947,7 +947,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{maxLength.Mock}
 					v, n, err = UnmarshalValidSlice[uint](maxLength, nil, nil, nil, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -963,7 +963,7 @@ func TestOrd(t *testing.T) {
 					).RegisterReadByte(
 						func() (b byte, err error) { return 10, nil },
 					)
-					vl = muscom_mock.NewValidator[uint]().RegisterValidate(
+					vl = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							if v != 10 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 10, v)
@@ -995,7 +995,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{vl.Mock, u.Mock, sk.Mock}
 					v, n, err = UnmarshalValidSlice[uint](nil, u, vl, sk, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1011,7 +1011,7 @@ func TestOrd(t *testing.T) {
 					).RegisterReadByte(
 						func() (b byte, err error) { return 10, nil },
 					)
-					vl = muscom_mock.NewValidator[uint]().RegisterValidate(
+					vl = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							if v != 10 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 10, v)
@@ -1032,7 +1032,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{vl.Mock, u.Mock, sk.Mock}
 					v, n, err = UnmarshalValidSlice[uint](nil, u, vl, sk, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1047,20 +1047,20 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipSlice(nil, r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 		t.Run("SkipSlice should return ErrNegativeLength if meets negative length",
 			func(t *testing.T) {
 				var (
 					wantN   = 1
-					wantErr = muscom.ErrNegativeLength
+					wantErr = com.ErrNegativeLength
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 1, nil },
 					)
 					n, err = SkipSlice(nil, r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 	})
@@ -1295,7 +1295,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalMap[uint, uint](nil, nil, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1305,7 +1305,7 @@ func TestOrd(t *testing.T) {
 				var (
 					wantV   map[uint]uint = nil
 					wantN                 = 1
-					wantErr               = muscom.ErrNegativeLength
+					wantErr               = com.ErrNegativeLength
 					r                     = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 1, nil
@@ -1314,7 +1314,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = UnmarshalMap[uint, uint](nil, nil, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1338,7 +1338,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock, u1.Mock}
 					v, n, err = UnmarshalMap[uint, uint](u1, nil, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1368,7 +1368,7 @@ func TestOrd(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock, u1.Mock, u2.Mock}
 					v, n, err = UnmarshalMap[uint, uint](u1, u2, r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1382,7 +1382,7 @@ func TestOrd(t *testing.T) {
 					r                     = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 2, v)
@@ -1414,7 +1414,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1430,7 +1430,7 @@ func TestOrd(t *testing.T) {
 							return 4, nil
 						},
 					)
-					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 2, v)
@@ -1451,7 +1451,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1465,7 +1465,7 @@ func TestOrd(t *testing.T) {
 					r                     = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							return errors.New("MaxLength Validator error")
 						},
@@ -1487,7 +1487,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1502,7 +1502,7 @@ func TestOrd(t *testing.T) {
 						func() (b byte, err error) { return 4, nil },
 					)
 					sk2       = mock.NewSkipper()
-					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) { return wantErr },
 					)
 					mocks     = []*mok.Mock{r.Mock, maxLength.Mock, sk2.Mock}
@@ -1512,7 +1512,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1527,7 +1527,7 @@ func TestOrd(t *testing.T) {
 						func() (b byte, err error) { return 4, nil },
 					)
 					sk1       = mock.NewSkipper()
-					maxLength = muscom_mock.NewValidator[int]().RegisterValidate(
+					maxLength = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) { return wantErr },
 					)
 					mocks     = []*mok.Mock{r.Mock, maxLength.Mock}
@@ -1537,7 +1537,7 @@ func TestOrd(t *testing.T) {
 						nil,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1556,7 +1556,7 @@ func TestOrd(t *testing.T) {
 							return 10, 1, nil
 						},
 					)
-					v1 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v1 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							if v != 10 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 10, v)
@@ -1583,7 +1583,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1602,7 +1602,7 @@ func TestOrd(t *testing.T) {
 							return 10, 1, nil
 						},
 					)
-					v1 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v1 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) { return errors.New("key Validator error") },
 					)
 					sk2 = mock.NewSkipper().RegisterSkipMUS(
@@ -1615,7 +1615,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1634,7 +1634,7 @@ func TestOrd(t *testing.T) {
 							return 10, 1, nil
 						},
 					)
-					v1 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v1 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							return wantErr
 						},
@@ -1644,7 +1644,7 @@ func TestOrd(t *testing.T) {
 						nil,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1663,7 +1663,7 @@ func TestOrd(t *testing.T) {
 							return 10, 1, nil
 						},
 					)
-					v1 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v1 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							return errors.New("key Validator error")
 						},
@@ -1683,7 +1683,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1707,7 +1707,7 @@ func TestOrd(t *testing.T) {
 							return 11, 1, nil
 						},
 					)
-					v2 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v2 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							if v != 11 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 11, v)
@@ -1731,7 +1731,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1755,7 +1755,7 @@ func TestOrd(t *testing.T) {
 							return 11, 1, nil
 						},
 					)
-					v2 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v2 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							return errors.New("value Validator error")
 						},
@@ -1771,7 +1771,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1795,12 +1795,12 @@ func TestOrd(t *testing.T) {
 							return 11, 1, nil
 						},
 					)
-					v1 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v1 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							return nil
 						},
 					)
-					v2 = muscom_mock.NewValidator[uint]().RegisterValidate(
+					v2 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) {
 							return errors.New("value Validator error")
 						},
@@ -1818,7 +1818,7 @@ func TestOrd(t *testing.T) {
 						sk2,
 						r)
 				)
-				muscom_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -1827,13 +1827,13 @@ func TestOrd(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					wantN   = 1
-					wantErr = muscom.ErrNegativeLength
+					wantErr = com.ErrNegativeLength
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 1, nil },
 					)
 					n, err = SkipMap(nil, nil, r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 		t.Run("If Reader fails to read map length, Skip should return error",
@@ -1846,7 +1846,7 @@ func TestOrd(t *testing.T) {
 					)
 					n, err = SkipMap(nil, nil, r)
 				)
-				muscom_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
 			})
 
 	})

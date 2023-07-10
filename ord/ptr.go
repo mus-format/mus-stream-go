@@ -1,7 +1,7 @@
 package ord
 
 import (
-	muscom "github.com/mus-format/mus-common-go"
+	com "github.com/mus-format/common-go"
 	mus "github.com/mus-format/mus-stream-go"
 )
 
@@ -12,14 +12,14 @@ import (
 func MarshalPtr[T any](v *T, m mus.Marshaler[T], w mus.Writer) (n int,
 	err error) {
 	if v == nil {
-		err = w.WriteByte(muscom.NilFlag)
+		err = w.WriteByte(com.NilFlag)
 		if err != nil {
 			return
 		}
 		n++
 		return
 	}
-	if err = w.WriteByte(muscom.NotNilFlag); err != nil {
+	if err = w.WriteByte(com.NotNilFlag); err != nil {
 		return
 	}
 	n, err = m.MarshalMUS(*v, w)
@@ -32,7 +32,7 @@ func MarshalPtr[T any](v *T, m mus.Marshaler[T], w mus.Writer) (n int,
 //
 // The u argument specifies the Unmarshaler for the base pointer type.
 //
-// The error returned by UnmarshalPtr can be one of muscom.ErrWrongFormat, an
+// The error returned by UnmarshalPtr can be one of com.ErrWrongFormat, an
 // Unarshaler or Reader error.
 func UnmarshalPtr[T any](u mus.Unmarshaler[T], r mus.Reader) (v *T, n int,
 	err error) {
@@ -41,11 +41,11 @@ func UnmarshalPtr[T any](u mus.Unmarshaler[T], r mus.Reader) (v *T, n int,
 		return
 	}
 	n++
-	if b == muscom.NilFlag {
+	if b == com.NilFlag {
 		return
 	}
-	if b != muscom.NotNilFlag {
-		err = muscom.ErrWrongFormat
+	if b != com.NotNilFlag {
+		err = com.ErrWrongFormat
 		return
 	}
 	var n1 int
@@ -73,7 +73,7 @@ func SizePtr[T any](v *T, s mus.Sizer[T]) (size int) {
 //
 // The sk argument specifies the Skipper for the pointer base type.
 //
-// The error returned by SkipPtr can be one of muscom.ErrWrongFormat, a
+// The error returned by SkipPtr can be one of com.ErrWrongFormat, a
 // Skipper or Reader error.
 func SkipPtr(sk mus.Skipper, r mus.Reader) (n int, err error) {
 	b, err := r.ReadByte()
@@ -81,11 +81,11 @@ func SkipPtr(sk mus.Skipper, r mus.Reader) (n int, err error) {
 		return
 	}
 	n++
-	if b == muscom.NilFlag {
+	if b == com.NilFlag {
 		return
 	}
-	if b != muscom.NotNilFlag {
-		err = muscom.ErrWrongFormat
+	if b != com.NotNilFlag {
+		err = com.ErrWrongFormat
 		return
 	}
 	n, err = sk.SkipMUS(r)

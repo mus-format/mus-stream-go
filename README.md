@@ -19,7 +19,7 @@ import (
   "errors"
   "fmt"
 
-  muscom "github.com/mus-format/mus-common-go"
+  com "github.com/mus-format/common-go"
   "github.com/mus-format/mus-stream-go/ord"
 )
 
@@ -29,7 +29,7 @@ func main() {
     str2                              = "very long string" // Invalid string.
     str3                              = "world"
     // String length validator.
-    maxLength muscom.ValidatorFn[int] = func(length int) error {
+    maxLength com.ValidatorFn[int] = func(length int) error {
       if length > 5 {
         return errors.New("too long")
       }

@@ -3,7 +3,7 @@ package ord
 import (
 	"io"
 
-	muscom "github.com/mus-format/mus-common-go"
+	com "github.com/mus-format/common-go"
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -24,7 +24,7 @@ func MarshalString(v string, w muss.Writer) (n int, err error) {
 // UnmarshalString reads a MUS-encoded string. In addition to the string, it
 // returns the number of used bytes and an error.
 //
-// The error can be one of muscom.ErrOverflow or muscom.ErrNegativeLength.
+// The error can be one of com.ErrOverflow or com.ErrNegativeLength.
 //
 // It will panic if the length of the resulting string is too long.
 func UnmarshalString(r muss.Reader) (v string, n int, err error) {
@@ -38,19 +38,19 @@ func UnmarshalString(r muss.Reader) (v string, n int, err error) {
 // an error and skip == true UnmarshalValidString skips the remaining bytes of
 // the string.
 //
-// The error returned by UnmarshalValidString can be one of muscom.ErrOverflow,
-// muscom.ErrNegativeLength, a Validator or Reader error.
+// The error returned by UnmarshalValidString can be one of com.ErrOverflow,
+// com.ErrNegativeLength, a Validator or Reader error.
 //
 // It will panic if there is no maxLength validator and the length of the
 // resulting string is too long.
-func UnmarshalValidString(maxLength muscom.Validator[int], skip bool,
+func UnmarshalValidString(maxLength com.Validator[int], skip bool,
 	r muss.Reader) (v string, n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil || length == 0 {
 		return
 	}
 	if length < 0 {
-		err = muscom.ErrNegativeLength
+		err = com.ErrNegativeLength
 		return
 	}
 	var (
@@ -90,7 +90,7 @@ func SizeString(v string) (n int) {
 // SkipString skips a MUS-encoded string. Returns the number of skiped bytes
 // and an error.
 //
-// The error can be one of muscom.ErrOverflow, mus.ErrNegativeLength or a
+// The error can be one of com.ErrOverflow, mus.ErrNegativeLength or a
 // Reader error.
 func SkipString(r muss.Reader) (n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
@@ -98,7 +98,7 @@ func SkipString(r muss.Reader) (n int, err error) {
 		return
 	}
 	if length < 0 {
-		err = muscom.ErrNegativeLength
+		err = com.ErrNegativeLength
 		return
 	}
 	for i := 0; i < length; i++ {

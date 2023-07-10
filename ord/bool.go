@@ -1,7 +1,7 @@
 package ord
 
 import (
-	muscom "github.com/mus-format/mus-common-go"
+	com "github.com/mus-format/common-go"
 	muss "github.com/mus-format/mus-stream-go"
 )
 
@@ -23,7 +23,7 @@ func MarshalBool(v bool, w muss.Writer) (n int, err error) {
 // UnmarshalBool reads a MUS-encoded bool. In addition to the bool,
 // it returns the number of used bytes and an error.
 //
-// The error can be one of muscom.ErrWrongFormat or Reader error.
+// The error can be one of com.ErrWrongFormat or Reader error.
 func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
@@ -36,7 +36,7 @@ func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	if b == 1 {
 		v = true
 	} else {
-		err = muscom.ErrWrongFormat
+		err = com.ErrWrongFormat
 	}
 	return
 }
@@ -49,7 +49,7 @@ func SizeBool(v bool) (size int) {
 // SkipBool skips a MUS-encoded bool. Returns the number of skiped bytes
 // and an error.
 //
-// The error can be one of muscom.ErrWrongFormat or read error.
+// The error can be one of com.ErrWrongFormat or read error.
 func SkipBool(r muss.Reader) (n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
@@ -59,6 +59,6 @@ func SkipBool(r muss.Reader) (n int, err error) {
 	if b == 0 || b == 1 {
 		return
 	}
-	err = muscom.ErrWrongFormat
+	err = com.ErrWrongFormat
 	return
 }
