@@ -9,7 +9,7 @@ import (
 	"github.com/ymz-ncnk/mok"
 )
 
-func Test[T any](cases []T, m muss.Marshaller[T], u muss.UnMarshaller[T],
+func Test[T any](cases []T, m muss.Marshaller[T], u muss.Unmarshaller[T],
 	s muss.Sizer[T],
 	t *testing.T,
 ) {

@@ -49,7 +49,7 @@ func SizeBool(v bool) (size int) {
 // SkipBool skips a MUS-encoded bool. Returns the number of skiped bytes
 // and an error.
 //
-// The error can be one of com.ErrWrongFormat or read error.
+// The error can be one of com.ErrWrongFormat or Reader error.
 func SkipBool(r muss.Reader) (n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {

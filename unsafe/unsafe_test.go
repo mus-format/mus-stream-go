@@ -286,7 +286,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[string](MarshalString)
-					u  = muss.UnMarshallerFn[string](UnmarshalString)
+					u  = muss.UnmarshallerFn[string](UnmarshalString)
 					s  = muss.SizerFn[string](SizeString)
 					sk = muss.SkipperFn(SkipString)
 				)
@@ -525,7 +525,7 @@ func TestUnsafe(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				m  = muss.MarshallerFn[byte](MarshalByte)
-				u  = muss.UnMarshallerFn[byte](UnmarshalByte)
+				u  = muss.UnmarshallerFn[byte](UnmarshalByte)
 				s  = muss.SizerFn[byte](SizeByte)
 				sk = muss.SkipperFn(SkipByte)
 			)
@@ -539,7 +539,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[uint64](MarshalUint64)
-					u  = muss.UnMarshallerFn[uint64](UnmarshalUint64)
+					u  = muss.UnmarshallerFn[uint64](UnmarshalUint64)
 					s  = muss.SizerFn[uint64](SizeUint64)
 					sk = muss.SkipperFn(SkipUint64)
 				)
@@ -551,7 +551,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[uint32](MarshalUint32)
-					u  = muss.UnMarshallerFn[uint32](UnmarshalUint32)
+					u  = muss.UnmarshallerFn[uint32](UnmarshalUint32)
 					s  = muss.SizerFn[uint32](SizeUint32)
 					sk = muss.SkipperFn(SkipUint32)
 				)
@@ -563,7 +563,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[uint16](MarshalUint16)
-					u  = muss.UnMarshallerFn[uint16](UnmarshalUint16)
+					u  = muss.UnmarshallerFn[uint16](UnmarshalUint16)
 					s  = muss.SizerFn[uint16](SizeUint16)
 					sk = muss.SkipperFn(SkipUint16)
 				)
@@ -575,7 +575,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[uint8](MarshalUint8)
-					u  = muss.UnMarshallerFn[uint8](UnmarshalUint8)
+					u  = muss.UnmarshallerFn[uint8](UnmarshalUint8)
 					s  = muss.SizerFn[uint8](SizeUint8)
 					sk = muss.SkipperFn(SkipUint8)
 				)
@@ -587,7 +587,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[uint](MarshalUint)
-					u  = muss.UnMarshallerFn[uint](UnmarshalUint)
+					u  = muss.UnmarshallerFn[uint](UnmarshalUint)
 					s  = muss.SizerFn[uint](SizeUint)
 					sk = muss.SkipperFn(SkipUint)
 				)
@@ -603,7 +603,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[int64](MarshalInt64)
-					u  = muss.UnMarshallerFn[int64](UnmarshalInt64)
+					u  = muss.UnmarshallerFn[int64](UnmarshalInt64)
 					s  = muss.SizerFn[int64](SizeInt64)
 					sk = muss.SkipperFn(SkipInt64)
 				)
@@ -615,7 +615,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[int32](MarshalInt32)
-					u  = muss.UnMarshallerFn[int32](UnmarshalInt32)
+					u  = muss.UnmarshallerFn[int32](UnmarshalInt32)
 					s  = muss.SizerFn[int32](SizeInt32)
 					sk = muss.SkipperFn(SkipInt32)
 				)
@@ -627,7 +627,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[int16](MarshalInt16)
-					u  = muss.UnMarshallerFn[int16](UnmarshalInt16)
+					u  = muss.UnmarshallerFn[int16](UnmarshalInt16)
 					s  = muss.SizerFn[int16](SizeInt16)
 					sk = muss.SkipperFn(SkipInt16)
 				)
@@ -639,7 +639,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[int8](MarshalInt8)
-					u  = muss.UnMarshallerFn[int8](UnmarshalInt8)
+					u  = muss.UnmarshallerFn[int8](UnmarshalInt8)
 					s  = muss.SizerFn[int8](SizeInt8)
 					sk = muss.SkipperFn(SkipInt8)
 				)
@@ -651,7 +651,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[int](MarshalInt)
-					u  = muss.UnMarshallerFn[int](UnmarshalInt)
+					u  = muss.UnmarshallerFn[int](UnmarshalInt)
 					s  = muss.SizerFn[int](SizeInt)
 					sk = muss.SkipperFn(SkipInt)
 				)
@@ -669,7 +669,7 @@ func TestUnsafe(t *testing.T) {
 				func(t *testing.T) {
 					var (
 						m  = muss.MarshallerFn[float64](MarshalFloat64)
-						u  = muss.UnMarshallerFn[float64](UnmarshalFloat64)
+						u  = muss.UnmarshallerFn[float64](UnmarshalFloat64)
 						s  = muss.SizerFn[float64](SizeFloat64)
 						sk = muss.SkipperFn(SkipFloat64)
 					)
@@ -705,7 +705,7 @@ func TestUnsafe(t *testing.T) {
 				func(t *testing.T) {
 					var (
 						m  = muss.MarshallerFn[float32](MarshalFloat32)
-						u  = muss.UnMarshallerFn[float32](UnmarshalFloat32)
+						u  = muss.UnmarshallerFn[float32](UnmarshalFloat32)
 						s  = muss.SizerFn[float32](SizeFloat32)
 						sk = muss.SkipperFn(SkipFloat32)
 					)
@@ -743,7 +743,7 @@ func TestUnsafe(t *testing.T) {
 			func(t *testing.T) {
 				var (
 					m  = muss.MarshallerFn[bool](MarshalBool)
-					u  = muss.UnMarshallerFn[bool](UnmarshalBool)
+					u  = muss.UnmarshallerFn[bool](UnmarshalBool)
 					s  = muss.SizerFn[bool](SizeBool)
 					sk = muss.SkipperFn(SkipBool)
 				)

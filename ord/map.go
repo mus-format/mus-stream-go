@@ -37,12 +37,12 @@ func MarshalMap[T comparable, V any](v map[T]V, m1 muss.Marshaller[T],
 // UnmarshalMap reads a MUS-encoded map. In addition to the map,
 // it returns the number of used bytes and an error.
 //
-// Arguments u1, u2 specify UnMarshallers for the keys and map values,
+// Arguments u1, u2 specify Unmarshallers for the keys and map values,
 // respectively.
 //
 // The error can be one of com.ErrNegativeLength or Reader error.
-func UnmarshalMap[T comparable, V any](u1 muss.UnMarshaller[T],
-	u2 muss.UnMarshaller[V],
+func UnmarshalMap[T comparable, V any](u1 muss.Unmarshaller[T],
+	u2 muss.Unmarshaller[V],
 	r muss.Reader,
 ) (t map[T]V, n int, err error) {
 	return UnmarshalValidMap(nil, u1, u2, nil, nil, nil, nil, r)
@@ -52,7 +52,7 @@ func UnmarshalMap[T comparable, V any](u1 muss.UnMarshaller[T],
 // it returns the number of used bytes and an error.
 //
 // The maxLength argument specifies the map length Validator. Arguments
-// u1, u2, vl1, vl2, sk1, sk2 - UnMarshallers, Validators and Skippers for the
+// u1, u2, vl1, vl2, sk1, sk2 - Unmarshallers, Validators and Skippers for the
 // map keys and values, respectively.
 // If one of the Validators returns an error, UnmarshalValidMap uses the
 // Skippers to skip the remaining bytes of the map. If one of the Skippers is
@@ -61,8 +61,8 @@ func UnmarshalMap[T comparable, V any](u1 muss.UnMarshaller[T],
 // The error can be one of com.ErrOverflow, com.ErrNegativeLength,
 // validation or Reader error.
 func UnmarshalValidMap[T comparable, V any](maxLength com.Validator[int],
-	u1 muss.UnMarshaller[T],
-	u2 muss.UnMarshaller[V],
+	u1 muss.Unmarshaller[T],
+	u2 muss.Unmarshaller[V],
 	vl1 com.Validator[T],
 	vl2 com.Validator[V],
 	sk1, sk2 muss.Skipper,
