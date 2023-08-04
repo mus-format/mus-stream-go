@@ -6,11 +6,12 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalMap writes the MUS encoding of a map. Returns the number of
-// used bytes and an error.
+// MarshalMap writes the MUS encoding of a map value.
 //
 // Arguments m1, m2 specify Marshallers for the keys and map values,
 // respectively.
+//
+// Returns the number of used bytes and one of the Writer or Marshaller errors.
 func MarshalMap[T comparable, V any](v map[T]V, m1 muss.Marshaller[T],
 	m2 muss.Marshaller[V],
 	w muss.Writer,
@@ -34,13 +35,13 @@ func MarshalMap[T comparable, V any](v map[T]V, m1 muss.Marshaller[T],
 	return
 }
 
-// UnmarshalMap reads a MUS-encoded map. In addition to the map,
-// it returns the number of used bytes and an error.
+// UnmarshalMap reads a MUS-encoded map value.
 //
 // Arguments u1, u2 specify Unmarshallers for the keys and map values,
 // respectively.
 //
-// The error can be one of com.ErrNegativeLength or Reader error.
+// In addition to the map value, returns the number of used bytes and one of
+// the com.ErrOverflow, Reader or Unmarshaller errors.
 func UnmarshalMap[T comparable, V any](u1 muss.Unmarshaller[T],
 	u2 muss.Unmarshaller[V],
 	r muss.Reader,
@@ -48,18 +49,17 @@ func UnmarshalMap[T comparable, V any](u1 muss.Unmarshaller[T],
 	return UnmarshalValidMap(nil, u1, u2, nil, nil, nil, nil, r)
 }
 
-// UnmarshalValidMap reads a MUS-encoded map. In addition to the map,
-// it returns the number of used bytes and an error.
+// UnmarshalValidMap reads a MUS-encoded map value.
 //
-// The maxLength argument specifies the map length Validator. Arguments
-// u1, u2, vl1, vl2, sk1, sk2 - Unmarshallers, Validators and Skippers for the
-// map keys and values, respectively.
-// If one of the Validators returns an error, UnmarshalValidMap uses the
-// Skippers to skip the remaining bytes of the map. If one of the Skippers is
-// nil, it immediately returns a validation error.
+// The maxLength argument specifies the map length Validator, arguments u1, u2,
+// vl1, vl2, sk1, sk2 - Unmarshallers, Validators and Skippers for the keys and
+// map values, respectively.
+// If one of the Validators returns an error, UnmarshalValidMap uses Skippers to
+// skip the remaining bytes of the map. If one of the Skippers is nil, a
+// validation error is returned immediately.
 //
-// The error can be one of com.ErrOverflow, com.ErrNegativeLength,
-// validation or Reader error.
+// In addition to the map value, returns the number of used bytes and one of
+// the com.ErrOverflow, com.ErrNegativeLength, Validator or Reader error.
 func UnmarshalValidMap[T comparable, V any](maxLength com.Validator[int],
 	u1 muss.Unmarshaller[T],
 	u2 muss.Unmarshaller[V],
@@ -135,7 +135,7 @@ SkipRemainingBytes:
 	return
 }
 
-// SizeMap returns the size of a MUS-encoded map.
+// SizeMap returns the size of a MUS-encoded map value.
 //
 // Arguments s1, s2 specify Sizers for the keys and map values respectively.
 func SizeMap[T comparable, V any](v map[T]V, s1 muss.Sizer[T],
@@ -148,14 +148,13 @@ func SizeMap[T comparable, V any](v map[T]V, s1 muss.Sizer[T],
 	return
 }
 
-// SkipMap skips a MUS-encoded map. Returns the number of skiped bytes
-// and an error.
+// SkipMap skips a MUS-encoded map value.
 //
 // Arguments sk1, sk2 specify Skippers for the keys and map values,
 // respectively.
 //
-// The error returned by SkipMap can be one of com.ErrOverflow,
-// com.ErrNegativeLength, a Skipper or Reader error.
+// Returns the number of used bytes and one of the the com.ErrOverflow,
+// com.ErrNegativeLength, Skipper or Reader error.
 func SkipMap(s1, s2 muss.Skipper, r muss.Reader) (n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {

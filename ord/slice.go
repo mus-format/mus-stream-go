@@ -6,10 +6,11 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalSlice writes the MUS encoding of a slice. Returns the number of
-// used bytes and an error.
+// MarshalSlice writes the MUS encoding of a slice value.
 //
 // The m argument specifies the Marshaller for the slice elements.
+//
+// Returns the number of used bytes and one of the Writer or Marshaller errors.
 func MarshalSlice[T any](v []T, m muss.Marshaller[T], w muss.Writer) (n int,
 	err error) {
 	if n, err = varint.MarshalInt(len(v), w); err != nil {
@@ -26,29 +27,28 @@ func MarshalSlice[T any](v []T, m muss.Marshaller[T], w muss.Writer) (n int,
 	return
 }
 
-// UnmarshalSlice reads a MUS-encoded slice. In addition to the slice, it
-// returns the number of used bytes and an error.
+// UnmarshalSlice reads a MUS-encoded slice value.
 //
 // The u argument specifies the Unmarshaller for the slice elements.
 //
-// The error returned by UnmarshalSlice can be one of com.ErrOverflow,
-// com.ErrNegativeLength, an Unmarshaller or Reader error.
+// In addition to the slice value, returns the number of used  bytes and one of
+// the com.ErrOverflow, com.ErrNegativeLength, Unmarshaller or Reader errors.
 func UnmarshalSlice[T any](u muss.Unmarshaller[T], r muss.Reader) (v []T,
 	n int, err error) {
 	return UnmarshalValidSlice(nil, u, nil, nil, r)
 }
 
-// UnmarshalValidSlice reads a MUS-encoded valid slice. In addition to the
-// slice, it returns the number of used bytes and an error.
+// UnmarshalValidSlice reads a MUS-encoded valid slice value.
 //
-// The maxLength argument specifies the slice length Validator. Arguments u,
-// vl, sk - the Unmarshaller, Validator and Skipper for slice elements. If one
+// The maxLength argument specifies the slice length Validator, arguments u,
+// vl, sk - Unmarshaller, Validator and Skipper for the slice elements. If one
 // of the Validators returns an error, UnmarshalValidSlice uses the Skipper to
-// skip the remaining bytes of the slice. If the value of the Skipper is nil, it
-// immediately returns the validation error.
+// skip the remaining bytes of the slice. If the Skipper is nil, a validation
+// error is returned immediately.
 //
-// The error returned by UnmarshalValidSlice can be one of com.ErrOverflow,
-// com.ErrNegativeLength, an Unmarshaller, Validator, Skipper or Reader error.
+// In addition to the slice value, returns the number of used bytes and one of
+// the com.ErrOverflow, com.ErrNegativeLength, Unmarshaller, Validator, Skipper
+// or Reader errors.
 func UnmarshalValidSlice[T any](maxLength com.Validator[int],
 	u muss.Unmarshaller[T],
 	vl com.Validator[T],
@@ -101,7 +101,7 @@ SkipRemainingBytes:
 	return
 }
 
-// SizeSlice returns the size of a MUS-encoded slice.
+// SizeSlice returns the size of a MUS-encoded slice value.
 //
 // The s argument specifies the Sizer for the slice elements.
 func SizeSlice[T any](v []T, s muss.Sizer[T]) (size int) {
@@ -112,13 +112,12 @@ func SizeSlice[T any](v []T, s muss.Sizer[T]) (size int) {
 	return
 }
 
-// SkipSlice skips a MUS-encoded slice. Returns the number of skiped bytes and
-// an error.
+// SkipSlice skips a MUS-encoded slice value.
 //
 // The sk argument specifies the Skipper for the slice elements.
 //
-// The error returned by SkipSlice can be one of com.ErrOverflow,
-// com.ErrNegativeLength, a Skipper or Reader error.
+// Returns the number of skiped bytes and one of the com.ErrOverflow,
+// com.ErrNegativeLength, Skipper or Reader errors.
 func SkipSlice(sk muss.Skipper, r muss.Reader) (n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
 	if err != nil {

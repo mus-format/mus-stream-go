@@ -5,8 +5,9 @@ import (
 	muss "github.com/mus-format/mus-stream-go"
 )
 
-// MarshalBool writes the MUS encoding of a bool. Returns the number of
-// used bytes and an error.
+// MarshalBool writes the MUS encoding of a bool value.
+//
+// Returns the number of used bytes and a Writer error.
 func MarshalBool(v bool, w muss.Writer) (n int, err error) {
 	if v {
 		err = w.WriteByte(1)
@@ -20,10 +21,10 @@ func MarshalBool(v bool, w muss.Writer) (n int, err error) {
 	return
 }
 
-// UnmarshalBool reads a MUS-encoded bool. In addition to the bool,
-// it returns the number of used bytes and an error.
+// UnmarshalBool reads a MUS-encoded bool value.
 //
-// The error can be one of com.ErrWrongFormat or Reader error.
+// In addition to the bool value, returns the number of used bytes and one of
+// the com.ErrWrongFormat or Reader errors.
 func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
@@ -41,15 +42,15 @@ func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	return
 }
 
-// SizeBool returns the size of a MUS-encoded bool.
+// SizeBool returns the size of a MUS-encoded bool value.
 func SizeBool(v bool) (size int) {
 	return 1
 }
 
-// SkipBool skips a MUS-encoded bool. Returns the number of skiped bytes
-// and an error.
+// SkipBool skips a MUS-encoded bool value.
 //
-// The error can be one of com.ErrWrongFormat or Reader error.
+// Returns the number of skiped bytes and one of the com.ErrWrongFormat or
+// Reader errors.
 func SkipBool(r muss.Reader) (n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {

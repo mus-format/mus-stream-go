@@ -5,30 +5,31 @@ import (
 	muss "github.com/mus-format/mus-stream-go"
 )
 
-// MarshalByte writes the MUS encoding (Varint) of a byte. Returns the
-// number of used bytes and an error.
+// MarshalByte writes the MUS encoding (Varint) of a byte value.
+//
+// Returns the number of used bytes and a Writer error.
 func MarshalByte(v byte, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
-// UnmarshalByte reads a MUS-encoded (Varint) byte. In addition to the byte, it
-// returns the number of used bytes and an error.
+// UnmarshalByte reads a MUS-encoded (Varint) byte value.
 //
-// The error can be one of com.ErrOverflow or a Reader error.
+// In addition to the byte value, returns the number of used bytes and one of
+// the com.ErrOverflow or Reader errors.
 func UnmarshalByte(r muss.Reader) (v byte, n int, err error) {
 	return unmarshalUint[byte](com.Uint8MaxVarintLen, com.Uint8MaxLastByte,
 		r)
 }
 
-// SizeByte returns the size of a MUS-encoded (Varint) byte.
+// SizeByte returns the size of a MUS-encoded (Varint) byte value.
 func SizeByte(v byte) (size int) {
 	return sizeUint(v)
 }
 
-// SkipByte skips a MUS-encoded (Varint) byte in bs. Returns the number of
-// skiped bytes and an error.
+// SkipByte skips a MUS-encoded (Varint) byte value.
 //
-// The error can be one of com.ErrOverflow or a Reader error.
+// Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
+// errors.
 func SkipByte(r muss.Reader) (n int, err error) {
 	return skipUint(com.Uint8MaxVarintLen, com.Uint8MaxLastByte, r)
 }
