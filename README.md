@@ -6,10 +6,6 @@ It completely repeats the structure of mus-go, and differs only in that it uses
 # Tests
 Test coverage is 100%.
 
-# Data Versioning
-[mus-stream-dvs-go](https://github.com/mus-format/mus-stream-dvs-go) provides 
-data versioning support.
-
 # How To Use
 You can learn more about this in the mus-go [documentation](https://github.com/mus-format/mus-go#how-to-use). 
 Here is just a small example.
@@ -80,6 +76,11 @@ Another thing to note is that if we want to use a real connection instead of
 because the `bufio.Writer` and `bufio.Reader` implement the `muss.Writer` and 
 `muss.Reader` interfaces we need.
 
+# DTM Support
+[mus-stream-dts-go](https://github.com/mus-format/mus-stream-dts-go) provides 
+[DTM](https://github.com/mus-format/specification#data-type-metadata-dtm) support.
 
-
+# Data Versioning
+[mus-stream-dvs-go](https://github.com/mus-format/mus-stream-dvs-go) provides 
+data versioning support.
 
