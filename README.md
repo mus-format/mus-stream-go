@@ -84,3 +84,5 @@ DTM support.
 [mus-stream-dvs-go](https://github.com/mus-format/mus-stream-dvs-go) provides 
 data versioning support.
 
+# Marshal/Unmarshal interfaces (or oneof feature)
+[Go to the mus-go documentation](https://github.com/mus-format/mus-go#marshalunmarshal-interfaces-or-oneof-feature)
