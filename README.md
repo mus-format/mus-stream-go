@@ -76,11 +76,11 @@ Another thing to note is that if we want to use a real connection instead of
 because the `bufio.Writer` and `bufio.Reader` implement the `muss.Writer` and 
 `muss.Reader` interfaces we need.
 
-# DTM Support
+# Data Type Metadata (DTM) Support
 [mus-stream-dts-go](https://github.com/mus-format/mus-stream-dts-go) provides 
-[DTM](https://github.com/mus-format/specification#data-type-metadata-dtm) support.
+DTM support.
 
-# Data Versioning
+# Data Versioning Support
 [mus-stream-dvs-go](https://github.com/mus-format/mus-stream-dvs-go) provides 
 data versioning support.
 
