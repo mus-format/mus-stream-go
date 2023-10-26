@@ -112,10 +112,11 @@ func TestVarint(t *testing.T) {
 							return 0, wantErr
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = skipUint(com.Uint64MaxVarintLen, com.Uint64MaxLastByte,
 						r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("skipUint should return ErrOverflow if there is no varint end",
@@ -131,13 +132,12 @@ func TestVarint(t *testing.T) {
 						func() (b byte, err error) { return 200, nil },
 					).RegisterReadByte(
 						func() (b byte, err error) { return 200, nil },
-					).RegisterReadByte(
-						func() (b byte, err error) { return 200, nil },
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = skipUint(com.Uint16MaxVarintLen, com.Uint16MaxLastByte,
 						r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 	})

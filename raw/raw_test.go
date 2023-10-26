@@ -153,9 +153,10 @@ func TestRaw(t *testing.T) {
 						return 0, wantErr
 					},
 				)
+				mocks  = []*mok.Mock{r.Mock}
 				n, err = skipInteger64(r)
 			)
-			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger32 should return an error",
@@ -184,9 +185,10 @@ func TestRaw(t *testing.T) {
 						return 0, wantErr
 					},
 				)
+				mocks  = []*mok.Mock{r.Mock}
 				n, err = skipInteger32(r)
 			)
-			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger16 should return an error",
@@ -211,9 +213,10 @@ func TestRaw(t *testing.T) {
 						return 0, wantErr
 					},
 				)
+				mocks  = []*mok.Mock{r.Mock}
 				n, err = skipInteger16(r)
 			)
-			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger8 should return it",
@@ -236,9 +239,10 @@ func TestRaw(t *testing.T) {
 						return 0, wantErr
 					},
 				)
+				mocks  = []*mok.Mock{r.Mock}
 				n, err = skipInteger8(r)
 			)
-			com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("All MarshalByte, UnmarshalByte, SizeByte, SkipByte functions must work correctly",
@@ -426,9 +430,10 @@ func TestRaw(t *testing.T) {
 								return 0, wantErr
 							},
 						)
+						mocks  = []*mok.Mock{r.Mock}
 						n, err = SkipFloat64(r)
 					)
-					com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+					com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 				})
 
 		})
@@ -476,9 +481,10 @@ func TestRaw(t *testing.T) {
 								return 0, wantErr
 							},
 						)
+						mocks  = []*mok.Mock{r.Mock}
 						n, err = SkipFloat32(r)
 					)
-					com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+					com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 				})
 
 		})

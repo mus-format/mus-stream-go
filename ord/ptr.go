@@ -13,14 +13,14 @@ import (
 func MarshalPtr[T any](v *T, m mus.Marshaller[T], w mus.Writer) (n int,
 	err error) {
 	if v == nil {
-		err = w.WriteByte(com.NilFlag)
+		err = w.WriteByte(byte(com.Nil))
 		if err != nil {
 			return
 		}
 		n++
 		return
 	}
-	if err = w.WriteByte(com.NotNilFlag); err != nil {
+	if err = w.WriteByte(byte(com.NotNil)); err != nil {
 		return
 	}
 	n, err = m.MarshalMUS(*v, w)
@@ -41,10 +41,10 @@ func UnmarshalPtr[T any](u mus.Unmarshaller[T], r mus.Reader) (v *T, n int,
 		return
 	}
 	n++
-	if b == com.NilFlag {
+	if b == byte(com.Nil) {
 		return
 	}
-	if b != com.NotNilFlag {
+	if b != byte(com.NotNil) {
 		err = com.ErrWrongFormat
 		return
 	}
@@ -80,10 +80,10 @@ func SkipPtr(sk mus.Skipper, r mus.Reader) (n int, err error) {
 		return
 	}
 	n++
-	if b == com.NilFlag {
+	if b == byte(com.Nil) {
 		return
 	}
-	if b != com.NotNilFlag {
+	if b != byte(com.NotNil) {
 		err = com.ErrWrongFormat
 		return
 	}

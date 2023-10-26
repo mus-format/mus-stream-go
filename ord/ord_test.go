@@ -94,9 +94,10 @@ func TestOrd(t *testing.T) {
 							return 0, wantErr
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipBool(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("SkipBool should return ErrWrongFormat if meets wrong format",
@@ -109,9 +110,10 @@ func TestOrd(t *testing.T) {
 							return 3, nil
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipBool(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 	})
@@ -342,9 +344,10 @@ func TestOrd(t *testing.T) {
 							return 0, wantErr
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipString(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("SkipString should return ErrNegativeLength if meets negative length",
@@ -357,9 +360,10 @@ func TestOrd(t *testing.T) {
 							return 1, nil
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipString(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read string content, SkipString should return error",
@@ -376,9 +380,10 @@ func TestOrd(t *testing.T) {
 					).RegisterReadByte(
 						func() (b byte, err error) { return 0, wantErr },
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipString(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 	})
@@ -614,9 +619,10 @@ func TestOrd(t *testing.T) {
 							return 0, wantErr
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipPtr(nil, r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("Skip should return ErrWrongFormat if meets wrong format",
@@ -629,9 +635,10 @@ func TestOrd(t *testing.T) {
 							return 3, nil
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipPtr(nil, r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Skipper fails with an error, Skip should return it",
@@ -649,9 +656,10 @@ func TestOrd(t *testing.T) {
 							return 2, wantErr
 						},
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipPtr(sk, r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 	})
@@ -1045,9 +1053,10 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 0, wantErr },
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipSlice(nil, r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("SkipSlice should return ErrNegativeLength if meets negative length",
@@ -1058,9 +1067,10 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 1, nil },
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipSlice(nil, r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 	})
@@ -1831,9 +1841,10 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 1, nil },
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipMap(nil, nil, r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read map length, Skip should return error",
@@ -1844,9 +1855,10 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 0, wantErr },
 					)
+					mocks  = []*mok.Mock{r.Mock}
 					n, err = SkipMap(nil, nil, r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, t)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 	})
