@@ -53,7 +53,6 @@ func MarshalUint(v uint, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
-// -----------------------------------------------------------------------------
 // UnmarshalUint64 reads a MUS-encoded (Raw) uint64 value.
 //
 // In addition to the uint64 value, returns the number of used bytes and a
@@ -94,7 +93,6 @@ func UnmarshalUint(r muss.Reader) (v uint, n int, err error) {
 	return unmarshalUint(r)
 }
 
-// -----------------------------------------------------------------------------
 // SizeUint64 returns the size of a MUS-encoded (Raw) uint64 value.
 func SizeUint64(v uint64) (n int) {
 	return sizeNum64(v)
@@ -120,7 +118,6 @@ func SizeUint(v uint) (n int) {
 	return sizeUint(v)
 }
 
-// -----------------------------------------------------------------------------
 // SkipUint64 skips a MUS-encoded (Raw) uint64 value.
 //
 // Returns the number of skiped bytes and a Reader error.

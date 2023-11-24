@@ -41,7 +41,6 @@ func MarshalUint(v uint, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
-// -----------------------------------------------------------------------------
 // UnmarshalUint64 reads a MUS-encoded (Varint) uint64 value.
 //
 // In addition to the uint64 value, returns the number of used bytes and one
@@ -92,7 +91,6 @@ func UnmarshalUint(r muss.Reader) (v uint, n int, err error) {
 		r)
 }
 
-// -----------------------------------------------------------------------------
 // SizeUint64 returns the size of a MUS-encoded (Varint) uint64 value.
 func SizeUint64(v uint64) (size int) {
 	return sizeUint(v)
@@ -118,7 +116,6 @@ func SizeUint(v uint) (size int) {
 	return sizeUint(v)
 }
 
-// -----------------------------------------------------------------------------
 // SkipUint64 skips a MUS-encoded (Varint) uint64 value.
 //
 // Returns the number of skiped bytes and one of the com.ErrOverflow or Reader

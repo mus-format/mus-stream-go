@@ -100,7 +100,6 @@ func marshalInteger8[T com.Integer8](t T, w muss.Writer) (n int,
 	return
 }
 
-// -----------------------------------------------------------------------------
 func unmarshalInteger64[T com.Integer64](r muss.Reader) (t T, n int,
 	err error) {
 	var b byte
@@ -215,7 +214,6 @@ func unmarshalInteger8[T com.Integer8](r muss.Reader) (t T, n int,
 	return
 }
 
-// -----------------------------------------------------------------------------
 func sizeNum64[T com.Num64](t T) int { // Remove this
 	return com.Num64RawSize
 }
@@ -232,7 +230,6 @@ func sizeInteger8[T com.Integer8](t T) int {
 	return com.Num8RawSize
 }
 
-// -----------------------------------------------------------------------------
 func skipInteger64(r muss.Reader) (int, error) {
 	return skipInteger(com.Num64RawSize, r)
 }

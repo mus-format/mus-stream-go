@@ -40,7 +40,6 @@ func MarshalInt(v int, w muss.Writer) (n int, err error) {
 	return marshalUint(uint(EncodeZigZag(v)), w)
 }
 
-// -----------------------------------------------------------------------------
 // UnmarshalInt64 reads a MUS-encoded (Varint) int64 value.
 //
 // In addition to the int64 value, returns the number of used bytes and one
@@ -101,7 +100,6 @@ func UnmarshalInt(r muss.Reader) (v int, n int, err error) {
 	return int(DecodeZigZag(uv)), n, nil
 }
 
-// -----------------------------------------------------------------------------
 // SizeInt64 returns the size of a MUS-encoded (Varint) int64 value.
 func SizeInt64(v int64) int {
 	return sizeUint(uint64(EncodeZigZag(v)))
@@ -127,7 +125,6 @@ func SizeInt(v int) (size int) {
 	return SizeUint(uint(EncodeZigZag(v)))
 }
 
-// -----------------------------------------------------------------------------
 // SkipInt64 skips a MUS-encoded (Varint) int64 value.
 //
 // Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
@@ -168,7 +165,6 @@ func SkipInt(r muss.Reader) (n int, err error) {
 	return SkipUint(r)
 }
 
-// -----------------------------------------------------------------------------
 func EncodeZigZag[T constraints.Signed](t T) T {
 	if t < 0 {
 		return ^(t << 1)

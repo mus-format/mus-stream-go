@@ -32,7 +32,6 @@ func marshalInteger8[T com.Integer8](t T, w muss.Writer) (n int,
 	return w.Write(arr[:])
 }
 
-// -----------------------------------------------------------------------------
 func unmarshalInteger64[T com.Integer64](r muss.Reader) (t T, n int,
 	err error) {
 	b := (*byte)(unsafe_mod.Pointer(&t))
