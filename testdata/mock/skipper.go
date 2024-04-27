@@ -1,11 +1,11 @@
 package mock
 
 import (
-	"reflect"
-
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/ymz-ncnk/mok"
 )
+
+type SkipMUSFn func(r muss.Reader) (n int, err error)
 
 func NewSkipper() Skipper {
 	return Skipper{mok.New("Skipper")}
@@ -15,26 +15,18 @@ type Skipper struct {
 	*mok.Mock
 }
 
-func (u Skipper) RegisterSkipMUS(
-	fn func(r muss.Reader) (n int, err error)) Skipper {
+func (u Skipper) RegisterSkipMUS(fn SkipMUSFn) Skipper {
 	u.Register("SkipMUS", fn)
 	return u
 }
 
-func (u Skipper) RegisterNSkipMUS(n int,
-	fn func(r muss.Reader) (n int, err error)) Skipper {
+func (u Skipper) RegisterNSkipMUS(n int, fn SkipMUSFn) Skipper {
 	u.RegisterN("SkipMUS", n, fn)
 	return u
 }
 
 func (u Skipper) SkipMUS(r muss.Reader) (n int, err error) {
-	var rVal reflect.Value
-	if r == nil {
-		rVal = reflect.Zero(reflect.TypeOf((*muss.Writer)(nil)).Elem())
-	} else {
-		rVal = reflect.ValueOf(r)
-	}
-	result, err := u.Call("SkipMUS", rVal)
+	result, err := u.Call("SkipMUS", mok.SafeVal[muss.Reader](r))
 	if err != nil {
 		panic(err)
 	}

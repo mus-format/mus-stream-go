@@ -1,11 +1,11 @@
 package mock
 
 import (
-	"reflect"
-
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/ymz-ncnk/mok"
 )
+
+type UnmarshalMUSFn[T any] func(r muss.Reader) (t T, n int, err error)
 
 func NewUnmarshaller[T any]() Unmarshaller[T] {
 	return Unmarshaller[T]{mok.New("Unmarshaller")}
@@ -16,25 +16,19 @@ type Unmarshaller[T any] struct {
 }
 
 func (u Unmarshaller[T]) RegisterUnmarshalMUS(
-	fn func(r muss.Reader) (t T, n int, err error)) Unmarshaller[T] {
+	fn UnmarshalMUSFn[T]) Unmarshaller[T] {
 	u.Register("UnmarshalMUS", fn)
 	return u
 }
 
 func (u Unmarshaller[T]) RegisterNUnmarshalMUS(n int,
-	fn func(r muss.Reader) (t T, n int, err error)) Unmarshaller[T] {
+	fn UnmarshalMUSFn[T]) Unmarshaller[T] {
 	u.RegisterN("UnmarshalMUS", n, fn)
 	return u
 }
 
 func (u Unmarshaller[T]) UnmarshalMUS(r muss.Reader) (t T, n int, err error) {
-	var rVal reflect.Value
-	if r == nil {
-		rVal = reflect.Zero(reflect.TypeOf((*muss.Writer)(nil)).Elem())
-	} else {
-		rVal = reflect.ValueOf(r)
-	}
-	result, err := u.Call("UnmarshalMUS", rVal)
+	result, err := u.Call("UnmarshalMUS", mok.SafeVal[muss.Reader](r))
 	if err != nil {
 		panic(err)
 	}
