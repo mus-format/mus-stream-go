@@ -30,16 +30,10 @@ func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	if err != nil {
 		return
 	}
-	n++
-	if b == 0 {
-		return
+	if b > 1 {
+		return false, 1, com.ErrWrongFormat
 	}
-	if b == 1 {
-		v = true
-	} else {
-		err = com.ErrWrongFormat
-	}
-	return
+	return b == 1, 1, nil
 }
 
 // SizeBool returns the size of a MUS-encoded bool value.
