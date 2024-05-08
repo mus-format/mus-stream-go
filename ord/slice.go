@@ -40,7 +40,7 @@ func UnmarshalSlice[T any](u muss.Unmarshaller[T], r muss.Reader) (v []T,
 
 // UnmarshalValidSlice reads a MUS-encoded valid slice value.
 //
-// The maxLength argument specifies the slice length Validator, arguments u,
+// The lenVl argument specifies the slice length Validator, arguments u,
 // vl, sk - Unmarshaller, Validator and Skipper for the slice elements. If one
 // of the Validators returns an error, UnmarshalValidSlice uses the Skipper to
 // skip the remaining bytes of the slice. If the Skipper is nil, a validation
@@ -49,7 +49,7 @@ func UnmarshalSlice[T any](u muss.Unmarshaller[T], r muss.Reader) (v []T,
 // In addition to the slice value, returns the number of used bytes and one of
 // the com.ErrOverflow, com.ErrNegativeLength, Unmarshaller, Validator, Skipper
 // or Reader errors.
-func UnmarshalValidSlice[T any](maxLength com.Validator[int],
+func UnmarshalValidSlice[T any](lenVl com.Validator[int],
 	u muss.Unmarshaller[T],
 	vl com.Validator[T],
 	sk muss.Skipper,
@@ -69,8 +69,8 @@ func UnmarshalValidSlice[T any](maxLength com.Validator[int],
 		i    int
 		err1 error
 	)
-	if maxLength != nil {
-		if err = maxLength.Validate(length); err != nil {
+	if lenVl != nil {
+		if err = lenVl.Validate(length); err != nil {
 			goto SkipRemainingBytes
 		}
 	}

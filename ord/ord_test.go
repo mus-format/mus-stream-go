@@ -211,13 +211,13 @@ func TestOrd(t *testing.T) {
 					t)
 			})
 
-		t.Run("MaxLength validator should protect against too much length",
+		t.Run("lenVl validator should protect against too much length",
 			func(t *testing.T) {
 				var (
-					wantV     = ""
-					wantN     = 10
-					wantErr   = errors.New("MaxLength validator error")
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					wantV   = ""
+					wantN   = 10
+					wantErr = errors.New("lenVl validator error")
+					lenVl   = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							var wantV = math.MaxInt64
 							if v != wantV {
@@ -236,21 +236,21 @@ func TestOrd(t *testing.T) {
 						)
 					}()
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, false, r)
+					v, n, err = UnmarshalValidString(lenVl, false, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If MaxLength validator fails with an error, UnmarshalValidString should immediately return it if skip == false",
+		t.Run("If lenVl validator fails with an error, UnmarshalValidString should immediately return it if skip == false",
 			func(t *testing.T) {
 				var (
 					wantV      = ""
 					wantN      = 1
-					wantErr    = errors.New("MaxLength validator error")
+					wantErr    = errors.New("lenVl validator error")
 					wantLength = 3
-					maxLength  = com_mock.NewValidator[int]().RegisterValidate(
+					lenVl      = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != wantLength {
 								t.Errorf("unexpected length, want '%v' actual '%v'", wantLength,
@@ -265,21 +265,21 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, false, r)
+					v, n, err = UnmarshalValidString(lenVl, false, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If MaxLength validator fails with an error, UnmarshalValidString should return it and skip all bytes of the string if skip == true",
+		t.Run("If lenVl validator fails with an error, UnmarshalValidString should return it and skip all bytes of the string if skip == true",
 			func(t *testing.T) {
 				var (
 					wantV      = ""
 					wantN      = 4
-					wantErr    = errors.New("MaxLength validator error")
+					wantErr    = errors.New("lenVl validator error")
 					wantLength = 3
-					maxLength  = com_mock.NewValidator[int]().RegisterValidate(
+					lenVl      = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != wantLength {
 								t.Errorf("unexpected length, want '%v' actual '%v'", wantLength,
@@ -294,27 +294,45 @@ func TestOrd(t *testing.T) {
 						},
 					).RegisterNReadByte(3, func() (b byte, err error) { return })
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, true, r)
+					v, n, err = UnmarshalValidString(lenVl, true, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If Reader fails to read string content, UnmarshalValidString, with MaxLength validator and skip == true, should return error",
+		t.Run("If string length == 0 lenVl should work", func(t *testing.T) {
+			var (
+				wantV                        = ""
+				wantN                        = 1
+				wantErr                      = errors.New("empty string")
+				lenVl   com.ValidatorFn[int] = func(t int) (err error) {
+					return wantErr
+				}
+				r = mock.NewReader().RegisterReadByte(
+					func() (b byte, err error) {
+						return 0, nil
+					},
+				)
+				v, n, err = UnmarshalValidString(lenVl, false, r)
+			)
+			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
+		})
+
+		t.Run("If Reader fails to read string content, UnmarshalValidString, with lenVl validator and skip == true, should return error",
 			func(t *testing.T) {
 				var (
 					wantV      = ""
 					wantN      = 2
 					wantErr    = errors.New("skip error")
 					wantLength = 3
-					maxLength  = com_mock.NewValidator[int]().RegisterValidate(
+					lenVl      = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != wantLength {
 								t.Errorf("unexpected length, want '%v' actual '%v'", wantLength,
 									v)
 							}
-							return errors.New("MaxLength validator error")
+							return errors.New("lenVl validator error")
 						},
 					)
 					r = mock.NewReader().RegisterReadByte(
@@ -327,7 +345,7 @@ func TestOrd(t *testing.T) {
 						func() (b byte, err error) { return 0, wantErr },
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, true, r)
+					v, n, err = UnmarshalValidString(lenVl, true, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
@@ -878,13 +896,13 @@ func TestOrd(t *testing.T) {
 					t)
 			})
 
-		t.Run("If Skipper != nil and MaxLength validator returns an error, UnmarshalValidSlice should return it",
+		t.Run("If Skipper != nil and lenVl validator returns an error, UnmarshalValidSlice should return it",
 			func(t *testing.T) {
 				var (
-					wantV     []uint = nil
-					wantN            = 5
-					wantErr          = errors.New("MaxLength validator error")
-					maxLength        = com_mock.NewValidator[int]().RegisterValidate(
+					wantV   []uint = nil
+					wantN          = 5
+					wantErr        = errors.New("lenVl validator error")
+					lenVl          = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 2, v)
@@ -899,7 +917,7 @@ func TestOrd(t *testing.T) {
 						func(r muss.Reader) (n int, err error) { return 4, nil },
 					)
 					mocks     = []*mok.Mock{r.Mock, sk.Mock}
-					v, n, err = UnmarshalValidSlice[uint](maxLength, nil, nil, sk, r)
+					v, n, err = UnmarshalValidSlice[uint](lenVl, nil, nil, sk, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
@@ -917,32 +935,32 @@ func TestOrd(t *testing.T) {
 							return 4, nil
 						},
 					)
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					lenVl = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 5, v)
 							}
-							return errors.New("MaxLength validator error")
+							return errors.New("lenVl validator error")
 						},
 					)
 					sk = mock.NewSkipper().RegisterSkipMUS(
 						func(r muss.Reader) (n int, err error) { return 3, wantErr },
 					)
 					mocks     = []*mok.Mock{sk.Mock}
-					v, n, err = UnmarshalValidSlice[uint](maxLength, nil, nil, sk, r)
+					v, n, err = UnmarshalValidSlice[uint](lenVl, nil, nil, sk, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If Skipper == nil and MaxLength validator returns an error, UnmarshalValidSlice should return it",
+		t.Run("If Skipper == nil and lenVl validator returns an error, UnmarshalValidSlice should return it",
 			func(t *testing.T) {
 				var (
-					wantV     []uint = nil
-					wantN            = 1
-					wantErr          = errors.New("MaxLength Validator error")
-					maxLength        = com_mock.NewValidator[int]().RegisterValidate(
+					wantV   []uint = nil
+					wantN          = 1
+					wantErr        = errors.New("lenVl Validator error")
+					lenVl          = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							return wantErr
 						},
@@ -952,8 +970,8 @@ func TestOrd(t *testing.T) {
 							return 4, nil
 						},
 					)
-					mocks     = []*mok.Mock{maxLength.Mock}
-					v, n, err = UnmarshalValidSlice[uint](maxLength, nil, nil, nil, r)
+					mocks     = []*mok.Mock{lenVl.Mock}
+					v, n, err = UnmarshalValidSlice[uint](lenVl, nil, nil, nil, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
@@ -1383,16 +1401,16 @@ func TestOrd(t *testing.T) {
 					t)
 			})
 
-		t.Run("If MaxLength validator returns an error, UnmarshalValidMap should return it",
+		t.Run("If lenVl validator returns an error, UnmarshalValidMap should return it",
 			func(t *testing.T) {
 				var (
 					wantV   map[uint]uint = nil
 					wantN                 = 5
-					wantErr               = errors.New("MaxLength validator error")
+					wantErr               = errors.New("lenVl validator error")
 					r                     = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					lenVl = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 2, v)
@@ -1418,8 +1436,8 @@ func TestOrd(t *testing.T) {
 							return 1, nil
 						},
 					)
-					mocks     = []*mok.Mock{r.Mock, maxLength.Mock, sk1.Mock, sk2.Mock}
-					v, n, err = UnmarshalValidMap[uint, uint](maxLength, nil, nil, nil, nil,
+					mocks     = []*mok.Mock{r.Mock, lenVl.Mock, sk1.Mock, sk2.Mock}
+					v, n, err = UnmarshalValidMap[uint, uint](lenVl, nil, nil, nil, nil,
 						sk1,
 						sk2,
 						r)
@@ -1440,12 +1458,12 @@ func TestOrd(t *testing.T) {
 							return 4, nil
 						},
 					)
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					lenVl = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							if v != 2 {
 								t.Errorf("unexpected v, want '%v' actual '%v'", 2, v)
 							}
-							return errors.New("MaxLength validator error")
+							return errors.New("lenVl validator error")
 						},
 					)
 					sk1 = mock.NewSkipper().RegisterSkipMUS(
@@ -1454,8 +1472,8 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					sk2       = mock.NewSkipper()
-					mocks     = []*mok.Mock{r.Mock, maxLength.Mock, sk1.Mock, sk2.Mock}
-					v, n, err = UnmarshalValidMap[uint, uint](maxLength, nil, nil, nil,
+					mocks     = []*mok.Mock{r.Mock, lenVl.Mock, sk1.Mock, sk2.Mock}
+					v, n, err = UnmarshalValidMap[uint, uint](lenVl, nil, nil, nil,
 						nil,
 						sk1,
 						sk2,
@@ -1475,9 +1493,9 @@ func TestOrd(t *testing.T) {
 					r                     = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					lenVl = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
-							return errors.New("MaxLength Validator error")
+							return errors.New("lenVl Validator error")
 						},
 					)
 					sk1 = mock.NewSkipper().RegisterSkipMUS(
@@ -1490,8 +1508,8 @@ func TestOrd(t *testing.T) {
 							return 1, wantErr
 						},
 					)
-					mocks     = []*mok.Mock{r.Mock, maxLength.Mock, sk1.Mock, sk2.Mock}
-					v, n, err = UnmarshalValidMap[uint, uint](maxLength, nil, nil, nil,
+					mocks     = []*mok.Mock{r.Mock, lenVl.Mock, sk1.Mock, sk2.Mock}
+					v, n, err = UnmarshalValidMap[uint, uint](lenVl, nil, nil, nil,
 						nil,
 						sk1,
 						sk2,
@@ -1502,21 +1520,21 @@ func TestOrd(t *testing.T) {
 					t)
 			})
 
-		t.Run("If Key Skipper == nil and MaxLength validator returns an error, UnmarshalValidMap should return it",
+		t.Run("If Key Skipper == nil and lenVl validator returns an error, UnmarshalValidMap should return it",
 			func(t *testing.T) {
 				var (
 					wantV   map[uint]uint = nil
 					wantN                 = 1
-					wantErr               = errors.New("MaxLength Validator error")
+					wantErr               = errors.New("lenVl Validator error")
 					r                     = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					sk2       = mock.NewSkipper()
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					sk2   = mock.NewSkipper()
+					lenVl = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) { return wantErr },
 					)
-					mocks     = []*mok.Mock{r.Mock, maxLength.Mock, sk2.Mock}
-					v, n, err = UnmarshalValidMap[uint, uint](maxLength, nil, nil, nil,
+					mocks     = []*mok.Mock{r.Mock, lenVl.Mock, sk2.Mock}
+					v, n, err = UnmarshalValidMap[uint, uint](lenVl, nil, nil, nil,
 						nil,
 						nil,
 						sk2,
@@ -1527,21 +1545,21 @@ func TestOrd(t *testing.T) {
 					t)
 			})
 
-		t.Run("If Value Skipper == nil and MaxLength validator returns an error, UnmarshalValidMap should return it",
+		t.Run("If Value Skipper == nil and lenVl validator returns an error, UnmarshalValidMap should return it",
 			func(t *testing.T) {
 				var (
 					wantV   map[uint]uint = nil
 					wantN                 = 1
-					wantErr               = errors.New("MaxLength Validator error")
+					wantErr               = errors.New("lenVl Validator error")
 					r                     = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					sk1       = mock.NewSkipper()
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					sk1   = mock.NewSkipper()
+					lenVl = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) { return wantErr },
 					)
-					mocks     = []*mok.Mock{r.Mock, maxLength.Mock}
-					v, n, err = UnmarshalValidMap[uint, uint](maxLength, nil, nil, nil,
+					mocks     = []*mok.Mock{r.Mock, lenVl.Mock}
+					v, n, err = UnmarshalValidMap[uint, uint](lenVl, nil, nil, nil,
 						nil,
 						sk1,
 						nil,

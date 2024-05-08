@@ -372,13 +372,13 @@ func TestUnsafe(t *testing.T) {
 					t)
 			})
 
-		t.Run("MaxLength validator should protect against too much length",
+		t.Run("lenVl validator should protect against too much length",
 			func(t *testing.T) {
 				var (
-					wantV     = ""
-					wantN     = 10
-					wantErr   = errors.New("MaxLength validator error")
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					wantV   = ""
+					wantN   = 10
+					wantErr = errors.New("lenVl validator error")
+					lenVl   = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							var wantV = math.MaxInt64
 							if v != wantV {
@@ -397,20 +397,20 @@ func TestUnsafe(t *testing.T) {
 						)
 					}()
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, false, r)
+					v, n, err = UnmarshalValidString(lenVl, false, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If skip == false and MaxLength validator fails with an error, UnmarshalValidString should immediately return it",
+		t.Run("If skip == false and lenVl validator fails with an error, UnmarshalValidString should immediately return it",
 			func(t *testing.T) {
 				var (
-					wantV     = ""
-					wantN     = 1
-					wantErr   = errors.New("MaxLength validator error")
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					wantV   = ""
+					wantN   = 1
+					wantErr = errors.New("lenVl validator error")
+					lenVl   = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							var wantV = 3
 							if v != wantV {
@@ -425,20 +425,20 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, false, r)
+					v, n, err = UnmarshalValidString(lenVl, false, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If skip == true and MaxLength validator fails with an error, UnmarshalValidString should return it and skip all bytes of the string",
+		t.Run("If skip == true and lenVl validator fails with an error, UnmarshalValidString should return it and skip all bytes of the string",
 			func(t *testing.T) {
 				var (
-					wantV     = ""
-					wantN     = 4
-					wantErr   = errors.New("MaxLength validator error")
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					wantV   = ""
+					wantN   = 4
+					wantErr = errors.New("lenVl validator error")
+					lenVl   = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							var wantV = 3
 							if v != wantV {
@@ -457,26 +457,26 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, true, r)
+					v, n, err = UnmarshalValidString(lenVl, true, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If skip == true, MaxLength validator != nil and Reader fails with an error, UnmarshalValidString should return it",
+		t.Run("If skip == true, lenVl validator != nil and Reader fails with an error, UnmarshalValidString should return it",
 			func(t *testing.T) {
 				var (
-					wantV     = ""
-					wantN     = 1
-					wantErr   = errors.New("Reader error")
-					maxLength = com_mock.NewValidator[int]().RegisterValidate(
+					wantV   = ""
+					wantN   = 1
+					wantErr = errors.New("Reader error")
+					lenVl   = com_mock.NewValidator[int]().RegisterValidate(
 						func(v int) (err error) {
 							var wantV = 3
 							if v != wantV {
 								t.Errorf("unexpected v, want '%v' actual '%v'", wantV, v)
 							}
-							return errors.New("MaxLength validator error")
+							return errors.New("lenVl validator error")
 						},
 					)
 					r = mock.NewReader().RegisterReadByte(
@@ -489,12 +489,30 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(maxLength, true, r)
+					v, n, err = UnmarshalValidString(lenVl, true, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
+
+		t.Run("If string length == 0 lenVl should work", func(t *testing.T) {
+			var (
+				wantV                        = ""
+				wantN                        = 1
+				wantErr                      = errors.New("empty string")
+				lenVl   com.ValidatorFn[int] = func(t int) (err error) {
+					return wantErr
+				}
+				r = mock.NewReader().RegisterReadByte(
+					func() (b byte, err error) {
+						return 0, nil
+					},
+				)
+				v, n, err = UnmarshalValidString(lenVl, false, r)
+			)
+			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
+		})
 
 		t.Run("If Reader fails to read string content, UnmarshalString should return an error",
 			func(t *testing.T) {

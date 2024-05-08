@@ -37,7 +37,7 @@ func UnmarshalString(r muss.Reader) (v string, n int, err error) {
 
 // UnmarshalValidString reads a MUS-encoded valid string value.
 //
-// The maxLength argument specifies the string length Validator. If it returns
+// The lenVl argument specifies the string length Validator. If it returns
 // an error and skip == true UnmarshalValidString skips the remaining string
 // bytes.
 //
@@ -46,10 +46,10 @@ func UnmarshalString(r muss.Reader) (v string, n int, err error) {
 //
 // UnmarshalValidString will panic if the length of the resulting string is too
 // big for the string type.
-func UnmarshalValidString(maxLength com.Validator[int], skip bool,
+func UnmarshalValidString(lenVl com.Validator[int], skip bool,
 	r muss.Reader) (v string, n int, err error) {
 	length, n, err := varint.UnmarshalInt(r)
-	if err != nil || length == 0 {
+	if err != nil {
 		return
 	}
 	if length < 0 {
@@ -60,13 +60,16 @@ func UnmarshalValidString(maxLength com.Validator[int], skip bool,
 		c  []byte
 		n1 int
 	)
-	if maxLength != nil {
-		if err = maxLength.Validate(length); err != nil {
+	if lenVl != nil {
+		if err = lenVl.Validate(length); err != nil {
 			if skip {
 				goto SkipRemainingBytes
 			}
 			return
 		}
+	}
+	if length == 0 {
+		return
 	}
 	c = make([]byte, length)
 	n1, err = io.ReadFull(r, c)
