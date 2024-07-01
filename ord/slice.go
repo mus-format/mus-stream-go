@@ -8,12 +8,19 @@ import (
 
 // MarshalSlice writes the MUS encoding of a slice value.
 //
+// The lenM argument specifies the Marshaller for the slice length, if nil,
+// varint.MarshalPositiveInt() is used.
 // The m argument specifies the Marshaller for the slice elements.
 //
 // Returns the number of used bytes and one of the Writer or Marshaller errors.
-func MarshalSlice[T any](v []T, m muss.Marshaller[T], w muss.Writer) (n int,
-	err error) {
-	if n, err = varint.MarshalInt(len(v), w); err != nil {
+func MarshalSlice[T any](v []T, lenM muss.Marshaller[int], m muss.Marshaller[T],
+	w muss.Writer) (n int, err error) {
+	if lenM == nil {
+		n, err = varint.MarshalPositiveInt(len(v), w)
+	} else {
+		n, err = lenM.MarshalMUS(len(v), w)
+	}
+	if err != nil {
 		return
 	}
 	var n1 int
@@ -29,17 +36,21 @@ func MarshalSlice[T any](v []T, m muss.Marshaller[T], w muss.Writer) (n int,
 
 // UnmarshalSlice reads a MUS-encoded slice value.
 //
+// The lenU argument specifies the Unmarshaller for the slice length, if nil,
+// varint.UnmarshalPositiveInt() is used.
 // The u argument specifies the Unmarshaller for the slice elements.
 //
 // In addition to the slice value, returns the number of used  bytes and one of
 // the com.ErrOverflow, com.ErrNegativeLength, Unmarshaller or Reader errors.
-func UnmarshalSlice[T any](u muss.Unmarshaller[T], r muss.Reader) (v []T,
-	n int, err error) {
-	return UnmarshalValidSlice(nil, u, nil, nil, r)
+func UnmarshalSlice[T any](lenU muss.Unmarshaller[int], u muss.Unmarshaller[T],
+	r muss.Reader) (v []T, n int, err error) {
+	return UnmarshalValidSlice(lenU, nil, u, nil, nil, r)
 }
 
 // UnmarshalValidSlice reads a MUS-encoded valid slice value.
 //
+// The lenU argument specifies the Unmarshaller for the slice length, if nil,
+// varint.UnmarshalPositiveInt() is used.
 // The lenVl argument specifies the slice length Validator, arguments u,
 // vl, sk - Unmarshaller, Validator and Skipper for the slice elements. If one
 // of the Validators returns an error, UnmarshalValidSlice uses the Skipper to
@@ -49,13 +60,19 @@ func UnmarshalSlice[T any](u muss.Unmarshaller[T], r muss.Reader) (v []T,
 // In addition to the slice value, returns the number of used bytes and one of
 // the com.ErrOverflow, com.ErrNegativeLength, Unmarshaller, Validator, Skipper
 // or Reader errors.
-func UnmarshalValidSlice[T any](lenVl com.Validator[int],
+func UnmarshalValidSlice[T any](lenU muss.Unmarshaller[int],
+	lenVl com.Validator[int],
 	u muss.Unmarshaller[T],
 	vl com.Validator[T],
 	sk muss.Skipper,
 	r muss.Reader,
 ) (v []T, n int, err error) {
-	length, n, err := varint.UnmarshalInt(r)
+	var length int
+	if lenU == nil {
+		length, n, err = varint.UnmarshalPositiveInt(r)
+	} else {
+		length, n, err = lenU.UnmarshalMUS(r)
+	}
 	if err != nil {
 		return
 	}
@@ -103,9 +120,16 @@ SkipRemainingBytes:
 
 // SizeSlice returns the size of a MUS-encoded slice value.
 //
+// The lenS argument specifies the Sizer for the slice length, if nil,
+// varint.SizePositiveInt() is used.
+//
 // The s argument specifies the Sizer for the slice elements.
-func SizeSlice[T any](v []T, s muss.Sizer[T]) (size int) {
-	size = varint.SizeInt(len(v))
+func SizeSlice[T any](v []T, lenS muss.Sizer[int], s muss.Sizer[T]) (size int) {
+	if lenS == nil {
+		size = varint.SizePositiveInt(len(v))
+	} else {
+		size = lenS.SizeMUS(len(v))
+	}
 	for i := 0; i < len(v); i++ {
 		size += s.SizeMUS(v[i])
 	}
@@ -114,12 +138,20 @@ func SizeSlice[T any](v []T, s muss.Sizer[T]) (size int) {
 
 // SkipSlice skips a MUS-encoded slice value.
 //
+// The lenU argument specifies the Unmarshaller for the slice length, if nil,
+// varint.UnmarshalPositiveInt() is used.
 // The sk argument specifies the Skipper for the slice elements.
 //
 // Returns the number of skiped bytes and one of the com.ErrOverflow,
 // com.ErrNegativeLength, Skipper or Reader errors.
-func SkipSlice(sk muss.Skipper, r muss.Reader) (n int, err error) {
-	length, n, err := varint.UnmarshalInt(r)
+func SkipSlice(lenU muss.Unmarshaller[int], sk muss.Skipper, r muss.Reader) (
+	n int, err error) {
+	var length int
+	if lenU == nil {
+		length, n, err = varint.UnmarshalPositiveInt(r)
+	} else {
+		length, n, err = lenU.UnmarshalMUS(r)
+	}
 	if err != nil {
 		return
 	}

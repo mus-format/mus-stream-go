@@ -46,14 +46,14 @@ func MarshalPointerMappingStruct(v com_testdata.PointerMappingStruct,
 	if err != nil {
 		return
 	}
-	n1, err = MarshalPtr[string](v.C1, muss.MarshallerFn[string](ord.MarshalString),
+	n1, err = MarshalPtr[string](v.C1, muss.MarshallerFn[string](MarshalStringVarint),
 		mp,
 		w)
 	n += n1
 	if err != nil {
 		return
 	}
-	n1, err = MarshalPtr[string](v.C2, muss.MarshallerFn[string](ord.MarshalString),
+	n1, err = MarshalPtr[string](v.C2, muss.MarshallerFn[string](MarshalStringVarint),
 		mp,
 		w)
 	n += n1
@@ -92,7 +92,7 @@ func UnmarshalPointerMappingStruct(r muss.Reader) (
 		return
 	}
 	v.C1, n1, err = UnmarshalPtr[string](
-		muss.UnmarshallerFn[string](ord.UnmarshalString),
+		muss.UnmarshallerFn[string](UnmarshalStringVarint),
 		mp,
 		r)
 	n += n1
@@ -100,7 +100,7 @@ func UnmarshalPointerMappingStruct(r muss.Reader) (
 		return
 	}
 	v.C2, n1, err = UnmarshalPtr[string](
-		muss.UnmarshallerFn[string](ord.UnmarshalString),
+		muss.UnmarshallerFn[string](UnmarshalStringVarint),
 		mp,
 		r)
 	n += n1
@@ -113,8 +113,8 @@ func SizePointerMappingStruct(v com_testdata.PointerMappingStruct) (size int) {
 	size += SizePtr[int](v.A2, muss.SizerFn[int](varint.SizeInt), mp)
 	size += SizePtr[int](v.B1, muss.SizerFn[int](varint.SizeInt), mp)
 	size += SizePtr[int](v.B2, muss.SizerFn[int](varint.SizeInt), mp)
-	size += SizePtr[string](v.C1, muss.SizerFn[string](ord.SizeString), mp)
-	return size + SizePtr[string](v.C2, muss.SizerFn[string](ord.SizeString),
+	size += SizePtr[string](v.C1, muss.SizerFn[string](SizeStringVarint), mp)
+	return size + SizePtr[string](v.C2, muss.SizerFn[string](SizeStringVarint),
 		mp)
 }
 
@@ -140,12 +140,12 @@ func SkipPointerMappingStruct(r muss.Reader) (n int, err error) {
 	if err != nil {
 		return
 	}
-	n1, err = SkipPtr(muss.SkipperFn(ord.SkipString), mp, r)
+	n1, err = SkipPtr(muss.SkipperFn(SkipStringVarint), mp, r)
 	n += n1
 	if err != nil {
 		return
 	}
-	n1, err = SkipPtr(muss.SkipperFn(ord.SkipString), mp, r)
+	n1, err = SkipPtr(muss.SkipperFn(SkipStringVarint), mp, r)
 	n += n1
 	return
 }
@@ -457,4 +457,29 @@ func TestPM(t *testing.T) {
 			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
+}
+
+// StringVarint
+
+func MarshalStringVarint(v string, w muss.Writer) (n int, err error) {
+	return ord.MarshalString(v, muss.MarshallerFn[int](varint.MarshalInt), w)
+}
+
+func UnmarshalStringVarint(r muss.Reader) (v string,
+	n int, err error) {
+	return UnmarshalValidStringVarint(nil, false, r)
+}
+
+func UnmarshalValidStringVarint(lenVl com.Validator[int], skip bool, r muss.Reader) (
+	v string, n int, err error) {
+	return ord.UnmarshalValidString(muss.UnmarshallerFn[int](varint.UnmarshalInt),
+		lenVl, skip, r)
+}
+
+func SizeStringVarint(v string) (n int) {
+	return ord.SizeString(v, muss.SizerFn[int](varint.SizeInt))
+}
+
+func SkipStringVarint(r muss.Reader) (n int, err error) {
+	return ord.SkipString(muss.UnmarshallerFn[int](varint.UnmarshalInt), r)
 }

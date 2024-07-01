@@ -142,7 +142,7 @@ func TestVarint(t *testing.T) {
 
 	})
 
-	t.Run("Unsigned", func(t *testing.T) {
+	t.Run("unsigned", func(t *testing.T) {
 
 		t.Run("All MarshalUint64, UnmarshalUint64, SizeUint64, SkipUint64 functions must work correctly",
 			func(t *testing.T) {
@@ -206,7 +206,7 @@ func TestVarint(t *testing.T) {
 
 	})
 
-	t.Run("Signed", func(t *testing.T) {
+	t.Run("signed", func(t *testing.T) {
 
 		t.Run("int64", func(t *testing.T) {
 
@@ -375,6 +375,181 @@ func TestVarint(t *testing.T) {
 						)
 						mocks     = []*mok.Mock{r.Mock}
 						v, n, err = UnmarshalInt(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks,
+						t)
+				})
+
+		})
+
+		t.Run("Positive int64", func(t *testing.T) {
+
+			t.Run("All MarshalPositiveInt64, UnmarshalPositiveInt64, SizePositiveInt64, SkipPositiveInt64 functions must work correctly",
+				func(t *testing.T) {
+					var (
+						m  = muss.MarshallerFn[int64](MarshalPositiveInt64)
+						u  = muss.UnmarshallerFn[int64](UnmarshalPositiveInt64)
+						s  = muss.SizerFn[int64](SizePositiveInt64)
+						sk = muss.SkipperFn(SkipPositiveInt64)
+					)
+					testdata.Test[int64](com_testdata.Int64TestCases, m, u, s, t)
+					testdata.TestSkip[int64](com_testdata.Int64TestCases, m, sk, s, t)
+				})
+
+			t.Run("If Reader fails to read a byte, UnmarshalPositiveInt64 should return an error",
+				func(t *testing.T) {
+					var (
+						wantV   int64 = 0
+						wantN         = 0
+						wantErr       = errors.New("read byte error")
+						r             = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) {
+								return 0, wantErr
+							},
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = UnmarshalPositiveInt64(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks,
+						t)
+				})
+
+		})
+
+		t.Run("positive int32", func(t *testing.T) {
+
+			t.Run("All MarshalPositiveInt32, UnmarshalPositiveInt32, SizePositiveInt32, SkipPositiveInt32 functions must work correctly",
+				func(t *testing.T) {
+					var (
+						m  = muss.MarshallerFn[int32](MarshalPositiveInt32)
+						u  = muss.UnmarshallerFn[int32](UnmarshalPositiveInt32)
+						s  = muss.SizerFn[int32](SizePositiveInt32)
+						sk = muss.SkipperFn(SkipPositiveInt32)
+					)
+					testdata.Test[int32](com_testdata.Int32TestCases, m, u, s, t)
+					testdata.TestSkip[int32](com_testdata.Int32TestCases, m, sk, s, t)
+				})
+
+			t.Run("If Reader fails to read a byte, UnmarshalPositiveInt32 should return an error",
+				func(t *testing.T) {
+					var (
+						wantV   int32 = 0
+						wantN         = 0
+						wantErr       = errors.New("read byte error")
+						r             = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) {
+								return 0, wantErr
+							},
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = UnmarshalPositiveInt32(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks,
+						t)
+				})
+
+		})
+
+		t.Run("positive int16", func(t *testing.T) {
+
+			t.Run("All MarshalPositiveInt16, UnmarshalPositiveInt16, SizePositiveInt16, SkipPositiveInt16 functions must work correctly",
+				func(t *testing.T) {
+					var (
+						m  = muss.MarshallerFn[int16](MarshalPositiveInt16)
+						u  = muss.UnmarshallerFn[int16](UnmarshalPositiveInt16)
+						s  = muss.SizerFn[int16](SizePositiveInt16)
+						sk = muss.SkipperFn(SkipPositiveInt16)
+					)
+					testdata.Test[int16](com_testdata.Int16TestCases, m, u, s, t)
+					testdata.TestSkip[int16](com_testdata.Int16TestCases, m, sk, s, t)
+				})
+
+			t.Run("If Reader fails to read a byte, UnmarshalPositiveInt16 should return an error",
+				func(t *testing.T) {
+					var (
+						wantV   int16 = 0
+						wantN         = 0
+						wantErr       = errors.New("read byte error")
+						r             = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) {
+								return 0, wantErr
+							},
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = UnmarshalPositiveInt16(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks,
+						t)
+				})
+
+		})
+
+		t.Run("Positive int8", func(t *testing.T) {
+
+			t.Run("All MarshalPositiveInt8, UnmarshalPositiveInt8, SizePositiveInt8, SkipPositiveInt8 functions must work correctly",
+				func(t *testing.T) {
+					var (
+						m  = muss.MarshallerFn[int8](MarshalPositiveInt8)
+						u  = muss.UnmarshallerFn[int8](UnmarshalPositiveInt8)
+						s  = muss.SizerFn[int8](SizePositiveInt8)
+						sk = muss.SkipperFn(SkipPositiveInt8)
+					)
+					testdata.Test[int8](com_testdata.Int8TestCases, m, u, s, t)
+					testdata.TestSkip[int8](com_testdata.Int8TestCases, m, sk, s, t)
+				})
+
+			t.Run("If Reader fails to read a byte, UnmarshalPositiveInt8 should return an error",
+				func(t *testing.T) {
+					var (
+						wantV   int8 = 0
+						wantN        = 0
+						wantErr      = errors.New("read byte error")
+						r            = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) {
+								return 0, wantErr
+							},
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = UnmarshalPositiveInt8(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks,
+						t)
+				})
+
+		})
+
+		t.Run("int", func(t *testing.T) {
+
+			t.Run("All MarshalPositiveInt, UnmarshalPositiveInt, SizePositiveInt, SkipPositiveInt functions must work correctly",
+				func(t *testing.T) {
+					var (
+						m  = muss.MarshallerFn[int](MarshalPositiveInt)
+						u  = muss.UnmarshallerFn[int](UnmarshalPositiveInt)
+						s  = muss.SizerFn[int](SizePositiveInt)
+						sk = muss.SkipperFn(SkipPositiveInt)
+					)
+					testdata.Test[int](com_testdata.IntTestCases, m, u, s, t)
+					testdata.TestSkip[int](com_testdata.IntTestCases, m, sk, s, t)
+				})
+
+			t.Run("If Reader fails to read a byte, UnmarshalPositiveInt should return an error",
+				func(t *testing.T) {
+					var (
+						wantV   int = 0
+						wantN       = 0
+						wantErr     = errors.New("read byte error")
+						r           = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) {
+								return 0, wantErr
+							},
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = UnmarshalPositiveInt(r)
 					)
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks,

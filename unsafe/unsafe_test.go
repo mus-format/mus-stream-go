@@ -282,19 +282,40 @@ func TestUnsafe(t *testing.T) {
 
 	t.Run("string", func(t *testing.T) {
 
-		t.Run("All MarshalString, UnmarshalString, SizeString, SkipString functions must work correctly",
+		t.Run("All MarshalString, UnmarshalString, SizeString, SkipString functions with default lenM, lenU, lenS must work correctly",
 			func(t *testing.T) {
 				var (
-					m  = muss.MarshallerFn[string](MarshalString)
-					u  = muss.UnmarshallerFn[string](UnmarshalString)
-					s  = muss.SizerFn[string](SizeString)
-					sk = muss.SkipperFn(SkipString)
+					m muss.MarshallerFn[string] = func(v string, w muss.Writer) (n int,
+						err error) {
+						return MarshalString(v, nil, w)
+					}
+					u muss.UnmarshallerFn[string] = func(r muss.Reader) (v string, n int, err error) {
+						return UnmarshalString(nil, r)
+					}
+					s muss.SizerFn[string] = func(v string) (size int) {
+						return SizeString(v, nil)
+					}
+					sk muss.SkipperFn = func(r muss.Reader) (n int, err error) {
+						return SkipString(nil, r)
+					}
 				)
 				testdata.Test[string](com_testdata.StringTestCases, m, u, s, t)
 				testdata.TestSkip[string](com_testdata.StringTestCases, m, sk, s, t)
 			})
 
-		t.Run("If Writer fails to write a string length, MarshalString should return an error",
+		t.Run("All MarshalStringVarint, UnmarshalStringVarint, SizeStringVarint, SkipStringVarint functions must work correctly",
+			func(t *testing.T) {
+				var (
+					m  = muss.MarshallerFn[string](MarshalStringVarint)
+					u  = muss.UnmarshallerFn[string](UnmarshalStringVarint)
+					s  = muss.SizerFn[string](SizeStringVarint)
+					sk = muss.SkipperFn(SkipStringVarint)
+				)
+				testdata.Test[string](com_testdata.StringTestCases, m, u, s, t)
+				testdata.TestSkip[string](com_testdata.StringTestCases, m, sk, s, t)
+			})
+
+		t.Run("If Writer fails to write a string length, MarshalStringVarint should return an error",
 			func(t *testing.T) {
 				var (
 					s       = "hello world"
@@ -306,12 +327,12 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks  = []*mok.Mock{w.Mock}
-					n, err = MarshalString(s, w)
+					n, err = MarshalStringVarint(s, w)
 				)
 				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
-		t.Run("If Reader fails to read a string length, UnmarshalString should return an error",
+		t.Run("If Reader fails to read a string length, UnmarshalStringVarint should return an error",
 			func(t *testing.T) {
 				var (
 					wantV   string = ""
@@ -323,14 +344,14 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalString(r)
+					v, n, err = UnmarshalStringVarint(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If Reader fails with an io.EOF, UnmarshalString should return io.ErrUnexpectedEOF",
+		t.Run("If Reader fails with an io.EOF, UnmarshalStringVarint should return io.ErrUnexpectedEOF",
 			func(t *testing.T) {
 				var (
 					wantV   string = ""
@@ -346,14 +367,14 @@ func TestUnsafe(t *testing.T) {
 						func(p []byte) (n int, err error) { return 0, io.EOF },
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalString(r)
+					v, n, err = UnmarshalStringVarint(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If encoded string has negative length, UnmarshalString should return ErrNegativeLength",
+		t.Run("If encoded string has negative length, UnmarshalStringVarint should return ErrNegativeLength",
 			func(t *testing.T) {
 				var (
 					wantV   string = ""
@@ -365,7 +386,7 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalString(r)
+					v, n, err = UnmarshalStringVarint(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
@@ -397,14 +418,14 @@ func TestUnsafe(t *testing.T) {
 						)
 					}()
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(lenVl, false, r)
+					v, n, err = UnmarshalValidStringVarint(lenVl, false, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If skip == false and lenVl validator fails with an error, UnmarshalValidString should immediately return it",
+		t.Run("If skip == false and lenVl validator fails with an error, UnmarshalValidStringVarint should immediately return it",
 			func(t *testing.T) {
 				var (
 					wantV   = ""
@@ -425,14 +446,14 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(lenVl, false, r)
+					v, n, err = UnmarshalValidStringVarint(lenVl, false, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If skip == true and lenVl validator fails with an error, UnmarshalValidString should return it and skip all bytes of the string",
+		t.Run("If skip == true and lenVl validator fails with an error, UnmarshalValidStringVarint should return it and skip all bytes of the string",
 			func(t *testing.T) {
 				var (
 					wantV   = ""
@@ -457,14 +478,14 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(lenVl, true, r)
+					v, n, err = UnmarshalValidStringVarint(lenVl, true, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
 
-		t.Run("If skip == true, lenVl validator != nil and Reader fails with an error, UnmarshalValidString should return it",
+		t.Run("If skip == true, lenVl validator != nil and Reader fails with an error, UnmarshalValidStringVarint should return it",
 			func(t *testing.T) {
 				var (
 					wantV   = ""
@@ -489,7 +510,7 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalValidString(lenVl, true, r)
+					v, n, err = UnmarshalValidStringVarint(lenVl, true, r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
@@ -509,12 +530,12 @@ func TestUnsafe(t *testing.T) {
 						return 0, nil
 					},
 				)
-				v, n, err = UnmarshalValidString(lenVl, false, r)
+				v, n, err = UnmarshalValidStringVarint(lenVl, false, r)
 			)
 			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
 		})
 
-		t.Run("If Reader fails to read string content, UnmarshalString should return an error",
+		t.Run("If Reader fails to read string content, UnmarshalStringVarint should return an error",
 			func(t *testing.T) {
 				var (
 					wantV   = ""
@@ -530,7 +551,7 @@ func TestUnsafe(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = UnmarshalString(r)
+					v, n, err = UnmarshalStringVarint(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
@@ -825,4 +846,29 @@ func TestUnsafe(t *testing.T) {
 
 	})
 
+}
+
+// StringVarint
+
+func MarshalStringVarint(v string, w muss.Writer) (n int, err error) {
+	return MarshalString(v, muss.MarshallerFn[int](varint.MarshalInt), w)
+}
+
+func UnmarshalStringVarint(r muss.Reader) (v string,
+	n int, err error) {
+	return UnmarshalValidStringVarint(nil, false, r)
+}
+
+func UnmarshalValidStringVarint(lenVl com.Validator[int], skip bool, r muss.Reader) (
+	v string, n int, err error) {
+	return UnmarshalValidString(muss.UnmarshallerFn[int](varint.UnmarshalInt),
+		lenVl, skip, r)
+}
+
+func SizeStringVarint(v string) (n int) {
+	return SizeString(v, muss.SizerFn[int](varint.SizeInt))
+}
+
+func SkipStringVarint(r muss.Reader) (n int, err error) {
+	return SkipString(muss.UnmarshallerFn[int](varint.UnmarshalInt), r)
 }
