@@ -16,19 +16,19 @@ func Test[T any](cases []T, m muss.Marshaller[T], u muss.Unmarshaller[T],
 	var err error
 	for i := 0; i < len(cases); i++ {
 		var (
-			size = s.SizeMUS(cases[i])
+			size = s.Size(cases[i])
 			buf  = bytes.NewBuffer(make([]byte, 0, size))
 			n    int
 			v    T
 		)
-		n, err = m.MarshalMUS(cases[i], buf)
+		n, err = m.Marshal(cases[i], buf)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if n != size {
 			t.Errorf("case '%v', unexpected n, want '%v' actual '%v'", i, size, n)
 		}
-		v, n, err := u.UnmarshalMUS(buf)
+		v, n, err := u.Unmarshal(buf)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -47,11 +47,11 @@ func TestSkip[T any](cases []T, m muss.Marshaller[T], sk muss.Skipper,
 ) {
 	for i := 0; i < len(cases); i++ {
 		var (
-			size = s.SizeMUS(cases[i])
+			size = s.Size(cases[i])
 			buf  = bytes.NewBuffer(make([]byte, 0, size))
 		)
-		m.MarshalMUS(cases[i], buf)
-		n, err := sk.SkipMUS(buf)
+		m.Marshal(cases[i], buf)
+		n, err := sk.Skip(buf)
 		if err != nil {
 			t.Fatal(err)
 		}

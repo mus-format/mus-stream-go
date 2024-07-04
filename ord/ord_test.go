@@ -454,7 +454,7 @@ func TestOrd(t *testing.T) {
 					str1Raw = append([]byte{6}, []byte(str1)...)
 					ptr     = &str1
 					m1      = func() mock.Marshaller[string] {
-						return mock.NewMarshaller[string]().RegisterNMarshalMUS(2,
+						return mock.NewMarshaller[string]().RegisterNMarshal(2,
 							func(v string, w muss.Writer) (n int, err error) {
 								switch v {
 								case str1:
@@ -467,14 +467,14 @@ func TestOrd(t *testing.T) {
 						)
 					}()
 					u1 = func() mock.Unmarshaller[string] {
-						return mock.NewUnmarshaller[string]().RegisterNUnmarshalMUS(1,
+						return mock.NewUnmarshaller[string]().RegisterNUnmarshal(1,
 							func(r muss.Reader) (v string, n int, err error) {
 								return str1, len(str1Raw), nil
 							},
 						)
 					}()
 					s1 = func() mock.Sizer[string] {
-						return mock.NewSizer[string]().RegisterNSizeMUS(2,
+						return mock.NewSizer[string]().RegisterNSize(2,
 							func(v string) (size int) {
 								switch v {
 								case str1:
@@ -487,7 +487,7 @@ func TestOrd(t *testing.T) {
 						)
 					}()
 					sk1 = func() mock.Skipper {
-						return mock.NewSkipper().RegisterNSkipMUS(1,
+						return mock.NewSkipper().RegisterNSkip(1,
 							func(r muss.Reader) (n int, err error) {
 								return len(str1Raw), nil
 							},
@@ -625,7 +625,7 @@ func TestOrd(t *testing.T) {
 							return 0, nil
 						},
 					)
-					u = mock.NewUnmarshaller[string]().RegisterUnmarshalMUS(
+					u = mock.NewUnmarshaller[string]().RegisterUnmarshal(
 						func(r muss.Reader) (t string, n int, err error) {
 							return "", 0, wantErr
 						},
@@ -680,7 +680,7 @@ func TestOrd(t *testing.T) {
 							return 0, nil
 						},
 					)
-					sk = mock.NewSkipper().RegisterSkipMUS(
+					sk = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 2, wantErr
 						},
@@ -829,7 +829,7 @@ func TestOrd(t *testing.T) {
 					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) error { return nil },
 					)
-					m = mock.NewMarshaller[uint]().RegisterMarshalMUS(
+					m = mock.NewMarshaller[uint]().RegisterMarshal(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, wantErr
 						},
@@ -889,7 +889,7 @@ func TestOrd(t *testing.T) {
 							return 4, nil
 						},
 					)
-					u = mock.NewUnmarshaller[string]().RegisterUnmarshalMUS(
+					u = mock.NewUnmarshaller[string]().RegisterUnmarshal(
 						func(r muss.Reader) (t string, n int, err error) {
 							return "", 2, wantErr
 						},
@@ -919,7 +919,7 @@ func TestOrd(t *testing.T) {
 					r = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					sk = mock.NewSkipper().RegisterSkipMUS(
+					sk = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) { return 4, nil },
 					)
 					mocks     = []*mok.Mock{r.Mock, sk.Mock}
@@ -949,7 +949,7 @@ func TestOrd(t *testing.T) {
 							return errors.New("lenVl validator error")
 						},
 					)
-					sk = mock.NewSkipper().RegisterSkipMUS(
+					sk = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) { return 3, wantErr },
 					)
 					mocks     = []*mok.Mock{sk.Mock}
@@ -1010,16 +1010,16 @@ func TestOrd(t *testing.T) {
 							return wantErr
 						},
 					)
-					u = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
-					).RegisterUnmarshalMUS(
+					).RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 2, 1, nil
 						},
 					)
-					sk = mock.NewSkipper().RegisterSkipMUS(
+					sk = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
@@ -1051,12 +1051,12 @@ func TestOrd(t *testing.T) {
 							return errors.New("validator error")
 						},
 					)
-					u = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
 					)
-					sk = mock.NewSkipper().RegisterSkipMUS(
+					sk = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 2, wantErr
 						},
@@ -1177,7 +1177,7 @@ func TestOrd(t *testing.T) {
 					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) error { return nil },
 					)
-					m1 = mock.NewMarshaller[uint]().RegisterMarshalMUS(
+					m1 = mock.NewMarshaller[uint]().RegisterMarshal(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, wantErr
 						},
@@ -1196,12 +1196,12 @@ func TestOrd(t *testing.T) {
 					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) error { return nil },
 					)
-					m1 = mock.NewMarshaller[uint]().RegisterMarshalMUS(
+					m1 = mock.NewMarshaller[uint]().RegisterMarshal(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, nil
 						},
 					)
-					m2 = mock.NewMarshaller[uint]().RegisterMarshalMUS(
+					m2 = mock.NewMarshaller[uint]().RegisterMarshal(
 						func(t uint, w muss.Writer) (n int, err error) {
 							return 1, wantErr
 						},
@@ -1261,7 +1261,7 @@ func TestOrd(t *testing.T) {
 							return 2, nil
 						},
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 0, 2, wantErr
 						},
@@ -1285,12 +1285,12 @@ func TestOrd(t *testing.T) {
 							return 2, nil
 						},
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 1, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 
 							return 0, 2, wantErr
@@ -1321,20 +1321,20 @@ func TestOrd(t *testing.T) {
 							return wantErr
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
-					).RegisterSkipMUS(
+					).RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
 					)
-					sk2 = mock.NewSkipper().RegisterSkipMUS(
+					sk2 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
-					).RegisterSkipMUS(
+					).RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
@@ -1369,7 +1369,7 @@ func TestOrd(t *testing.T) {
 							return errors.New("lenVl validator error")
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, wantErr
 						},
@@ -1401,12 +1401,12 @@ func TestOrd(t *testing.T) {
 							return errors.New("lenVl Validator error")
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
 					)
-					sk2 = mock.NewSkipper().RegisterSkipMUS(
+					sk2 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, wantErr
 						},
@@ -1482,7 +1482,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1495,16 +1495,16 @@ func TestOrd(t *testing.T) {
 							return wantErr
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
 					)
-					sk2 = mock.NewSkipper().RegisterSkipMUS(
+					sk2 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
-					).RegisterSkipMUS(
+					).RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
@@ -1528,7 +1528,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1536,7 +1536,7 @@ func TestOrd(t *testing.T) {
 					v1 = com_mock.NewValidator[uint]().RegisterValidate(
 						func(v uint) (err error) { return errors.New("key Validator error") },
 					)
-					sk2 = mock.NewSkipper().RegisterSkipMUS(
+					sk2 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 2, wantErr
 						},
@@ -1560,7 +1560,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1589,7 +1589,7 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
@@ -1599,12 +1599,12 @@ func TestOrd(t *testing.T) {
 							return errors.New("key Validator error")
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 2, wantErr
 						},
 					)
-					sk2 = mock.NewSkipper().RegisterSkipMUS(
+					sk2 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
@@ -1628,12 +1628,12 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 11, 1, nil
 						},
@@ -1646,12 +1646,12 @@ func TestOrd(t *testing.T) {
 							return wantErr
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
 					)
-					sk2 = mock.NewSkipper().RegisterSkipMUS(
+					sk2 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) {
 							return 1, nil
 						},
@@ -1676,12 +1676,12 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 11, 1, nil
 						},
@@ -1691,7 +1691,7 @@ func TestOrd(t *testing.T) {
 							return errors.New("value Validator error")
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) { return 1, wantErr },
 					)
 					sk2   = mock.NewSkipper()
@@ -1716,12 +1716,12 @@ func TestOrd(t *testing.T) {
 					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 4, nil },
 					)
-					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u1 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 10, 1, nil
 						},
 					)
-					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+					u2 = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 						func(r muss.Reader) (v uint, n int, err error) {
 							return 11, 1, nil
 						},
@@ -1736,10 +1736,10 @@ func TestOrd(t *testing.T) {
 							return errors.New("value Validator error")
 						},
 					)
-					sk1 = mock.NewSkipper().RegisterSkipMUS(
+					sk1 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) { return 1, nil },
 					)
-					sk2 = mock.NewSkipper().RegisterSkipMUS(
+					sk2 = mock.NewSkipper().RegisterSkip(
 						func(r muss.Reader) (n int, err error) { return 1, wantErr },
 					)
 					mocks = []*mok.Mock{r.Mock, u1.Mock, u2.Mock, v1.Mock, v2.Mock,
@@ -1805,7 +1805,7 @@ func testAllMapFunctions(
 		int2Raw      = []byte{8}
 		mp           = map[string]uint{str1: int1, str2: int2}
 		m1           = func() mock.Marshaller[string] {
-			return mock.NewMarshaller[string]().RegisterNMarshalMUS(4,
+			return mock.NewMarshaller[string]().RegisterNMarshal(4,
 				func(v string, w muss.Writer) (n int, err error) {
 					switch v {
 					case str1:
@@ -1821,7 +1821,7 @@ func testAllMapFunctions(
 			)
 		}()
 		m2 = func() mock.Marshaller[uint] {
-			return mock.NewMarshaller[uint]().RegisterNMarshalMUS(4,
+			return mock.NewMarshaller[uint]().RegisterNMarshal(4,
 				func(v uint, w muss.Writer) (n int, err error) {
 					switch v {
 					case int1:
@@ -1837,29 +1837,29 @@ func testAllMapFunctions(
 			)
 		}()
 		u1 = func() mock.Unmarshaller[string] {
-			return mock.NewUnmarshaller[string]().RegisterUnmarshalMUS(
+			return mock.NewUnmarshaller[string]().RegisterUnmarshal(
 				func(r muss.Reader) (v string, n int, err error) {
 					return str1, len(str1Raw), nil
 				},
-			).RegisterUnmarshalMUS(
+			).RegisterUnmarshal(
 				func(r muss.Reader) (t string, n int, err error) {
 					return str2, len(str2Raw), nil
 				},
 			)
 		}()
 		u2 = func() mock.Unmarshaller[uint] {
-			return mock.NewUnmarshaller[uint]().RegisterUnmarshalMUS(
+			return mock.NewUnmarshaller[uint]().RegisterUnmarshal(
 				func(r muss.Reader) (v uint, n int, err error) {
 					return int1, len(int1Raw), nil
 				},
-			).RegisterUnmarshalMUS(
+			).RegisterUnmarshal(
 				func(r muss.Reader) (t uint, n int, err error) {
 					return int2, len(int2Raw), nil
 				},
 			)
 		}()
 		s1 = func() mock.Sizer[string] {
-			return mock.NewSizer[string]().RegisterNSizeMUS(4,
+			return mock.NewSizer[string]().RegisterNSize(4,
 				func(v string) (size int) {
 					switch v {
 					case str1:
@@ -1875,7 +1875,7 @@ func testAllMapFunctions(
 			)
 		}()
 		s2 = func() mock.Sizer[uint] {
-			return mock.NewSizer[uint]().RegisterNSizeMUS(4,
+			return mock.NewSizer[uint]().RegisterNSize(4,
 				func(v uint) (size int) {
 					switch v {
 					case int1:
@@ -1891,22 +1891,22 @@ func testAllMapFunctions(
 			)
 		}()
 		sk1 = func() mock.Skipper {
-			return mock.NewSkipper().RegisterSkipMUS(
+			return mock.NewSkipper().RegisterSkip(
 				func(r muss.Reader) (n int, err error) {
 					return len(str1Raw), nil
 				},
-			).RegisterSkipMUS(
+			).RegisterSkip(
 				func(r muss.Reader) (n int, err error) {
 					return len(str2Raw), nil
 				},
 			)
 		}()
 		sk2 = func() mock.Skipper {
-			return mock.NewSkipper().RegisterSkipMUS(
+			return mock.NewSkipper().RegisterSkip(
 				func(r muss.Reader) (n int, err error) {
 					return len(int1Raw), nil
 				},
-			).RegisterSkipMUS(
+			).RegisterSkip(
 				func(r muss.Reader) (n int, err error) {
 					return len(int2Raw), nil
 				},
@@ -1945,7 +1945,7 @@ func testAllSliceFunctions(
 		sl      = []string{str1, str2}
 
 		m1 = func() mock.Marshaller[string] {
-			return mock.NewMarshaller[string]().RegisterNMarshalMUS(4,
+			return mock.NewMarshaller[string]().RegisterNMarshal(4,
 				func(v string, w muss.Writer) (n int, err error) {
 					switch v {
 					case str1:
@@ -1961,18 +1961,18 @@ func testAllSliceFunctions(
 			)
 		}()
 		u1 = func() mock.Unmarshaller[string] {
-			return mock.NewUnmarshaller[string]().RegisterUnmarshalMUS(
+			return mock.NewUnmarshaller[string]().RegisterUnmarshal(
 				func(r muss.Reader) (v string, n int, err error) {
 					return str1, len(str1Raw), nil
 				},
-			).RegisterUnmarshalMUS(
+			).RegisterUnmarshal(
 				func(r muss.Reader) (t string, n int, err error) {
 					return str2, len(str2Raw), nil
 				},
 			)
 		}()
 		s1 = func() mock.Sizer[string] {
-			return mock.NewSizer[string]().RegisterNSizeMUS(4,
+			return mock.NewSizer[string]().RegisterNSize(4,
 				func(v string) (size int) {
 					switch v {
 					case str1:
@@ -1988,11 +1988,11 @@ func testAllSliceFunctions(
 			)
 		}()
 		sk1 = func() mock.Skipper {
-			return mock.NewSkipper().RegisterSkipMUS(
+			return mock.NewSkipper().RegisterSkip(
 				func(r muss.Reader) (n int, err error) {
 					return len(str1Raw), nil
 				},
-			).RegisterSkipMUS(
+			).RegisterSkip(
 				func(r muss.Reader) (n int, err error) {
 					return len(str2Raw), nil
 				},

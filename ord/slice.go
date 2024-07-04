@@ -6,7 +6,7 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalSlice writes the MUS encoding of a slice value.
+// MarshalSlice writes the encoding of a slice value.
 //
 // The lenM argument specifies the Marshaller for the slice length, if nil,
 // varint.MarshalPositiveInt() is used.
@@ -18,14 +18,14 @@ func MarshalSlice[T any](v []T, lenM muss.Marshaller[int], m muss.Marshaller[T],
 	if lenM == nil {
 		n, err = varint.MarshalPositiveInt(len(v), w)
 	} else {
-		n, err = lenM.MarshalMUS(len(v), w)
+		n, err = lenM.Marshal(len(v), w)
 	}
 	if err != nil {
 		return
 	}
 	var n1 int
 	for _, e := range v {
-		n1, err = m.MarshalMUS(e, w)
+		n1, err = m.Marshal(e, w)
 		n += n1
 		if err != nil {
 			return
@@ -34,7 +34,7 @@ func MarshalSlice[T any](v []T, lenM muss.Marshaller[int], m muss.Marshaller[T],
 	return
 }
 
-// UnmarshalSlice reads a MUS-encoded slice value.
+// UnmarshalSlice reads an encoded slice value.
 //
 // The lenU argument specifies the Unmarshaller for the slice length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -47,7 +47,7 @@ func UnmarshalSlice[T any](lenU muss.Unmarshaller[int], u muss.Unmarshaller[T],
 	return UnmarshalValidSlice(lenU, nil, u, nil, nil, r)
 }
 
-// UnmarshalValidSlice reads a MUS-encoded valid slice value.
+// UnmarshalValidSlice reads an encoded valid slice value.
 //
 // The lenU argument specifies the Unmarshaller for the slice length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -71,7 +71,7 @@ func UnmarshalValidSlice[T any](lenU muss.Unmarshaller[int],
 	if lenU == nil {
 		length, n, err = varint.UnmarshalPositiveInt(r)
 	} else {
-		length, n, err = lenU.UnmarshalMUS(r)
+		length, n, err = lenU.Unmarshal(r)
 	}
 	if err != nil {
 		return
@@ -93,7 +93,7 @@ func UnmarshalValidSlice[T any](lenU muss.Unmarshaller[int],
 	}
 	v = make([]T, length)
 	for i = 0; i < length; i++ {
-		e, n1, err = u.UnmarshalMUS(r)
+		e, n1, err = u.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
@@ -118,7 +118,7 @@ SkipRemainingBytes:
 	return
 }
 
-// SizeSlice returns the size of a MUS-encoded slice value.
+// SizeSlice returns the size of an encoded slice value.
 //
 // The lenS argument specifies the Sizer for the slice length, if nil,
 // varint.SizePositiveInt() is used.
@@ -128,15 +128,15 @@ func SizeSlice[T any](v []T, lenS muss.Sizer[int], s muss.Sizer[T]) (size int) {
 	if lenS == nil {
 		size = varint.SizePositiveInt(len(v))
 	} else {
-		size = lenS.SizeMUS(len(v))
+		size = lenS.Size(len(v))
 	}
 	for i := 0; i < len(v); i++ {
-		size += s.SizeMUS(v[i])
+		size += s.Size(v[i])
 	}
 	return
 }
 
-// SkipSlice skips a MUS-encoded slice value.
+// SkipSlice skips an encoded slice value.
 //
 // The lenU argument specifies the Unmarshaller for the slice length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -150,7 +150,7 @@ func SkipSlice(lenU muss.Unmarshaller[int], sk muss.Skipper, r muss.Reader) (
 	if lenU == nil {
 		length, n, err = varint.UnmarshalPositiveInt(r)
 	} else {
-		length, n, err = lenU.UnmarshalMUS(r)
+		length, n, err = lenU.Unmarshal(r)
 	}
 	if err != nil {
 		return
@@ -169,7 +169,7 @@ func skipRemainingSlice(from int, length int, sk muss.Skipper,
 	n int, err error) {
 	var n1 int
 	for i := from; i < length; i++ {
-		n1, err = sk.SkipMUS(r)
+		n1, err = sk.Skip(r)
 		n += n1
 		if err != nil {
 			return

@@ -261,7 +261,7 @@ func TestPM(t *testing.T) {
 						return nil
 					},
 				)
-				m = mock.NewMarshaller[int]().RegisterMarshalMUS(
+				m = mock.NewMarshaller[int]().RegisterMarshal(
 					func(t int, w muss.Writer) (n int, err error) {
 						return 1, wantErr
 					},
@@ -335,7 +335,7 @@ func TestPM(t *testing.T) {
 						return
 					},
 				)
-				u = mock.NewUnmarshaller[int]().RegisterUnmarshalMUS(
+				u = mock.NewUnmarshaller[int]().RegisterUnmarshal(
 					func(r muss.Reader) (t int, n int, err error) {
 						n = 1
 						err = wantErr
@@ -426,7 +426,7 @@ func TestPM(t *testing.T) {
 						return
 					},
 				)
-				sk = mock.NewSkipper().RegisterSkipMUS(
+				sk = mock.NewSkipper().RegisterSkip(
 					func(r muss.Reader) (n int, err error) {
 						n = 1
 						err = wantErr

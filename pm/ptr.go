@@ -8,7 +8,7 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalPtr fills bs with the MUS encoding of a pointer.
+// MarshalPtr fills bs with the encoding of a pointer.
 //
 // The m argument specifies the Marshaller for the pointer base type.
 //
@@ -37,7 +37,7 @@ func MarshalPtr[T any](v *T, m muss.Marshaller[T], mp *com.PtrMap,
 		return
 	}
 	if newOne {
-		n1, err = m.MarshalMUS(*v, w)
+		n1, err = m.Marshal(*v, w)
 		n += n1
 	}
 	return
@@ -84,7 +84,7 @@ func UnmarshalPtr[T any](u muss.Unmarshaller[T], mp com.ReversePtrMap,
 	return
 }
 
-// SizePtr returns the size of a MUS-encoded pointer.
+// SizePtr returns the size of an encoded pointer.
 //
 // The s argument specifies the Sizer for the pointer base type.
 func SizePtr[T any](v *T, s muss.Sizer[T], mp *com.PtrMap) (size int) {
@@ -93,7 +93,7 @@ func SizePtr[T any](v *T, s muss.Sizer[T], mp *com.PtrMap) (size int) {
 		id, newOne := maptr(unsafe.Pointer(v), mp)
 		size += varint.SizeInt(id)
 		if newOne {
-			return size + s.SizeMUS(*v)
+			return size + s.Size(*v)
 		} else {
 			return
 		}
@@ -101,7 +101,7 @@ func SizePtr[T any](v *T, s muss.Sizer[T], mp *com.PtrMap) (size int) {
 	return
 }
 
-// SkipPtr skips a MUS-encoded pointer.
+// SkipPtr skips an encoded pointer.
 //
 // The sk argument specifies the Skipper for the pointer base type.
 //
@@ -129,7 +129,7 @@ func SkipPtr(sk muss.Skipper, mp com.ReversePtrMap, r muss.Reader) (n int,
 		}
 		_, pst := mp.Get(id)
 		if !pst {
-			n1, err = sk.SkipMUS(r)
+			n1, err = sk.Skip(r)
 			n += n1
 			if err != nil {
 				return
@@ -151,7 +151,7 @@ func unmarshalData[T any](id int, u muss.Unmarshaller[T],
 		n1 int
 	)
 	mp.Put(id, unsafe.Pointer(&k))
-	k, n1, err = u.UnmarshalMUS(r)
+	k, n1, err = u.Unmarshal(r)
 	n += n1
 	if err != nil {
 		return

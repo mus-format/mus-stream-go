@@ -6,7 +6,7 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalMap writes the MUS encoding of a map value.
+// MarshalMap writes the encoding of a map value.
 //
 // The lenM argument specifies the Marshaller for the map length, if nil,
 // varint.MarshalPositiveInt() is used.
@@ -22,19 +22,19 @@ func MarshalMap[T comparable, V any](v map[T]V, lenM muss.Marshaller[int],
 	if lenM == nil {
 		n, err = varint.MarshalPositiveInt(len(v), w)
 	} else {
-		n, err = lenM.MarshalMUS(len(v), w)
+		n, err = lenM.Marshal(len(v), w)
 	}
 	if err != nil {
 		return
 	}
 	var n1 int
 	for k, v := range v {
-		n1, err = m1.MarshalMUS(k, w)
+		n1, err = m1.Marshal(k, w)
 		n += n1
 		if err != nil {
 			return
 		}
-		n1, err = m2.MarshalMUS(v, w)
+		n1, err = m2.Marshal(v, w)
 		n += n1
 		if err != nil {
 			return
@@ -43,7 +43,7 @@ func MarshalMap[T comparable, V any](v map[T]V, lenM muss.Marshaller[int],
 	return
 }
 
-// UnmarshalMap reads a MUS-encoded map value.
+// UnmarshalMap reads an encoded map value.
 //
 // The lenU argument specifies the Unmarshaller for the map length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -60,7 +60,7 @@ func UnmarshalMap[T comparable, V any](lenU muss.Unmarshaller[int],
 	return UnmarshalValidMap(lenU, nil, u1, u2, nil, nil, nil, nil, r)
 }
 
-// UnmarshalValidMap reads a MUS-encoded map value.
+// UnmarshalValidMap reads an encoded map value.
 //
 // The lenU argument specifies the Unmarshaller for the map length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -86,7 +86,7 @@ func UnmarshalValidMap[T comparable, V any](lenU muss.Unmarshaller[int],
 	if lenU == nil {
 		length, n, err = varint.UnmarshalPositiveInt(r)
 	} else {
-		length, n, err = lenU.UnmarshalMUS(r)
+		length, n, err = lenU.Unmarshal(r)
 	}
 	if err != nil {
 		return
@@ -109,7 +109,7 @@ func UnmarshalValidMap[T comparable, V any](lenU muss.Unmarshaller[int],
 	}
 	v = make(map[T]V)
 	for i = 0; i < length; i++ {
-		k, n1, err = u1.UnmarshalMUS(r)
+		k, n1, err = u1.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
@@ -117,7 +117,7 @@ func UnmarshalValidMap[T comparable, V any](lenU muss.Unmarshaller[int],
 		if vl1 != nil {
 			if err = vl1.Validate(k); err != nil {
 				if sk2 != nil {
-					n1, err1 = sk2.SkipMUS(r)
+					n1, err1 = sk2.Skip(r)
 					n += n1
 					if err1 != nil {
 						err = err1
@@ -128,7 +128,7 @@ func UnmarshalValidMap[T comparable, V any](lenU muss.Unmarshaller[int],
 				goto SkipRemainingBytes
 			}
 		}
-		p, n1, err = u2.UnmarshalMUS(r)
+		p, n1, err = u2.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
@@ -154,7 +154,7 @@ SkipRemainingBytes:
 	return
 }
 
-// SizeMap returns the size of a MUS-encoded map value.
+// SizeMap returns the size of an encoded map value.
 //
 // The lenS argument specifies the Sizer for the map length, if nil,
 // varint.SizePositiveInt() is used.
@@ -166,16 +166,16 @@ func SizeMap[T comparable, V any](v map[T]V, lenS muss.Sizer[int],
 	if lenS == nil {
 		size = varint.SizePositiveInt(len(v))
 	} else {
-		size = lenS.SizeMUS(len(v))
+		size = lenS.Size(len(v))
 	}
 	for k, v := range v {
-		size += s1.SizeMUS(k)
-		size += s2.SizeMUS(v)
+		size += s1.Size(k)
+		size += s2.Size(v)
 	}
 	return
 }
 
-// SkipMap skips a MUS-encoded map value.
+// SkipMap skips an encoded map value.
 //
 // The lenU argument specifies the Unmarshaller for the map length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -190,7 +190,7 @@ func SkipMap(lenU muss.Unmarshaller[int], sk1, sk2 muss.Skipper, r muss.Reader) 
 	if lenU == nil {
 		length, n, err = varint.UnmarshalPositiveInt(r)
 	} else {
-		length, n, err = lenU.UnmarshalMUS(r)
+		length, n, err = lenU.Unmarshal(r)
 	}
 	if err != nil {
 		return
@@ -208,12 +208,12 @@ func skipRemainingMap(from int, length int, sk1, sk2 muss.Skipper,
 	r muss.Reader) (n int, err error) {
 	var n1 int
 	for i := from; i < length; i++ {
-		n1, err = sk1.SkipMUS(r)
+		n1, err = sk1.Skip(r)
 		n += n1
 		if err != nil {
 			return
 		}
-		n1, err = sk2.SkipMUS(r)
+		n1, err = sk2.Skip(r)
 		n += n1
 		if err != nil {
 			return

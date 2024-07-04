@@ -5,14 +5,14 @@ import (
 	muss "github.com/mus-format/mus-stream-go"
 )
 
-// MarshalByte writes the MUS encoding (Varint) of a byte value.
+// MarshalByte writes the encoding (Varint) of a byte value.
 //
 // Returns the number of used bytes and a Writer error.
 func MarshalByte(v byte, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
-// UnmarshalByte reads a MUS-encoded (Varint) byte value.
+// UnmarshalByte reads an encoded (Varint) byte value.
 //
 // In addition to the byte value, returns the number of used bytes and one of
 // the com.ErrOverflow or Reader errors.
@@ -21,12 +21,12 @@ func UnmarshalByte(r muss.Reader) (v byte, n int, err error) {
 		r)
 }
 
-// SizeByte returns the size of a MUS-encoded (Varint) byte value.
+// SizeByte returns the size of an encoded (Varint) byte value.
 func SizeByte(v byte) (size int) {
 	return sizeUint(v)
 }
 
-// SkipByte skips a MUS-encoded (Varint) byte value.
+// SkipByte skips an encoded (Varint) byte value.
 //
 // Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
 // errors.

@@ -8,7 +8,7 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalString writes the MUS encoding of a string value.
+// MarshalString writes the encoding of a string value.
 //
 // The lenM argument specifies the Marshaller for the string length, if nil,
 // varint.MarshalPositiveInt() is used.
@@ -20,7 +20,7 @@ func MarshalString(v string, lenM muss.Marshaller[int], w muss.Writer) (n int,
 	if lenM == nil {
 		n, err = varint.MarshalPositiveInt(length, w)
 	} else {
-		n, err = lenM.MarshalMUS(length, w)
+		n, err = lenM.Marshal(length, w)
 	}
 	if err != nil {
 		return
@@ -31,7 +31,7 @@ func MarshalString(v string, lenM muss.Marshaller[int], w muss.Writer) (n int,
 	return
 }
 
-// UnmarshalString reads a MUS-encoded string value.
+// UnmarshalString reads an encoded string value.
 //
 // The lenU argument specifies the Unmarshaller for the string length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -46,7 +46,7 @@ func UnmarshalString(lenU muss.Unmarshaller[int], r muss.Reader) (v string,
 	return UnmarshalValidString(lenU, nil, false, r)
 }
 
-// UnmarshalValidString reads a MUS-encoded valid string value.
+// UnmarshalValidString reads an encoded valid string value.
 //
 // The lenU argument specifies the Unmarshaller for the string length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -65,7 +65,7 @@ func UnmarshalValidString(lenU muss.Unmarshaller[int], lenVl com.Validator[int],
 	if lenU == nil {
 		length, n, err = varint.UnmarshalPositiveInt(r)
 	} else {
-		length, n, err = lenU.UnmarshalMUS(r)
+		length, n, err = lenU.Unmarshal(r)
 	}
 	if err != nil {
 		return
@@ -106,7 +106,7 @@ SkipRemainingBytes:
 	return
 }
 
-// SizeString returns the size of a MUS-encoded string value.
+// SizeString returns the size of an encoded string value.
 //
 // The lenS argument specifies the Sizer for the string length, if nil,
 // varint.SizePositiveInt() is used.
@@ -115,11 +115,11 @@ func SizeString(v string, lenS muss.Sizer[int]) (n int) {
 	if lenS == nil {
 		return varint.SizePositiveInt(length) + length
 	} else {
-		return lenS.SizeMUS(length) + length
+		return lenS.Size(length) + length
 	}
 }
 
-// SkipString skips a MUS-encoded string value.
+// SkipString skips an encoded string value.
 //
 // The lenU argument specifies the Unmarshaller for the string length, if nil,
 // varint.UnmarshalPositiveInt() is used.
@@ -131,7 +131,7 @@ func SkipString(lenU muss.Unmarshaller[int], r muss.Reader) (n int, err error) {
 	if lenU == nil {
 		length, n, err = varint.UnmarshalPositiveInt(r)
 	} else {
-		length, n, err = lenU.UnmarshalMUS(r)
+		length, n, err = lenU.Unmarshal(r)
 	}
 	if err != nil {
 		return

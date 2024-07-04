@@ -8,7 +8,7 @@ import (
 	"github.com/mus-format/mus-stream-go/ord"
 )
 
-// MarshalBool writes the MUS encoding of a bool value.
+// MarshalBool writes the encoding of a bool value.
 //
 // Returns the number of used bytes and a Writer error.
 func MarshalBool(v bool, w muss.Writer) (n int, err error) {
@@ -20,7 +20,7 @@ func MarshalBool(v bool, w muss.Writer) (n int, err error) {
 	return
 }
 
-// UnmarshalBool reads a MUS-encoded bool value.
+// UnmarshalBool reads an encoded bool value.
 //
 // In addition to the bool value, returns the number of used bytes and one of
 // the com.ErrWrongFormat or Reader errors.
@@ -36,12 +36,12 @@ func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	return *(*bool)(unsafe_mod.Pointer(&b)), 1, nil
 }
 
-// SizeBool returns the size of a MUS-encoded bool value.
+// SizeBool returns the size of an encoded bool value.
 func SizeBool(v bool) (n int) {
 	return ord.SizeBool(v)
 }
 
-// SkipBool skips a MUS-encoded bool value.
+// SkipBool skips an encoded bool value.
 //
 // Returns the number of skiped bytes and one of the com.ErrWrongFormat or
 // Reader errors.

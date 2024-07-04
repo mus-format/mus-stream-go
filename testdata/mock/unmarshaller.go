@@ -5,7 +5,7 @@ import (
 	"github.com/ymz-ncnk/mok"
 )
 
-type UnmarshalMUSFn[T any] func(r muss.Reader) (t T, n int, err error)
+type UnmarshalFn[T any] func(r muss.Reader) (t T, n int, err error)
 
 func NewUnmarshaller[T any]() Unmarshaller[T] {
 	return Unmarshaller[T]{mok.New("Unmarshaller")}
@@ -15,20 +15,20 @@ type Unmarshaller[T any] struct {
 	*mok.Mock
 }
 
-func (u Unmarshaller[T]) RegisterUnmarshalMUS(
-	fn UnmarshalMUSFn[T]) Unmarshaller[T] {
-	u.Register("UnmarshalMUS", fn)
+func (u Unmarshaller[T]) RegisterUnmarshal(
+	fn UnmarshalFn[T]) Unmarshaller[T] {
+	u.Register("Unmarshal", fn)
 	return u
 }
 
-func (u Unmarshaller[T]) RegisterNUnmarshalMUS(n int,
-	fn UnmarshalMUSFn[T]) Unmarshaller[T] {
-	u.RegisterN("UnmarshalMUS", n, fn)
+func (u Unmarshaller[T]) RegisterNUnmarshal(n int,
+	fn UnmarshalFn[T]) Unmarshaller[T] {
+	u.RegisterN("Unmarshal", n, fn)
 	return u
 }
 
-func (u Unmarshaller[T]) UnmarshalMUS(r muss.Reader) (t T, n int, err error) {
-	result, err := u.Call("UnmarshalMUS", mok.SafeVal[muss.Reader](r))
+func (u Unmarshaller[T]) Unmarshal(r muss.Reader) (t T, n int, err error) {
+	result, err := u.Call("Unmarshal", mok.SafeVal[muss.Reader](r))
 	if err != nil {
 		panic(err)
 	}
