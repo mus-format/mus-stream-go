@@ -56,9 +56,7 @@ func main() {
     if err == nil {
       fmt.Println(str)
     } else {
-      // Only the length of the invalid string will be deserialized, the rest of
-      // its bytes will be simply skipped, and after that the Unmarshal
-      // function will return a validation error.			
+      // In this case the string is skipped.
       fmt.Printf("validation error - \"%v\"\n", err)
     }
   }
@@ -79,10 +77,3 @@ because the `bufio.Writer` and `bufio.Reader` implement the `muss.Writer` and
 # Data Type Metadata (DTM) Support
 [mus-stream-dts-go](https://github.com/mus-format/mus-stream-dts-go) provides 
 DTM support.
-
-# Data Versioning Support
-[mus-stream-dvs-go](https://github.com/mus-format/mus-stream-dvs-go) provides 
-data versioning support.
-
-# Marshal/Unmarshal interfaces (or oneof feature)
-[Go to the mus-go documentation](https://github.com/mus-format/mus-go#marshalunmarshal-interfaces-or-oneof-feature)
