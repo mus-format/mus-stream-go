@@ -1,7 +1,7 @@
 # mus-stream-go
-mus-stream-go is a streaming version of [mus-go](https://github.com/mus-format/mus-go).
-It completely repeats the structure of mus-go, and differs only in that it uses 
-`Writer`, `Reader` interfaces rather than а slice of bytes.
+mus-stream-go is a streaming version of [mus-go](https://github.com/mus-format/mus-go). 
+It mirrors the structure of mus-go but uses the `Writer` and `Reader` interfaces 
+instead of a byte slice.
 
 # Tests
 Test coverage is 100%.
@@ -66,13 +66,9 @@ func main() {
   // world
 }
 ```
-This trick can be performed not only with strings, but also with slice, map or 
-struct data types.
-
-Another thing to note is that if we want to use a real connection instead of 
-`bytes.Buffer`, we will have, for example, to use the `bufio` package. This is 
-because the `bufio.Writer` and `bufio.Reader` implement the `muss.Writer` and 
-`muss.Reader` interfaces we need.
+Another thing to note is that with a real connection (instead of `bytes.Buffer`), 
+we need to use the `bufio` package. This is because `bufio.Writer` and 
+`bufio.Reader` implement the `muss.Writer` and `muss.Reader` interfaces.
 
 # Data Type Metadata (DTM) Support
 [mus-stream-dts-go](https://github.com/mus-format/mus-stream-dts-go) provides 
