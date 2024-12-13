@@ -5,8 +5,8 @@
 [![codecov](https://codecov.io/gh/mus-format/mus-stream-go/graph/badge.svg?token=91OM0S4D9Q)](https://codecov.io/gh/mus-format/mus-stream-go)
 
 mus-stream-go is a streaming version of [mus-go](https://github.com/mus-format/mus-go). 
-It mirrors the structure of mus-go but uses the `Writer` and `Reader` interfaces 
-instead of a byte slice.
+It has the same structure, but uses the `Writer` and `Reader` interfaces instead
+of a byte slices.
 
 # How To Use
 You can learn more about this in the mus-go [documentation](https://github.com/mus-format/mus-go#how-to-use). 
