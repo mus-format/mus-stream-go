@@ -8,9 +8,6 @@ mus-stream-go is a streaming version of [mus-go](https://github.com/mus-format/m
 It mirrors the structure of mus-go but uses the `Writer` and `Reader` interfaces 
 instead of a byte slice.
 
-# Tests
-Test coverage is 100%.
-
 # How To Use
 You can learn more about this in the mus-go [documentation](https://github.com/mus-format/mus-go#how-to-use). 
 Here is just a small example.
