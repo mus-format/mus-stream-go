@@ -8,12 +8,12 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalString writes the encoding of a string value.
+// MarshalString writes an encoded string value.
 //
 // The lenM argument specifies the Marshaller for the string length, if nil,
 // varint.MarshalPositiveInt() is used.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalString(v string, lenM muss.Marshaller[int], w muss.Writer) (n int,
 	err error) {
 	length := len(v)
@@ -36,8 +36,8 @@ func MarshalString(v string, lenM muss.Marshaller[int], w muss.Writer) (n int,
 // The lenU argument specifies the Unmarshaller for the string length, if nil,
 // varint.UnmarshalPositiveInt() is used.
 //
-// In addition to the string value, returns the number of used bytes and one of
-// the com.ErrOverflow, com.ErrNegativeLength or Reader errors.
+// In addition to the string value and the number of used bytes, it may also
+// return com.ErrOverflow, com.ErrNegativeLength or a Reader error.
 //
 // UnmarshalString will panic if the length of the resulting string is too big
 // for the string type.
@@ -54,8 +54,8 @@ func UnmarshalString(lenU muss.Unmarshaller[int], r muss.Reader) (v string,
 // an error and skip == true UnmarshalValidString skips the remaining bytes of
 // the string.
 //
-// In addition to the string value, returns the number of used bytes and one of
-// the com.ErrOverflow, com.ErrNegativeLength, Validator or Reader errors.
+// In addition to the string value and the number of used bytes, it may also
+// return com.ErrOverflow, com.ErrNegativeLength, a Validator or Reader error.
 //
 // UnmarshalValidString will panic if the length of the resulting string is too
 // big for the string type.
@@ -124,8 +124,8 @@ func SizeString(v string, lenS muss.Sizer[int]) (n int) {
 // The lenU argument specifies the Unmarshaller for the string length, if nil,
 // varint.UnmarshalPositiveInt() is used.
 //
-// Returns the number of skiped bytes and one of the com.ErrOverflow,
-// mus.ErrNegativeLength or Reader errors.
+// In addition to the number of used bytes, it may also return
+// mus.ErrNegativeLength or a Reader error.
 func SkipString(lenU muss.Unmarshaller[int], r muss.Reader) (n int, err error) {
 	var length int
 	if lenU == nil {

@@ -222,14 +222,6 @@ func sizeNum32[T com.Num32](t T) int {
 	return com.Num32RawSize
 }
 
-func sizeInteger16[T com.Integer16](t T) int {
-	return com.Num16RawSize
-}
-
-func sizeInteger8[T com.Integer8](t T) int {
-	return com.Num8RawSize
-}
-
 func skipInteger64(r muss.Reader) (int, error) {
 	return skipInteger(com.Num64RawSize, r)
 }

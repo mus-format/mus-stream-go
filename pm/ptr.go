@@ -8,11 +8,12 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalPtr fills bs with the encoding of a pointer.
+// MarshalPtr fills bs with an encoded of a pointer.
 //
 // The m argument specifies the Marshaller for the pointer base type.
 //
-// Returns the number of used bytes. It will panic if receives too small bs.
+// In addition to the number of used bytes, it may also return a Writer or
+// Marshaller error.
 func MarshalPtr[T any](v *T, m muss.Marshaller[T], mp *com.PtrMap,
 	w muss.Writer,
 ) (n int, err error) {
@@ -47,8 +48,8 @@ func MarshalPtr[T any](v *T, m muss.Marshaller[T], mp *com.PtrMap,
 //
 // The u argument specifies the Unmarshaller for the base pointer type.
 //
-// In addition to the pointer, returns the number of used bytes and one of the
-// mus.ErrTooSmallByteSlice, com.ErrWrongFormat or Unarshaller errors.
+// In addition to the pointer and the number of used bytes, it may also return
+// mus.ErrTooSmallByteSlice, com.ErrWrongFormat or a Unarshaller error.
 func UnmarshalPtr[T any](u muss.Unmarshaller[T], mp com.ReversePtrMap,
 	r muss.Reader,
 ) (v *T, n int, err error) {
@@ -105,8 +106,8 @@ func SizePtr[T any](v *T, s muss.Sizer[T], mp *com.PtrMap) (size int) {
 //
 // The sk argument specifies the Skipper for the pointer base type.
 //
-// Returns the number of skiped bytes and one of the mus.ErrTooSmallByteSlice,
-// com.ErrWrongFormat or Skipper errors.
+// In addition to the number of used bytes, it may also return
+// mus.ErrTooSmallByteSlice, com.ErrWrongFormat or a Skipper error.
 func SkipPtr(sk muss.Skipper, mp com.ReversePtrMap, r muss.Reader) (n int,
 	err error) {
 	b, err := r.ReadByte()

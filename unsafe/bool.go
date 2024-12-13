@@ -8,9 +8,9 @@ import (
 	"github.com/mus-format/mus-stream-go/ord"
 )
 
-// MarshalBool writes the encoding of a bool value.
+// MarshalBool writes an encoded bool value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalBool(v bool, w muss.Writer) (n int, err error) {
 	err = w.WriteByte(*(*byte)(unsafe_mod.Pointer(&v)))
 	if err != nil {
@@ -22,8 +22,8 @@ func MarshalBool(v bool, w muss.Writer) (n int, err error) {
 
 // UnmarshalBool reads an encoded bool value.
 //
-// In addition to the bool value, returns the number of used bytes and one of
-// the com.ErrWrongFormat or Reader errors.
+// In addition to the bool value and the number of used bytes, it may also
+// return the com.ErrWrongFormat or a Reader error.
 func UnmarshalBool(r muss.Reader) (v bool, n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
@@ -43,8 +43,8 @@ func SizeBool(v bool) (n int) {
 
 // SkipBool skips an encoded bool value.
 //
-// Returns the number of skiped bytes and one of the com.ErrWrongFormat or
-// Reader errors.
+// In addition to the number of used bytes, it may also return
+// com.ErrWrongFormat or a Reader error.
 func SkipBool(r muss.Reader) (n int, err error) {
 	return ord.SkipBool(r)
 }

@@ -19,77 +19,77 @@ var (
 	skipInt      func(r muss.Reader) (int, error)
 )
 
-// MarshalInt64 writes the encoding (Raw) of a int64 value.
+// MarshalInt64 writes an encoded (Raw) int64 value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt64(v int64, w muss.Writer) (n int, err error) {
 	return marshalInteger64(v, w)
 }
 
-// MarshalInt32 writes the encoding (Raw) of a int32 value.
+// MarshalInt32 writes an encoded (Raw) int32 value.
 //
-// Returns the number of used bytes and a Writer value.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt32(v int32, w muss.Writer) (n int, err error) {
 	return marshalInteger32(v, w)
 }
 
-// MarshalInt16 writes the encoding (Raw) of a int16 value.
+// MarshalInt16 writes an encoded (Raw) int16 value.
 //
-// Returns the number of used bytes and a Writer value.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt16(v int16, w muss.Writer) (n int, err error) {
 	return marshalInteger16(v, w)
 }
 
-// MarshalInt8 writes the encoding (Raw) of a int8 value.
+// MarshalInt8 writes an encoded (Raw) int8 value.
 //
-// Returns the number of used bytes and a Writer value.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt8(v int8, w muss.Writer) (n int, err error) {
 	return marshalInteger8(v, w)
 }
 
-// MarshalInt writes the encoding (Raw) of a int value.
+// MarshalInt writes an encoded (Raw) int value.
 //
-// Returns the number of used bytes and a Writer value.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt(v int, w muss.Writer) (n int, err error) {
 	return marshalInt(v, w)
 }
 
 // UnmarshalInt64 reads an encoded (Raw) int64 value.
 //
-// In addition to the int64 value, returns the number of used bytes and a Reader
-// error.
+// In addition to the int64 value and the number of used bytes, it may also
+// return a Reader error.
 func UnmarshalInt64(r muss.Reader) (v int64, n int, err error) {
 	return unmarshalInteger64[int64](r)
 }
 
 // UnmarshalInt32 reads an encoded (Raw) int32 value.
 //
-// In addition to the int32 value, returns the number of used bytes and a Reader
-// error.
+// In addition to the int32 value and the number of used bytes, it may also
+// return a Reader error.
 func UnmarshalInt32(r muss.Reader) (v int32, n int, err error) {
 	return unmarshalInteger32[int32](r)
 }
 
 // UnmarshalInt16 reads an encoded (Raw) int16 value.
 //
-// In addition to the int16 value, returns the number of used bytes and a Reader
-// error.
+// In addition to the int16 value and the number of used bytes, it may also
+// return a Reader error.
 func UnmarshalInt16(r muss.Reader) (v int16, n int, err error) {
 	return unmarshalInteger16[int16](r)
 }
 
 // UnmarshalInt8 reads an encoded (Raw) int8 value.
 //
-// In addition to the int8 value, returns the number of used bytes and a Reader
-// error.
+// In addition to the int8 value and the number of used bytes, it may also
+// return a Reader error.
 func UnmarshalInt8(r muss.Reader) (v int8, n int, err error) {
 	return unmarshalInteger8[int8](r)
 }
 
 // UnmarshalInt reads an encoded (Raw) int value.
 //
-// In addition to the int value, returns the number of used bytes and a Reader
-// error.
+// In addition to the int value and the number of used bytes, it may also
+// return a Reader error.
 func UnmarshalInt(r muss.Reader) (v int, n int, err error) {
 	return unmarshalInt(r)
 }
@@ -121,28 +121,28 @@ func SizeInt(v int) (n int) {
 
 // SkipInt64 skips an encoded (Raw) int64 value.
 //
-// Returns the number of skiped bytes and a Reader error.
+// In addition to the number of used bytes, it may also return a Reader error.
 func SkipInt64(r muss.Reader) (n int, err error) {
 	return raw.SkipInt64(r)
 }
 
 // SkipInt32 skips an encoded (Raw) int32 value.
 //
-// Returns the number of skiped bytes and a Reader error.
+// In addition to the number of used bytes, it may also return a Reader error.
 func SkipInt32(r muss.Reader) (n int, err error) {
 	return raw.SkipInt32(r)
 }
 
 // SkipInt16 skips an encoded (Raw) int16 value.
 //
-// Returns the number of skiped bytes and a Reader error.
+// In addition to the number of used bytes, it may also return a Reader error.
 func SkipInt16(r muss.Reader) (n int, err error) {
 	return raw.SkipInt16(r)
 }
 
 // SkipInt8 skips an encoded (Raw) int8 value.
 //
-// Returns the number of skiped bytes and a Reader error.
+// In addition to the number of used bytes, it may also return a Reader error.
 func SkipInt8(r muss.Reader) (n int, err error) {
 	return raw.SkipInt8(r)
 }

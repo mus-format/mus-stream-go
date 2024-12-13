@@ -6,24 +6,24 @@ import (
 	muss "github.com/mus-format/mus-stream-go"
 )
 
-// MarshalFloat64 writes the encoding (Raw) of a float64 value.
+// MarshalFloat64 writes an encoded (Raw) float64 value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalFloat64(v float64, w muss.Writer) (n int, err error) {
 	return marshalInteger64(math.Float64bits(v), w)
 }
 
-// MarshalFloat32 writes the encoding (Raw) of a float32 value.
+// MarshalFloat32 writes an encoded (Raw) float32 value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalFloat32(v float32, w muss.Writer) (n int, err error) {
 	return marshalInteger32(math.Float32bits(v), w)
 }
 
 // UnmarshalFloat64 reads an encoded (Raw) float64 value.
 //
-// In addition to the float64 value, returns the number of used bytes and a
-// Reader error.
+// In addition to the float64 value and the number of used bytes, it may also
+// return a Reader error.
 func UnmarshalFloat64(r muss.Reader) (v float64, n int, err error) {
 	uv, n, err := unmarshalInteger64[uint64](r)
 	if err != nil {
@@ -34,8 +34,8 @@ func UnmarshalFloat64(r muss.Reader) (v float64, n int, err error) {
 
 // UnmarshalFloat32 reads an encoded (Raw) float32 value.
 //
-// In addition to the float32 value, returns the number of used bytes and a
-// Reader error.
+// In addition to the float32 value and the number of used bytes, it may also
+// return a Reader error.
 func UnmarshalFloat32(r muss.Reader) (v float32, n int, err error) {
 	uv, n, err := unmarshalInteger32[uint32](r)
 	if err != nil {
@@ -56,14 +56,14 @@ func SizeFloat32(v float32) (n int) {
 
 // SkipFloat64 skips an encoded (Raw) float64 value.
 //
-// Returns the number of skiped bytes and a Reader error.
+// In addition to the number of used bytes, it may also return a Reader error.
 func SkipFloat64(r muss.Reader) (n int, err error) {
 	return skipInteger64(r)
 }
 
 // SkipFloat32 skips an encoded (Raw) float32 value.
 //
-// Returns the number of skiped bytes and a Reader error.
+// In addition to the number of used bytes, it may also return a Reader error.
 func SkipFloat32(r muss.Reader) (n int, err error) {
 	return skipInteger32(r)
 }

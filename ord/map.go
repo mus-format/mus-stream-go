@@ -6,14 +6,15 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalMap writes the encoding of a map value.
+// MarshalMap writes an encoded map value.
 //
 // The lenM argument specifies the Marshaller for the map length, if nil,
 // varint.MarshalPositiveInt() is used.
 // Arguments m1, m2 specify Marshallers for the keys and map values,
 // respectively.
 //
-// Returns the number of used bytes and one of the Writer or Marshaller errors.
+// In addition to the number of used bytes, it may also return a Writer or
+// Marshaller error.
 func MarshalMap[T comparable, V any](v map[T]V, lenM muss.Marshaller[int],
 	m1 muss.Marshaller[T],
 	m2 muss.Marshaller[V],
@@ -50,8 +51,8 @@ func MarshalMap[T comparable, V any](v map[T]V, lenM muss.Marshaller[int],
 // Arguments u1, u2 specify Unmarshallers for the keys and map values,
 // respectively.
 //
-// In addition to the map value, returns the number of used bytes and one of
-// the com.ErrOverflow, Reader or Unmarshaller errors.
+// In addition to the map value and the number of used bytes, it may also return
+// com.ErrOverflow, a Reader or Unmarshaller error.
 func UnmarshalMap[T comparable, V any](lenU muss.Unmarshaller[int],
 	u1 muss.Unmarshaller[T],
 	u2 muss.Unmarshaller[V],
@@ -71,8 +72,8 @@ func UnmarshalMap[T comparable, V any](lenU muss.Unmarshaller[int],
 // skip the remaining bytes of the map. If one of the Skippers is nil, a
 // validation error is returned immediately.
 //
-// In addition to the map value, returns the number of used bytes and one of
-// the com.ErrOverflow, com.ErrNegativeLength, Validator or Reader error.
+// In addition to the map value and the number of used bytes, it may also return
+// com.ErrOverflow, com.ErrNegativeLength, a Validator or Reader error.
 func UnmarshalValidMap[T comparable, V any](lenU muss.Unmarshaller[int],
 	lenVl com.Validator[int],
 	u1 muss.Unmarshaller[T],
@@ -182,8 +183,8 @@ func SizeMap[T comparable, V any](v map[T]V, lenS muss.Sizer[int],
 // Arguments sk1, sk2 specify Skippers for the keys and map values,
 // respectively.
 //
-// Returns the number of used bytes and one of the the com.ErrOverflow,
-// com.ErrNegativeLength, Skipper or Reader error.
+// In addition to the number of used bytes, it may also return com.ErrOverflow,
+// com.ErrNegativeLength, a Skipper or Reader error.
 func SkipMap(lenU muss.Unmarshaller[int], sk1, sk2 muss.Skipper, r muss.Reader) (
 	n int, err error) {
 	var length int

@@ -9,7 +9,6 @@ import (
 	com "github.com/mus-format/common-go"
 	com_testdata "github.com/mus-format/common-go/testdata"
 	com_mock "github.com/mus-format/common-go/testdata/mock"
-	mus "github.com/mus-format/mus-stream-go"
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/testdata/mock"
@@ -2016,82 +2015,82 @@ func UnmarshalStringVarint(r muss.Reader) (v string,
 
 func UnmarshalValidStringVarint(lenVl com.Validator[int], skip bool, r muss.Reader) (
 	v string, n int, err error) {
-	return UnmarshalValidString(mus.UnmarshallerFn[int](varint.UnmarshalInt),
+	return UnmarshalValidString(muss.UnmarshallerFn[int](varint.UnmarshalInt),
 		lenVl, skip, r)
 }
 
 func SizeStringVarint(v string) (n int) {
-	return SizeString(v, mus.SizerFn[int](varint.SizeInt))
+	return SizeString(v, muss.SizerFn[int](varint.SizeInt))
 }
 
 func SkipStringVarint(r muss.Reader) (n int, err error) {
-	return SkipString(mus.UnmarshallerFn[int](varint.UnmarshalInt), r)
+	return SkipString(muss.UnmarshallerFn[int](varint.UnmarshalInt), r)
 }
 
 // SliceVarint
 
-func MarshalSliceVarint[T any](v []T, m mus.Marshaller[T], w muss.Writer) (
+func MarshalSliceVarint[T any](v []T, m muss.Marshaller[T], w muss.Writer) (
 	n int, err error) {
 	return MarshalSlice(v, muss.MarshallerFn[int](varint.MarshalInt), m, w)
 }
 
-func UnmarshalSliceVarint[T any](u mus.Unmarshaller[T], r muss.Reader) (v []T,
+func UnmarshalSliceVarint[T any](u muss.Unmarshaller[T], r muss.Reader) (v []T,
 	n int, err error) {
 	return UnmarshalValidSliceVarint[T](nil, u, nil, nil, r)
 }
 
 func UnmarshalValidSliceVarint[T any](lenVl com.Validator[int],
-	u mus.Unmarshaller[T],
+	u muss.Unmarshaller[T],
 	vl com.Validator[T],
-	sk mus.Skipper,
+	sk muss.Skipper,
 	r muss.Reader,
 ) (v []T, n int, err error) {
 	return UnmarshalValidSlice[T](muss.UnmarshallerFn[int](varint.UnmarshalInt),
 		lenVl, u, vl, sk, r)
 }
 
-func SizeSliceVarint[T any](v []T, s mus.Sizer[T]) (size int) {
+func SizeSliceVarint[T any](v []T, s muss.Sizer[T]) (size int) {
 	return SizeSlice(v, muss.SizerFn[int](varint.SizeInt), s)
 }
 
-func SkipSliceVarint(sk mus.Skipper, r muss.Reader) (n int,
+func SkipSliceVarint(sk muss.Skipper, r muss.Reader) (n int,
 	err error) {
 	return SkipSlice(muss.UnmarshallerFn[int](varint.UnmarshalInt), sk, r)
 }
 
 // MapVarint
 
-func MarshalMapVarint[T comparable, V any](v map[T]V, m1 mus.Marshaller[T],
-	m2 mus.Marshaller[V],
+func MarshalMapVarint[T comparable, V any](v map[T]V, m1 muss.Marshaller[T],
+	m2 muss.Marshaller[V],
 	w muss.Writer,
 ) (n int, err error) {
 	return MarshalMap(v, muss.MarshallerFn[int](varint.MarshalInt), m1, m2, w)
 }
 
-func UnmarshalMapVarint[T comparable, V any](u1 mus.Unmarshaller[T],
-	u2 mus.Unmarshaller[V],
+func UnmarshalMapVarint[T comparable, V any](u1 muss.Unmarshaller[T],
+	u2 muss.Unmarshaller[V],
 	r muss.Reader,
 ) (v map[T]V, n int, err error) {
 	return UnmarshalValidMapVarint[T, V](nil, u1, u2, nil, nil, nil, nil, r)
 }
 
 func UnmarshalValidMapVarint[T comparable, V any](lenVl com.Validator[int],
-	u1 mus.Unmarshaller[T],
-	u2 mus.Unmarshaller[V],
+	u1 muss.Unmarshaller[T],
+	u2 muss.Unmarshaller[V],
 	vl1 com.Validator[T],
 	vl2 com.Validator[V],
-	sk1, sk2 mus.Skipper,
+	sk1, sk2 muss.Skipper,
 	r muss.Reader,
 ) (v map[T]V, n int, err error) {
 	return UnmarshalValidMap[T, V](muss.UnmarshallerFn[int](varint.UnmarshalInt),
 		lenVl, u1, u2, vl1, vl2, sk1, sk2, r)
 }
 
-func SizeMapVarint[T comparable, V any](v map[T]V, s1 mus.Sizer[T],
-	s2 mus.Sizer[V]) (size int) {
+func SizeMapVarint[T comparable, V any](v map[T]V, s1 muss.Sizer[T],
+	s2 muss.Sizer[V]) (size int) {
 	return SizeMap(v, muss.SizerFn[int](varint.SizeInt), s1, s2)
 }
 
-func SkipMapVarint(sk1, sk2 mus.Skipper, r muss.Reader) (n int, err error) {
+func SkipMapVarint(sk1, sk2 muss.Skipper, r muss.Reader) (n int, err error) {
 	return SkipMap(muss.UnmarshallerFn[int](varint.UnmarshalInt), sk1, sk2, r)
 }

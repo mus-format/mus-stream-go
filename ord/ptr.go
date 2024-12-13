@@ -5,11 +5,12 @@ import (
 	mus "github.com/mus-format/mus-stream-go"
 )
 
-// MarshalPtr writes the encoding of a pointer.
+// MarshalPtr writes an encoded pointer.
 //
 // The m argument specifies the Marshaller for the pointer base type.
 //
-// Returns the number of used bytes and one of the Writer or Marshaller errors.
+// In addition to the number of used bytes, it may also return a Writer or
+// Marshaller error.
 func MarshalPtr[T any](v *T, m mus.Marshaller[T], w mus.Writer) (n int,
 	err error) {
 	if v == nil {
@@ -32,8 +33,8 @@ func MarshalPtr[T any](v *T, m mus.Marshaller[T], w mus.Writer) (n int,
 //
 // The u argument specifies the Unmarshaller for the pointer base type.
 //
-// In addition to the pointer, returns the number of used bytes and one of
-// the com.ErrWrongFormat, Unarshaller or Reader errors.
+// In addition to the pointer and the number of used bytes, it may also return
+// com.ErrWrongFormat, Unarshaller or a Reader error.
 func UnmarshalPtr[T any](u mus.Unmarshaller[T], r mus.Reader) (v *T, n int,
 	err error) {
 	b, err := r.ReadByte()
@@ -72,8 +73,8 @@ func SizePtr[T any](v *T, s mus.Sizer[T]) (size int) {
 //
 // The sk argument specifies the Skipper for the pointer base type.
 //
-// Returns the number of skiped bytes and one of the the com.ErrWrongFormat,
-// Skipper or Reader errors.
+// In addition to the number of used bytes, it may also return com.ErrWrongFormat,
+// a Skipper or Reader error.
 func SkipPtr(sk mus.Skipper, r mus.Reader) (n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {

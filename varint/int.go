@@ -5,45 +5,45 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// MarshalInt64 writes the encoding (Varint) of a int64 value.
+// MarshalInt64 writes an encoded (Varint) int64 value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt64(v int64, w muss.Writer) (n int, err error) {
 	return marshalUint(uint64(EncodeZigZag(v)), w)
 }
 
-// MarshalInt32 writes the encoding (Varint) of a int32 value.
+// MarshalInt32 writes an encoded (Varint) int32 value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt32(v int32, w muss.Writer) (n int, err error) {
 	return marshalUint(uint32(EncodeZigZag(v)), w)
 }
 
-// MarshalInt16 writes the encoding (Varint) of a int16 value.
+// MarshalInt16 writes an encoded (Varint) int16 value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt16(v int16, w muss.Writer) (n int, err error) {
 	return marshalUint(uint16(EncodeZigZag(v)), w)
 }
 
-// MarshalInt8 writes the encoding (Varint) of a int8 value.
+// MarshalInt8 writes an encoded (Varint) int8 value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt8(v int8, w muss.Writer) (n int, err error) {
 	return marshalUint(uint8(EncodeZigZag(v)), w)
 }
 
-// MarshalInt writes the encoding (Varint) of a int value.
+// MarshalInt writes an encoded (Varint) int value.
 //
-// Returns the number of used bytes and a Writer error.
+// In addition to the number of used bytes, it may also return a Writer error.
 func MarshalInt(v int, w muss.Writer) (n int, err error) {
 	return marshalUint(uint(EncodeZigZag(v)), w)
 }
 
 // UnmarshalInt64 reads an encoded (Varint) int64 value.
 //
-// In addition to the int64 value, returns the number of used bytes and one
-// of the com.ErrOverflow or Reader errors.
+// In addition to the int64 value and the number of used bytes, it may also
+// return com.ErrOverflow or a Reader error.
 func UnmarshalInt64(r muss.Reader) (v int64, n int, err error) {
 	uv, n, err := UnmarshalUint64(r)
 	if err != nil {
@@ -54,8 +54,8 @@ func UnmarshalInt64(r muss.Reader) (v int64, n int, err error) {
 
 // UnmarshalInt32 reads an encoded (Varint) int32 value.
 //
-// In addition to the int32 value, returns the number of used bytes and one
-// of the com.ErrOverflow or Reader errors.
+// In addition to the int32 value and the number of used bytes, it may also
+// return com.ErrOverflow or a Reader error.
 func UnmarshalInt32(r muss.Reader) (v int32, n int, err error) {
 	uv, n, err := UnmarshalUint32(r)
 	if err != nil {
@@ -66,8 +66,8 @@ func UnmarshalInt32(r muss.Reader) (v int32, n int, err error) {
 
 // UnmarshalInt16 reads an encoded (Varint) int16 value.
 //
-// In addition to the int16 value, returns the number of used bytes and one
-// of the com.ErrOverflow or Reader errors.
+// In addition to the int16 value and the number of used bytes, it may also
+// return com.ErrOverflow or a Reader error.
 func UnmarshalInt16(r muss.Reader) (v int16, n int, err error) {
 	uv, n, err := UnmarshalUint16(r)
 	if err != nil {
@@ -78,8 +78,8 @@ func UnmarshalInt16(r muss.Reader) (v int16, n int, err error) {
 
 // UnmarshalInt8 reads an encoded (Varint) int8 value.
 //
-// In addition to the int8 value, returns the number of used bytes and one of
-// the com.ErrOverflow or Reader errors.
+// In addition to the int8 value and the number of used bytes, it may also
+// return com.ErrOverflow or a Reader error.
 func UnmarshalInt8(r muss.Reader) (v int8, n int, err error) {
 	uv, n, err := UnmarshalUint8(r)
 	if err != nil {
@@ -90,8 +90,8 @@ func UnmarshalInt8(r muss.Reader) (v int8, n int, err error) {
 
 // UnmarshalInt reads an encoded (Varint) int value.
 //
-// In addition to the int value, returns the number of used bytes and one of
-// the com.ErrOverflow or Reader errors.
+// In addition to the int value and the number of used bytes, it may also
+// return com.ErrOverflow or a Reader error.
 func UnmarshalInt(r muss.Reader) (v int, n int, err error) {
 	uv, n, err := UnmarshalUint(r)
 	if err != nil {
@@ -127,40 +127,40 @@ func SizeInt(v int) (size int) {
 
 // SkipInt64 skips an encoded (Varint) int64 value.
 //
-// Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
-// errors.
+// In addition to the number of used bytes, it may also return com.ErrOverflow
+// or a Reader error.
 func SkipInt64(r muss.Reader) (n int, err error) {
 	return SkipUint64(r)
 }
 
 // SkipInt32 skips an encoded (Varint) int32 value.
 //
-// Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
-// errors.
+// In addition to the number of used bytes, it may also return com.ErrOverflow
+// or a Reader error.
 func SkipInt32(r muss.Reader) (n int, err error) {
 	return SkipUint32(r)
 }
 
 // SkipInt16 skips an encoded (Varint) int16 value.
 //
-// Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
-// errors.
+// In addition to the number of used bytes, it may also return com.ErrOverflow
+// or a Reader error.
 func SkipInt16(r muss.Reader) (n int, err error) {
 	return SkipUint16(r)
 }
 
 // SkipInt8 skips an encoded (Varint) int8 value.
 //
-// Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
-// errors.
+// In addition to the number of used bytes, it may also return com.ErrOverflow
+// or a Reader error.
 func SkipInt8(r muss.Reader) (n int, err error) {
 	return SkipUint8(r)
 }
 
 // SkipInt skips an encoded (Varint) int value.
 //
-// Returns the number of skiped bytes and one of the com.ErrOverflow or Reader
-// errors.
+// In addition to the number of used bytes, it may also return com.ErrOverflow
+// or a Reader error.
 func SkipInt(r muss.Reader) (n int, err error) {
 	return SkipUint(r)
 }
