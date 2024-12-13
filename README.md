@@ -1,4 +1,9 @@
 # mus-stream-go
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/mus-format/mus-stream-go.svg)](https://pkg.go.dev/github.com/mus-format/mus-stream-go)
+[![GoReportCard](https://goreportcard.com/badge/mus-format/mus-stream-go)](https://goreportcard.com/report/github.com/mus-format/mus-stream-go)
+[![codecov](https://codecov.io/gh/mus-format/mus-stream-go/graph/badge.svg?token=91OM0S4D9Q)](https://codecov.io/gh/mus-format/mus-stream-go)
+
 mus-stream-go is a streaming version of [mus-go](https://github.com/mus-format/mus-go). 
 It mirrors the structure of mus-go but uses the `Writer` and `Reader` interfaces 
 instead of a byte slice.
