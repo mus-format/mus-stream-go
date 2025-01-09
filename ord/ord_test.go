@@ -999,27 +999,19 @@ func TestOrd(t *testing.T) {
 		t.Run("All MarshalSliceVarint, UnmarshalSliceVarint, SizeSliceVarint, SkipSliceVarint functions must work correctly for empty slice",
 			func(t *testing.T) {
 				var (
-					sl = []string{}
-					m  = func() muss.MarshallerFn[[]string] {
-						return func(v []string, w muss.Writer) (n int, err error) {
-							return MarshalSliceVarint(v, nil, w)
-						}
-					}()
-					u = func() muss.UnmarshallerFn[[]string] {
-						return func(r muss.Reader) (v []string, n int, err error) {
-							return UnmarshalSliceVarint[string](nil, r)
-						}
-					}()
-					s = func() muss.SizerFn[[]string] {
-						return func(v []string) (size int) {
-							return SizeSliceVarint(v, nil)
-						}
-					}()
-					sk = func() muss.SkipperFn {
-						return func(r muss.Reader) (n int, err error) {
-							return SkipSliceVarint(nil, r)
-						}
-					}()
+					sl                             = []string{}
+					m  muss.MarshallerFn[[]string] = func(v []string, w muss.Writer) (n int, err error) {
+						return MarshalSliceVarint(v, nil, w)
+					}
+					u muss.UnmarshallerFn[[]string] = func(r muss.Reader) (v []string, n int, err error) {
+						return UnmarshalSliceVarint[string](nil, r)
+					}
+					s muss.SizerFn[[]string] = func(v []string) (size int) {
+						return SizeSliceVarint(v, nil)
+					}
+					sk muss.SkipperFn = func(r muss.Reader) (n int, err error) {
+						return SkipSliceVarint(nil, r)
+					}
 				)
 				testdata.Test[[]string]([][]string{sl}, m, u, s, t)
 				testdata.TestSkip[[]string]([][]string{sl}, m, sk, s, t)
@@ -2040,123 +2032,107 @@ func testAllMapFunctions(
 
 ) {
 	var (
-		str1         = "one"
-		str1Raw      = append([]byte{6}, []byte(str1)...)
-		str2         = "two"
-		str2Raw      = append([]byte{6}, []byte(str2)...)
-		int1    uint = 5
-		int1Raw      = []byte{5}
-		int2    uint = 8
-		int2Raw      = []byte{8}
-		mp           = map[string]uint{str1: int1, str2: int2}
-		m1           = func() mock.Marshaller[string] {
-			return mock.NewMarshaller[string]().RegisterNMarshal(4,
-				func(v string, w muss.Writer) (n int, err error) {
-					switch v {
-					case str1:
-						return len(str1Raw), nil
-					case str2:
-						return len(str2Raw), nil
-					default:
-						t.Fatalf("unexepcted string, want '%v' or '%v' actual '%v'",
-							str1, str2, v)
-						return
-					}
-				},
-			)
-		}()
-		m2 = func() mock.Marshaller[uint] {
-			return mock.NewMarshaller[uint]().RegisterNMarshal(4,
-				func(v uint, w muss.Writer) (n int, err error) {
-					switch v {
-					case int1:
-						return len(int1Raw), nil
-					case int2:
-						return len(int2Raw), nil
-					default:
-						t.Fatalf("unexepcted uint, want '%v' or '%v' actual '%v'",
-							int1, int2, v)
-						return
-					}
-				},
-			)
-		}()
-		u1 = func() mock.Unmarshaller[string] {
-			return mock.NewUnmarshaller[string]().RegisterUnmarshal(
-				func(r muss.Reader) (v string, n int, err error) {
-					return str1, len(str1Raw), nil
-				},
-			).RegisterUnmarshal(
-				func(r muss.Reader) (t string, n int, err error) {
-					return str2, len(str2Raw), nil
-				},
-			)
-		}()
-		u2 = func() mock.Unmarshaller[uint] {
-			return mock.NewUnmarshaller[uint]().RegisterUnmarshal(
-				func(r muss.Reader) (v uint, n int, err error) {
-					return int1, len(int1Raw), nil
-				},
-			).RegisterUnmarshal(
-				func(r muss.Reader) (t uint, n int, err error) {
-					return int2, len(int2Raw), nil
-				},
-			)
-		}()
-		s1 = func() mock.Sizer[string] {
-			return mock.NewSizer[string]().RegisterNSize(4,
-				func(v string) (size int) {
-					switch v {
-					case str1:
-						return len(str1Raw)
-					case str2:
-						return len(str2Raw)
-					default:
-						t.Fatalf("unexepcted string, want '%v' or '%v' actual '%v'",
-							str1, str2, v)
-						return
-					}
-				},
-			)
-		}()
-		s2 = func() mock.Sizer[uint] {
-			return mock.NewSizer[uint]().RegisterNSize(4,
-				func(v uint) (size int) {
-					switch v {
-					case int1:
-						return len(int1Raw)
-					case int2:
-						return len(int2Raw)
-					default:
-						t.Fatalf("unexepcted uint, want '%v' or '%v' actual '%v'", int1,
-							int2, v)
-						return
-					}
-				},
-			)
-		}()
-		sk1 = func() mock.Skipper {
-			return mock.NewSkipper().RegisterSkip(
-				func(r muss.Reader) (n int, err error) {
+		str1                            = "one"
+		str1Raw                         = append([]byte{6}, []byte(str1)...)
+		str2                            = "two"
+		str2Raw                         = append([]byte{6}, []byte(str2)...)
+		int1    uint                    = 5
+		int1Raw                         = []byte{5}
+		int2    uint                    = 8
+		int2Raw                         = []byte{8}
+		mp                              = map[string]uint{str1: int1, str2: int2}
+		m1      mock.Marshaller[string] = mock.NewMarshaller[string]().RegisterNMarshal(4,
+			func(v string, w muss.Writer) (n int, err error) {
+				switch v {
+				case str1:
 					return len(str1Raw), nil
-				},
-			).RegisterSkip(
-				func(r muss.Reader) (n int, err error) {
+				case str2:
 					return len(str2Raw), nil
-				},
-			)
-		}()
-		sk2 = func() mock.Skipper {
-			return mock.NewSkipper().RegisterSkip(
-				func(r muss.Reader) (n int, err error) {
+				default:
+					t.Fatalf("unexepcted string, want '%v' or '%v' actual '%v'",
+						str1, str2, v)
+					return
+				}
+			},
+		)
+		m2 mock.Marshaller[uint] = mock.NewMarshaller[uint]().RegisterNMarshal(4,
+			func(v uint, w muss.Writer) (n int, err error) {
+				switch v {
+				case int1:
 					return len(int1Raw), nil
-				},
-			).RegisterSkip(
-				func(r muss.Reader) (n int, err error) {
+				case int2:
 					return len(int2Raw), nil
-				},
-			)
-		}()
+				default:
+					t.Fatalf("unexepcted uint, want '%v' or '%v' actual '%v'",
+						int1, int2, v)
+					return
+				}
+			},
+		)
+		u1 mock.Unmarshaller[string] = mock.NewUnmarshaller[string]().RegisterUnmarshal(
+			func(r muss.Reader) (v string, n int, err error) {
+				return str1, len(str1Raw), nil
+			},
+		).RegisterUnmarshal(
+			func(r muss.Reader) (t string, n int, err error) {
+				return str2, len(str2Raw), nil
+			},
+		)
+		u2 mock.Unmarshaller[uint] = mock.NewUnmarshaller[uint]().RegisterUnmarshal(
+			func(r muss.Reader) (v uint, n int, err error) {
+				return int1, len(int1Raw), nil
+			},
+		).RegisterUnmarshal(
+			func(r muss.Reader) (t uint, n int, err error) {
+				return int2, len(int2Raw), nil
+			},
+		)
+		s1 mock.Sizer[string] = mock.NewSizer[string]().RegisterNSize(4,
+			func(v string) (size int) {
+				switch v {
+				case str1:
+					return len(str1Raw)
+				case str2:
+					return len(str2Raw)
+				default:
+					t.Fatalf("unexepcted string, want '%v' or '%v' actual '%v'",
+						str1, str2, v)
+					return
+				}
+			},
+		)
+		s2 mock.Sizer[uint] = mock.NewSizer[uint]().RegisterNSize(4,
+			func(v uint) (size int) {
+				switch v {
+				case int1:
+					return len(int1Raw)
+				case int2:
+					return len(int2Raw)
+				default:
+					t.Fatalf("unexepcted uint, want '%v' or '%v' actual '%v'", int1,
+						int2, v)
+					return
+				}
+			},
+		)
+		sk1 mock.Skipper = mock.NewSkipper().RegisterSkip(
+			func(r muss.Reader) (n int, err error) {
+				return len(str1Raw), nil
+			},
+		).RegisterSkip(
+			func(r muss.Reader) (n int, err error) {
+				return len(str2Raw), nil
+			},
+		)
+		sk2 mock.Skipper = mock.NewSkipper().RegisterSkip(
+			func(r muss.Reader) (n int, err error) {
+				return len(int1Raw), nil
+			},
+		).RegisterSkip(
+			func(r muss.Reader) (n int, err error) {
+				return len(int2Raw), nil
+			},
+		)
 		mocks = []*mok.Mock{m1.Mock, m2.Mock, u1.Mock, u2.Mock, s1.Mock,
 			s2.Mock}
 	)
