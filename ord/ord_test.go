@@ -692,32 +692,278 @@ func TestOrd(t *testing.T) {
 
 	})
 
+	t.Run("byte_slice", func(t *testing.T) {
+
+		t.Run("All MarshalByteSlice, UnmarshalByteSlice, SizeByteSlice, SkipByteSlice functions with default lenM, lenU, lenS must work correctly for empty slice",
+			func(t *testing.T) {
+				var (
+					sl                           = []byte{}
+					m  muss.MarshallerFn[[]byte] = func(v []byte, w muss.Writer) (n int, err error) {
+						return MarshalByteSlice(v, nil, w)
+					}
+					u muss.UnmarshallerFn[[]byte] = func(r muss.Reader) (v []byte, n int, err error) {
+						return UnmarshalByteSlice(nil, r)
+					}
+					s muss.SizerFn[[]byte] = func(v []byte) (size int) {
+						return SizeByteSlice(v, nil)
+					}
+					sk muss.SkipperFn = func(r muss.Reader) (n int, err error) {
+						return SkipByteSlice(nil, r)
+					}
+				)
+				testdata.Test[[]byte]([][]byte{sl}, m, u, s, t)
+				testdata.TestSkip[[]byte]([][]byte{sl}, m, sk, s, t)
+			})
+
+		t.Run("All MarshalByteSlice, UnmarshalByteSlice, SizeByteSlice, SkipByteSlice functions with default lenM, lenU, lenS must work correctly for not empty slice",
+			func(t *testing.T) {
+				var (
+					sl                           = []byte{1, 2, 45, 255, 123, 70, 0, 0}
+					m  muss.MarshallerFn[[]byte] = func(v []byte, w muss.Writer) (n int, err error) {
+						return MarshalByteSlice(v, nil, w)
+					}
+					u muss.UnmarshallerFn[[]byte] = func(r muss.Reader) (v []byte, n int, err error) {
+						return UnmarshalByteSlice(nil, r)
+					}
+					s muss.SizerFn[[]byte] = func(v []byte) (size int) {
+						return SizeByteSlice(v, nil)
+					}
+					sk muss.SkipperFn = func(r muss.Reader) (n int, err error) {
+						return SkipByteSlice(nil, r)
+					}
+				)
+				testdata.Test[[]byte]([][]byte{sl}, m, u, s, t)
+				testdata.TestSkip[[]byte]([][]byte{sl}, m, sk, s, t)
+			})
+
+		t.Run("All MarshalByteSliceVarint, UnmarshalByteSliceVarint, SizeByteSliceVarint, SkipByteSliceVarint functions must work correctly for empty slice",
+			func(t *testing.T) {
+				var (
+					sl                             = []byte{}
+					m  muss.MarshallerFn[[]byte]   = MarshalByteSliceVarint
+					u  muss.UnmarshallerFn[[]byte] = UnmarshalByteSliceVarint
+					s  muss.SizerFn[[]byte]        = SizeByteSliceVarint
+					sk muss.SkipperFn              = SkipByteSliceVarint
+				)
+				testdata.Test[[]byte]([][]byte{sl}, m, u, s, t)
+				testdata.TestSkip[[]byte]([][]byte{sl}, m, sk, s, t)
+			})
+
+		t.Run("All MarshalByteSliceVarint, UnmarshalByteSliceVarint, SizeByteSliceVarint, SkipByteSliceVarint functions must work correctly for not empty slice",
+			func(t *testing.T) {
+				var (
+					sl                             = []byte{8, 34, 12, 0, 0, 134, 6}
+					m  muss.MarshallerFn[[]byte]   = MarshalByteSliceVarint
+					u  muss.UnmarshallerFn[[]byte] = UnmarshalByteSliceVarint
+					s  muss.SizerFn[[]byte]        = SizeByteSliceVarint
+					sk muss.SkipperFn              = SkipByteSliceVarint
+				)
+				testdata.Test[[]byte]([][]byte{sl}, m, u, s, t)
+				testdata.TestSkip[[]byte]([][]byte{sl}, m, sk, s, t)
+			})
+
+		t.Run("If Writer fails to write slice length, MarshalByteSliceVarint should return error",
+			func(t *testing.T) {
+				var (
+					wantN   = 0
+					wantErr = errors.New("marshal length error")
+					w       = mock.NewWriter().RegisterWriteByte(
+						func(c byte) error { return wantErr },
+					)
+					mocks  = []*mok.Mock{w.Mock}
+					n, err = MarshalByteSliceVarint([]byte{1}, w)
+				)
+				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			})
+
+		t.Run("If Reader fails to read slice length, UnmarshalByteSliceVarint should return error",
+			func(t *testing.T) {
+				var (
+					wantV   []byte = nil
+					wantN          = 0
+					wantErr        = errors.New("unmarshal length error")
+					r              = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 0, wantErr
+						},
+					)
+					mocks     = []*mok.Mock{r.Mock}
+					v, n, err = UnmarshalByteSliceVarint(r)
+				)
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks,
+					t)
+			})
+
+		t.Run("UnmarshalByteSliceVarint should return ErrNegativeLength if meets negative length",
+			func(t *testing.T) {
+				var (
+					wantV   []byte = nil
+					wantN          = 1
+					wantErr        = com.ErrNegativeLength
+					r              = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 1, nil
+						},
+					)
+					mocks     = []*mok.Mock{r.Mock}
+					v, n, err = UnmarshalByteSliceVarint(r)
+				)
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks,
+					t)
+			})
+
+		t.Run("If Reader fails to read slice content, UnmarshalByteSliceVarint should return it",
+			func(t *testing.T) {
+				var (
+					wantV   []byte = make([]byte, 2)
+					wantN          = 1
+					wantErr        = errors.New("read slice content error")
+
+					r = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 4, nil
+						},
+					).RegisterRead(
+						func(p []byte) (n int, err error) { return 0, wantErr },
+					)
+					v, n, err = UnmarshalByteSliceVarint(r)
+				)
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					nil,
+					t)
+			})
+
+		t.Run("If skip == false and lenVl validator returns an error, UnmarshalValidByteSliceVarint should return it",
+			func(t *testing.T) {
+				var (
+					wantV   []byte = nil
+					wantN          = 1
+					wantErr        = errors.New("lenVl Validator error")
+					lenVl          = com_mock.NewValidator[int]().RegisterValidate(
+						func(v int) (err error) {
+							return wantErr
+						},
+					)
+					skip = false
+					r    = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 4, nil
+						},
+					)
+					mocks     = []*mok.Mock{lenVl.Mock}
+					v, n, err = UnmarshalValidByteSliceVarint(lenVl, skip, r)
+				)
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks,
+					t)
+			})
+
+		t.Run("If skip == true and lenVl validator returns an error, UnmarshalValidByteSliceVarint should return it",
+			func(t *testing.T) {
+				var (
+					wantV   []byte = nil
+					wantN          = 3
+					wantErr        = errors.New("lenVl Validator error")
+					lenVl          = com_mock.NewValidator[int]().RegisterValidate(
+						func(v int) (err error) {
+							return wantErr
+						},
+					)
+					skip = true
+					r    = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 4, nil
+						},
+					).RegisterNReadByte(2, func() (b byte, err error) {
+						return
+					})
+					mocks     = []*mok.Mock{lenVl.Mock}
+					v, n, err = UnmarshalValidByteSliceVarint(lenVl, skip, r)
+				)
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks,
+					t)
+			})
+
+		t.Run("If Reader fails with an error while skipping remaining bytes, UnmarshalValidByteSliceVarint should return it",
+			func(t *testing.T) {
+				var (
+					wantV   []byte = nil
+					wantN          = 2
+					wantErr        = errors.New("Reader error")
+					lenVl          = com_mock.NewValidator[int]().RegisterValidate(
+						func(v int) (err error) {
+							return wantErr
+						},
+					)
+					skip = true
+					r    = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 4, nil
+						},
+					).RegisterReadByte(
+						func() (b byte, err error) { return },
+					).RegisterReadByte(
+						func() (b byte, err error) { return 0, wantErr },
+					)
+					mocks     = []*mok.Mock{lenVl.Mock}
+					v, n, err = UnmarshalValidByteSliceVarint(lenVl, skip, r)
+				)
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks,
+					t)
+			})
+
+		t.Run("If Reader fails to read slice length, SkipByteSliceVarint should return it",
+			func(t *testing.T) {
+				var (
+					wantN   = 0
+					wantErr = errors.New("unmarshal length error")
+					r       = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) { return 0, wantErr },
+					)
+					mocks  = []*mok.Mock{r.Mock}
+					n, err = SkipByteSliceVarint(r)
+				)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			})
+
+		t.Run("SkipByteSliceVarint should return ErrNegativeLength if meets negative length",
+			func(t *testing.T) {
+				var (
+					wantN   = 1
+					wantErr = com.ErrNegativeLength
+					r       = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) { return 1, nil },
+					)
+					mocks  = []*mok.Mock{r.Mock}
+					n, err = SkipByteSliceVarint(r)
+				)
+				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			})
+
+	})
+
 	t.Run("slice", func(t *testing.T) {
 
 		t.Run("All MarshalSlice, UnmarshalSlice, SizeSlice, SkipSlice functions with default lenM, lenU, lenS must work correctly for empty slice",
 			func(t *testing.T) {
 				var (
-					sl = []string{}
-					m  = func() muss.MarshallerFn[[]string] {
-						return func(v []string, w muss.Writer) (n int, err error) {
-							return MarshalSlice(v, nil, nil, w)
-						}
-					}()
-					u = func() muss.UnmarshallerFn[[]string] {
-						return func(r muss.Reader) (v []string, n int, err error) {
-							return UnmarshalSlice[string](nil, nil, r)
-						}
-					}()
-					s = func() muss.SizerFn[[]string] {
-						return func(v []string) (size int) {
-							return SizeSlice(v, nil, nil)
-						}
-					}()
-					sk = func() muss.SkipperFn {
-						return func(r muss.Reader) (n int, err error) {
-							return SkipSlice(nil, nil, r)
-						}
-					}()
+					sl                             = []string{}
+					m  muss.MarshallerFn[[]string] = func(v []string, w muss.Writer) (n int, err error) {
+						return MarshalSlice(v, nil, nil, w)
+					}
+					u muss.UnmarshallerFn[[]string] = func(r muss.Reader) (v []string, n int, err error) {
+						return UnmarshalSlice[string](nil, nil, r)
+					}
+					s muss.SizerFn[[]string] = func(v []string) (size int) {
+						return SizeSlice(v, nil, nil)
+					}
+					sk muss.SkipperFn = func(r muss.Reader) (n int, err error) {
+						return SkipSlice(nil, nil, r)
+					}
 				)
 				testdata.Test[[]string]([][]string{sl}, m, u, s, t)
 				testdata.TestSkip[[]string]([][]string{sl}, m, sk, s, t)
@@ -2025,6 +2271,34 @@ func SizeStringVarint(v string) (n int) {
 
 func SkipStringVarint(r muss.Reader) (n int, err error) {
 	return SkipString(muss.UnmarshallerFn[int](varint.UnmarshalInt), r)
+}
+
+// ByteSliceVarint
+
+func MarshalByteSliceVarint(v []byte, w muss.Writer) (
+	n int, err error) {
+	return MarshalByteSlice(v, muss.MarshallerFn[int](varint.MarshalInt), w)
+}
+
+func UnmarshalByteSliceVarint(r muss.Reader) (
+	v []byte, n int, err error) {
+	return UnmarshalValidByteSliceVarint(nil, false, r)
+}
+
+func UnmarshalValidByteSliceVarint(lenVl com.Validator[int],
+	skip bool,
+	r muss.Reader,
+) (v []byte, n int, err error) {
+	return UnmarshalValidByteSlice(muss.UnmarshallerFn[int](varint.UnmarshalInt),
+		lenVl, skip, r)
+}
+
+func SizeByteSliceVarint(v []byte) (size int) {
+	return SizeByteSlice(v, muss.SizerFn[int](varint.SizeInt))
+}
+
+func SkipByteSliceVarint(r muss.Reader) (n int, err error) {
+	return SkipByteSlice(muss.UnmarshallerFn[int](varint.UnmarshalInt), r)
 }
 
 // SliceVarint
