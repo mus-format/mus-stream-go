@@ -17,19 +17,7 @@ import (
 // In addition to the number of used bytes, it may also return a Writer error.
 func MarshalString(v string, lenM muss.Marshaller[int], w muss.Writer) (n int,
 	err error) {
-	length := len(v)
-	if lenM == nil {
-		n, err = varint.MarshalPositiveInt(length, w)
-	} else {
-		n, err = lenM.Marshal(length, w)
-	}
-	if err != nil {
-		return
-	}
-	var n1 int
-	n1, err = w.WriteString(v)
-	n += n1
-	return
+	return ord.MarshalString(v, lenM, w)
 }
 
 // UnmarshalString reads an encoded string value.
