@@ -1,6 +1,8 @@
 package ord
 
 import (
+	"io"
+
 	com "github.com/mus-format/common-go"
 	muss "github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/varint"
@@ -77,7 +79,7 @@ func UnmarshalValidByteSlice(lenU muss.Unmarshaller[int],
 		}
 	}
 	v = make([]byte, length)
-	n1, err = r.Read(v)
+	n1, err = io.ReadFull(r, v)
 	n += n1
 	if err != nil {
 		return
