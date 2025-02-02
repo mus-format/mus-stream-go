@@ -8,6 +8,38 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
+// MarshalStr fills bs with an encoded string value.
+//
+// Provides an implementation of the Marshaller interface for the string type.
+// See MarshalString for details.
+func MarshalStr(v string, w muss.Writer) (n int, err error) {
+	return MarshalString(v, nil, w)
+}
+
+// UnmarshalStr parses an encoded string value from bs.
+//
+// Provides an implementation of the Unmarshaller interface for the string type.
+// See UnmarshalString for details.
+func UnmarshalStr(r muss.Reader) (v string, n int, err error) {
+	return UnmarshalValidString(nil, nil, false, r)
+}
+
+// SizeStr returns the size of an encoded string value.
+//
+// Provides an implementation of the Sizer interface for the string type.
+// See SizeString for details.
+func SizeStr(v string) (n int) {
+	return SizeString(v, nil)
+}
+
+// SkipStr skips an encoded string value.
+//
+// Provides an implementation of the Skipper interface for the string type.
+// See SkipString for details.
+func SkipStr(r muss.Reader) (n int, err error) {
+	return SkipString(nil, r)
+}
+
 // MarshalString writes an encoded string value.
 //
 // The lenM argument specifies the Marshaller for the string length, if nil,
