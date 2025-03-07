@@ -9,26 +9,23 @@ import (
 	"github.com/ymz-ncnk/mok"
 )
 
-func Test[T any](cases []T, m muss.Marshaller[T], u muss.Unmarshaller[T],
-	s muss.Sizer[T],
-	t *testing.T,
-) {
+func Test[T any](cases []T, ser muss.Serializer[T], t *testing.T) {
 	var err error
 	for i := 0; i < len(cases); i++ {
 		var (
-			size = s.Size(cases[i])
+			size = ser.Size(cases[i])
 			buf  = bytes.NewBuffer(make([]byte, 0, size))
 			n    int
 			v    T
 		)
-		n, err = m.Marshal(cases[i], buf)
+		n, err = ser.Marshal(cases[i], buf)
 		if err != nil {
 			t.Fatal(err)
 		}
 		if n != size {
 			t.Errorf("case '%v', unexpected n, want '%v' actual '%v'", i, size, n)
 		}
-		v, n, err := u.Unmarshal(buf)
+		v, n, err := ser.Unmarshal(buf)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -41,17 +38,14 @@ func Test[T any](cases []T, m muss.Marshaller[T], u muss.Unmarshaller[T],
 	}
 }
 
-func TestSkip[T any](cases []T, m muss.Marshaller[T], sk muss.Skipper,
-	s muss.Sizer[T],
-	t *testing.T,
-) {
+func TestSkip[T any](cases []T, ser muss.Serializer[T], t *testing.T) {
 	for i := 0; i < len(cases); i++ {
 		var (
-			size = s.Size(cases[i])
+			size = ser.Size(cases[i])
 			buf  = bytes.NewBuffer(make([]byte, 0, size))
 		)
-		m.Marshal(cases[i], buf)
-		n, err := sk.Skip(buf)
+		ser.Marshal(cases[i], buf)
+		n, err := ser.Skip(buf)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -69,7 +63,7 @@ func TestMarshalResults(wantN, n int, wantErr, err error, mocks []*mok.Mock,
 	if err != wantErr {
 		t.Errorf("unexpected error, want '%v' actual '%v'", wantErr, err)
 	}
-	if info := mok.CheckCalls(mocks); len(info) > 0 {
-		t.Error(info)
+	if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
+		t.Error(infomap)
 	}
 }

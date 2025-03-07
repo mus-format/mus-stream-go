@@ -13,144 +13,175 @@ func init() {
 }
 
 var (
+	// Uint64 is a uint64 serializer.
+	Uint64 = uint64Ser{}
+	// Uint32 is a uint32 serializer.
+	Uint32 = uint32Ser{}
+	// Uint16 is a uint16 serializer.
+	Uint16 = uint16Ser{}
+	// Uint8 is a uint8 serializer.
+	Uint8 = uint8Ser{}
+	// Uint is a uint serializer.
+	Uint = uintSer{}
+)
+
+var (
 	marshalUint   func(v uint, w muss.Writer) (int, error)
 	unmarshalUint func(r muss.Reader) (uint, int, error)
 	sizeUint      func(v uint) int
 	skipUint      func(r muss.Reader) (int, error)
 )
 
-// MarshalUint64 writes an encoded (Raw) uint64 value.
+type uint64Ser struct{}
+
+// Marshal writes an encoded (Raw) uint64 value.
 //
-// Returns the number of used bytes and a Writer error.
-func MarshalUint64(v uint64, w muss.Writer) (n int, err error) {
+// In addition to the number of bytes written, it may also return a Writer error.
+func (s uint64Ser) Marshal(v uint64, w muss.Writer) (n int, err error) {
 	return marshalInteger64(v, w)
 }
 
-// MarshalUint32 writes an encoded (Raw) uint32 value.
+// Unmarshal reads an encoded (Raw) uint64 value.
 //
-// Returns the number of used bytes and a Writer error.
-func MarshalUint32(v uint32, w muss.Writer) (n int, err error) {
-	return marshalInteger32(v, w)
-}
-
-// MarshalUint16 writes an encoded (Raw) uint16 value.
-//
-// Returns the number of used bytes and a Writer error.
-func MarshalUint16(v uint16, w muss.Writer) (n int, err error) {
-	return marshalInteger16(v, w)
-}
-
-// MarshalUint8 writes an encoded (Raw) uint8 value.
-//
-// Returns the number of used bytes and a Writer error.
-func MarshalUint8(v uint8, w muss.Writer) (n int, err error) {
-	return marshalInteger8(v, w)
-}
-
-// MarshalUint writes an encoded (Raw) uint value.
-//
-// Returns the number of used bytes and a Writer error.
-func MarshalUint(v uint, w muss.Writer) (n int, err error) {
-	return marshalUint(v, w)
-}
-
-// UnmarshalUint64 reads an encoded (Raw) uint64 value.
-//
-// In addition to the uint64 value and the number of used bytes, it may also
+// In addition to the uint64 value and the number of bytes read, it may also
 // return a Reader error.
-func UnmarshalUint64(r muss.Reader) (v uint64, n int, err error) {
+func (s uint64Ser) Unmarshal(r muss.Reader) (v uint64, n int, err error) {
 	return unmarshalInteger64[uint64](r)
 }
 
-// UnmarshalUint32 reads an encoded (Raw) uint32 value.
+// Size returns the size of an encoded (Raw) uint64 value.
+func (s uint64Ser) Size(v uint64) (n int) {
+	return raw.Uint64.Size(v)
+}
+
+// Skip skips an encoded (Raw) uint64 value.
 //
-// In addition to the uint32 value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return a Reader error.
+func (s uint64Ser) Skip(r muss.Reader) (n int, err error) {
+	return raw.Uint64.Skip(r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uint32Ser struct{}
+
+// Marshal writes an encoded (Raw) uint32 value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (s uint32Ser) Marshal(v uint32, w muss.Writer) (n int, err error) {
+	return marshalInteger32(v, w)
+}
+
+// Unmarshal reads an encoded (Raw) uint32 value.
+//
+// In addition to the uint32 value and the number of bytes read, it may also
 // return a Reader error.
-func UnmarshalUint32(r muss.Reader) (v uint32, n int, err error) {
+func (s uint32Ser) Unmarshal(r muss.Reader) (v uint32, n int, err error) {
 	return unmarshalInteger32[uint32](r)
 }
 
-// UnmarshalUint16 reads an encoded (Raw) uint16 value.
+// Size returns the size of an encoded (Raw) uint32 value.
+func (s uint32Ser) Size(v uint32) (n int) {
+	return raw.Uint32.Size(v)
+}
+
+// Skip skips an encoded (Raw) uint32 value.
 //
-// In addition to the uint16 value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return a Reader error.
+func (s uint32Ser) Skip(r muss.Reader) (n int, err error) {
+	return raw.Uint32.Skip(r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uint16Ser struct{}
+
+// Marshal writes an encoded (Raw) uint16 value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (s uint16Ser) Marshal(v uint16, w muss.Writer) (n int, err error) {
+	return marshalInteger16(v, w)
+}
+
+// Unmarshal reads an encoded (Raw) uint16 value.
+//
+// In addition to the uint16 value and the number of bytes read, it may also
 // return a Reader error.
-func UnmarshalUint16(r muss.Reader) (v uint16, n int, err error) {
+func (s uint16Ser) Unmarshal(r muss.Reader) (v uint16, n int, err error) {
 	return unmarshalInteger16[uint16](r)
 }
 
-// UnmarshalUint8 reads an encoded (Raw) uint8 value.
+// Size returns the size of an encoded (Raw) uint16 value.
+func (s uint16Ser) Size(v uint16) (n int) {
+	return raw.Uint16.Size(v)
+}
+
+// Skip skips an encoded (Raw) uint16 value.
 //
-// In addition to the uint8 value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return a Reader error.
+func (s uint16Ser) Skip(r muss.Reader) (n int, err error) {
+	return raw.Uint16.Skip(r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uint8Ser struct{}
+
+// Marshal writes an encoded (Raw) uint8 value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (s uint8Ser) Marshal(v uint8, w muss.Writer) (n int, err error) {
+	return marshalInteger8(v, w)
+}
+
+// Unmarshal reads an encoded (Raw) uint8 value.
+//
+// In addition to the uint8 value and the number of bytes read, it may also
 // return a Reader error.
-func UnmarshalUint8(r muss.Reader) (v uint8, n int, err error) {
+func (s uint8Ser) Unmarshal(r muss.Reader) (v uint8, n int, err error) {
 	return unmarshalInteger8[uint8](r)
 }
 
-// UnmarshalUint reads an encoded (Raw) uint value.
+// Size returns the size of an encoded (Raw) uint8 value.
+func (s uint8Ser) Size(v uint8) (n int) {
+	return raw.Uint8.Size(v)
+}
+
+// Skip skips an encoded (Raw) uint8 value.
 //
-// In addition to the uint value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return a Reader error.
+func (s uint8Ser) Skip(r muss.Reader) (n int, err error) {
+	return raw.Uint8.Skip(r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uintSer struct{}
+
+// Marshal writes an encoded (Raw) uint value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (s uintSer) Marshal(v uint, w muss.Writer) (n int, err error) {
+	return marshalUint(v, w)
+}
+
+// Unmarshal reads an encoded (Raw) uint value.
+//
+// In addition to the uint value and the number of bytes read, it may also
 // return a Reader error.
-func UnmarshalUint(r muss.Reader) (v uint, n int, err error) {
+func (s uintSer) Unmarshal(r muss.Reader) (v uint, n int, err error) {
 	return unmarshalUint(r)
 }
 
-// SizeUint64 returns the size of an encoded (Raw) uint64 value.
-func SizeUint64(v uint64) (n int) {
-	return raw.SizeUint64(v)
+// Size returns the size of an encoded (Raw) uint value.
+func (s uintSer) Size(v uint) (n int) {
+	return sizeUint(v)
 }
 
-// SizeUint32 returns the size of an encoded (Raw) uint32 value.
-func SizeUint32(v uint32) (n int) {
-	return raw.SizeUint32(v)
-}
-
-// SizeUint16 returns the size of an encoded (Raw) uint16 value.
-func SizeUint16(v uint16) (n int) {
-	return raw.SizeUint16(v)
-}
-
-// SizeUint8 returns the size of an encoded (Raw) uint8 value.
-func SizeUint8(v uint8) (n int) {
-	return raw.SizeUint8(v)
-}
-
-// SizeUint returns the size of an encoded (Raw) uint value.
-func SizeUint(v uint) (n int) {
-	return sizeUint((v))
-}
-
-// SkipUint64 skips an encoded (Raw) uint64 value.
+// Skip skips an encoded (Raw) uint value.
 //
-// In addition to the number of used bytes, it may also return a Reader error.
-func SkipUint64(r muss.Reader) (n int, err error) {
-	return raw.SkipUint64(r)
-}
-
-// SkipUint32 skips an encoded (Raw) uint32 value.
-//
-// In addition to the number of used bytes, it may also return a Reader error.
-func SkipUint32(r muss.Reader) (n int, err error) {
-	return raw.SkipUint32(r)
-}
-
-// SkipUint16 skips an encoded (Raw) uint16 value.
-//
-// In addition to the number of used bytes, it may also return a Reader error.
-func SkipUint16(r muss.Reader) (n int, err error) {
-	return raw.SkipUint16(r)
-}
-
-// SkipUint8 skips an encoded (Raw) uint8 value.
-//
-// In addition to the number of used bytes, it may also return a Reader error.
-func SkipUint8(r muss.Reader) (n int, err error) {
-	return raw.SkipUint8(r)
-}
-
-// SkipUint skips an encoded (Raw) uint value.
-//
-// In addition to the number of used bytes, it may also return a Reader error.
-func SkipUint(r muss.Reader) (n int, err error) {
+// In addition to the number of bytes read, it may also return a Reader error.
+func (s uintSer) Skip(r muss.Reader) (n int, err error) {
 	return skipUint(r)
 }
 
@@ -165,6 +196,6 @@ func setUpUintFuncs(intSize int) {
 	default:
 		panic(com.ErrUnsupportedIntSize)
 	}
-	sizeUint = raw.SizeUint
-	skipUint = raw.SkipUint
+	sizeUint = raw.Uint.Size
+	skipUint = raw.Uint.Skip
 }

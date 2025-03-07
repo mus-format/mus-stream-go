@@ -245,161 +245,102 @@ func TestRaw(t *testing.T) {
 			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("All MarshalByte, UnmarshalByte, SizeByte, SkipByte functions must work correctly",
-		func(t *testing.T) {
-			var (
-				m  = muss.MarshallerFn[byte](MarshalByte)
-				u  = muss.UnmarshallerFn[byte](UnmarshalByte)
-				s  = muss.SizerFn[byte](SizeByte)
-				sk = muss.SkipperFn(SkipByte)
-			)
-			testdata.Test[byte](com_testdata.ByteTestCases, m, u, s, t)
-			testdata.TestSkip[byte](com_testdata.ByteTestCases, m, sk, s, t)
+	t.Run("byte", func(t *testing.T) {
+
+		t.Run("Byte serializer should work correctly",
+			func(t *testing.T) {
+				ser := Byte
+				testdata.Test[byte](com_testdata.ByteTestCases, ser, t)
+				testdata.TestSkip[byte](com_testdata.ByteTestCases, ser, t)
+			})
+
+	})
+
+	t.Run("unsigned", func(t *testing.T) {
+
+		t.Run("Uint64 serializer should work correctly",
+			func(t *testing.T) {
+				ser := Uint64
+				testdata.Test[uint64](com_testdata.Uint64TestCases, ser, t)
+				testdata.TestSkip[uint64](com_testdata.Uint64TestCases, ser, t)
+			})
+
+		t.Run("Uint32 serializer should work correctly",
+			func(t *testing.T) {
+				ser := Uint32
+				testdata.Test[uint32](com_testdata.Uint32TestCases, ser, t)
+				testdata.TestSkip[uint32](com_testdata.Uint32TestCases, ser, t)
+			})
+		t.Run("Uint16 serializer should work correctly", func(t *testing.T) {
+			ser := Uint16
+			testdata.Test[uint16](com_testdata.Uint16TestCases, ser, t)
+			testdata.TestSkip[uint16](com_testdata.Uint16TestCases, ser, t)
 		})
 
-	t.Run("Unsigned", func(t *testing.T) {
-
-		t.Run("All MarshalUint64, UnmarshalUint64, SizeUint64, SkipUint64 functions must work correctly",
+		t.Run("Uint8 serializer should work correctly",
 			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[uint64](MarshalUint64)
-					u  = muss.UnmarshallerFn[uint64](UnmarshalUint64)
-					s  = muss.SizerFn[uint64](SizeUint64)
-					sk = muss.SkipperFn(SkipUint64)
-				)
-				testdata.Test[uint64](com_testdata.Uint64TestCases, m, u, s, t)
-				testdata.TestSkip[uint64](com_testdata.Uint64TestCases, m, sk, s, t)
+				ser := Uint8
+				testdata.Test[uint8](com_testdata.Uint8TestCases, ser, t)
+				testdata.TestSkip[uint8](com_testdata.Uint8TestCases, ser, t)
 			})
 
-		t.Run("All MarshalUint32, UnmarshalUint32, SizeUint32, SkipUint32 functions must work correctly",
+		t.Run("Uint serializer should work correctly",
 			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[uint32](MarshalUint32)
-					u  = muss.UnmarshallerFn[uint32](UnmarshalUint32)
-					s  = muss.SizerFn[uint32](SizeUint32)
-					sk = muss.SkipperFn(SkipUint32)
-				)
-				testdata.Test[uint32](com_testdata.Uint32TestCases, m, u, s, t)
-				testdata.TestSkip[uint32](com_testdata.Uint32TestCases, m, sk, s, t)
-			})
-
-		t.Run("All MarshalUint16, UnmarshalUint16, SizeUint16, SkipUint16 functions must work correctly",
-			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[uint16](MarshalUint16)
-					u  = muss.UnmarshallerFn[uint16](UnmarshalUint16)
-					s  = muss.SizerFn[uint16](SizeUint16)
-					sk = muss.SkipperFn(SkipUint16)
-				)
-				testdata.Test[uint16](com_testdata.Uint16TestCases, m, u, s, t)
-				testdata.TestSkip[uint16](com_testdata.Uint16TestCases, m, sk, s, t)
-			})
-
-		t.Run("All MarshalUint8, UnmarshalUint8, SizeUint8, SkipUint8 functions must work correctly",
-			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[uint8](MarshalUint8)
-					u  = muss.UnmarshallerFn[uint8](UnmarshalUint8)
-					s  = muss.SizerFn[uint8](SizeUint8)
-					sk = muss.SkipperFn(SkipUint8)
-				)
-				testdata.Test[uint8](com_testdata.Uint8TestCases, m, u, s, t)
-				testdata.TestSkip[uint8](com_testdata.Uint8TestCases, m, sk, s, t)
-			})
-
-		t.Run("All MarshalUint, UnmarshalUint, SizeUint, SkipUint functions must work correctly",
-			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[uint](MarshalUint)
-					u  = muss.UnmarshallerFn[uint](UnmarshalUint)
-					s  = muss.SizerFn[uint](SizeUint)
-					sk = muss.SkipperFn(SkipUint)
-				)
-				testdata.Test[uint](com_testdata.UintTestCases, m, u, s, t)
-				testdata.TestSkip[uint](com_testdata.UintTestCases, m, sk, s, t)
+				ser := Uint
+				testdata.Test[uint](com_testdata.UintTestCases, ser, t)
+				testdata.TestSkip[uint](com_testdata.UintTestCases, ser, t)
 			})
 
 	})
 
-	t.Run("Signed", func(t *testing.T) {
+	t.Run("signed", func(t *testing.T) {
 
-		t.Run("All MarshalInt64, UnmarshalInt64, SizeInt64, SkipInt64 functions must work correctly",
+		t.Run("Int64 serializer should work correctly",
 			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[int64](MarshalInt64)
-					u  = muss.UnmarshallerFn[int64](UnmarshalInt64)
-					s  = muss.SizerFn[int64](SizeInt64)
-					sk = muss.SkipperFn(SkipInt64)
-				)
-				testdata.Test[int64](com_testdata.Int64TestCases, m, u, s, t)
-				testdata.TestSkip[int64](com_testdata.Int64TestCases, m, sk, s, t)
+				ser := Int64
+				testdata.Test[int64](com_testdata.Int64TestCases, ser, t)
+				testdata.TestSkip[int64](com_testdata.Int64TestCases, ser, t)
 			})
 
-		t.Run("All MarshalInt32, UnmarshalInt32, SizeInt32, SkipInt32 functions must work correctly",
+		t.Run("Int32 serializer should work correctly",
 			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[int32](MarshalInt32)
-					u  = muss.UnmarshallerFn[int32](UnmarshalInt32)
-					s  = muss.SizerFn[int32](SizeInt32)
-					sk = muss.SkipperFn(SkipInt32)
-				)
-				testdata.Test[int32](com_testdata.Int32TestCases, m, u, s, t)
-				testdata.TestSkip[int32](com_testdata.Int32TestCases, m, sk, s, t)
+				ser := Int32
+				testdata.Test[int32](com_testdata.Int32TestCases, ser, t)
+				testdata.TestSkip[int32](com_testdata.Int32TestCases, ser, t)
 			})
 
-		t.Run("All MarshalInt16, UnmarshalInt16, SizeInt16, SkipInt16 functions must work correctly",
+		t.Run("Int16 serializer should work correctly",
 			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[int16](MarshalInt16)
-					u  = muss.UnmarshallerFn[int16](UnmarshalInt16)
-					s  = muss.SizerFn[int16](SizeInt16)
-					sk = muss.SkipperFn(SkipInt16)
-				)
-				testdata.Test[int16](com_testdata.Int16TestCases, m, u, s, t)
-				testdata.TestSkip[int16](com_testdata.Int16TestCases, m, sk, s, t)
+				ser := Int16
+				testdata.Test[int16](com_testdata.Int16TestCases, ser, t)
+				testdata.TestSkip[int16](com_testdata.Int16TestCases, ser, t)
 			})
 
-		t.Run("All MarshalInt8, UnmarshalInt8, SizeInt8, SkipInt8 functions must work correctly",
+		t.Run("Int8 serializer should work correctly",
 			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[int8](MarshalInt8)
-					u  = muss.UnmarshallerFn[int8](UnmarshalInt8)
-					s  = muss.SizerFn[int8](SizeInt8)
-					sk = muss.SkipperFn(SkipInt8)
-				)
-				testdata.Test[int8](com_testdata.Int8TestCases, m, u, s, t)
-				testdata.TestSkip[int8](com_testdata.Int8TestCases, m, sk, s, t)
+				ser := Int8
+				testdata.Test[int8](com_testdata.Int8TestCases, ser, t)
+				testdata.TestSkip[int8](com_testdata.Int8TestCases, ser, t)
 			})
 
-		t.Run("All MarshalInt, UnmarshalInt, SizeInt, SkipInt functions must work correctly",
+		t.Run("Int serializer should work correctly",
 			func(t *testing.T) {
-				var (
-					m  = muss.MarshallerFn[int](MarshalInt)
-					u  = muss.UnmarshallerFn[int](UnmarshalInt)
-					s  = muss.SizerFn[int](SizeInt)
-					sk = muss.SkipperFn(SkipInt)
-				)
-				testdata.Test[int](com_testdata.IntTestCases, m, u, s, t)
-				testdata.TestSkip[int](com_testdata.IntTestCases, m, sk, s, t)
+				ser := Int
+				testdata.Test[int](com_testdata.IntTestCases, ser, t)
+				testdata.TestSkip[int](com_testdata.IntTestCases, ser, t)
 			})
 
 	})
 
-	t.Run("Float", func(t *testing.T) {
+	t.Run("float", func(t *testing.T) {
 
 		t.Run("float64", func(t *testing.T) {
 
-			t.Run("All MarshalFloat64, UnmarshalFloat64, SizeFloat64, SkipFloat64 functions must work correctly",
+			t.Run("Float64 serializer should work correctly",
 				func(t *testing.T) {
-					var (
-						m  = muss.MarshallerFn[float64](MarshalFloat64)
-						u  = muss.UnmarshallerFn[float64](UnmarshalFloat64)
-						s  = muss.SizerFn[float64](SizeFloat64)
-						sk = muss.SkipperFn(SkipFloat64)
-					)
-					testdata.Test[float64](com_testdata.Float64TestCases, m, u, s, t)
-					testdata.TestSkip[float64](com_testdata.Float64TestCases, m, sk, s,
-						t)
+					ser := Float64
+					testdata.Test[float64](com_testdata.Float64TestCases, ser, t)
+					testdata.TestSkip[float64](com_testdata.Float64TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, UnmarshalFloat64 should return an error",
@@ -413,7 +354,7 @@ func TestRaw(t *testing.T) {
 								return 0, wantErr
 							},
 						)
-						v, n, err = UnmarshalFloat64(r)
+						v, n, err = Float64.Unmarshal(r)
 					)
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						nil,
@@ -431,7 +372,7 @@ func TestRaw(t *testing.T) {
 							},
 						)
 						mocks  = []*mok.Mock{r.Mock}
-						n, err = SkipFloat64(r)
+						n, err = Float64.Skip(r)
 					)
 					com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 				})
@@ -440,17 +381,11 @@ func TestRaw(t *testing.T) {
 
 		t.Run("float32", func(t *testing.T) {
 
-			t.Run("All MarshalFloat32, UnmarshalFloat32, SizeFloat32, SkipFloat32 functions must work correctly",
+			t.Run("Float32 serializer should work correctly",
 				func(t *testing.T) {
-					var (
-						m  = muss.MarshallerFn[float32](MarshalFloat32)
-						u  = muss.UnmarshallerFn[float32](UnmarshalFloat32)
-						s  = muss.SizerFn[float32](SizeFloat32)
-						sk = muss.SkipperFn(SkipFloat32)
-					)
-					testdata.Test[float32](com_testdata.Float32TestCases, m, u, s, t)
-					testdata.TestSkip[float32](com_testdata.Float32TestCases, m, sk, s,
-						t)
+					ser := Float32
+					testdata.Test[float32](com_testdata.Float32TestCases, ser, t)
+					testdata.TestSkip[float32](com_testdata.Float32TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, UnmarshalFloat32 should return an error",
@@ -464,7 +399,7 @@ func TestRaw(t *testing.T) {
 								return 0, wantErr
 							},
 						)
-						v, n, err = UnmarshalFloat32(r)
+						v, n, err = Float32.Unmarshal(r)
 					)
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						nil,
@@ -482,7 +417,7 @@ func TestRaw(t *testing.T) {
 							},
 						)
 						mocks  = []*mok.Mock{r.Mock}
-						n, err = SkipFloat32(r)
+						n, err = Float32.Skip(r)
 					)
 					com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 				})

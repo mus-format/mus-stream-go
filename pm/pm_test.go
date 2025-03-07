@@ -6,174 +6,21 @@ import (
 	"testing"
 
 	com "github.com/mus-format/common-go"
+	mock "github.com/mus-format/mus-stream-go/testdata/mock"
+	"github.com/ymz-ncnk/mok"
+
 	com_testdata "github.com/mus-format/common-go/testdata"
 	muss "github.com/mus-format/mus-stream-go"
-	"github.com/mus-format/mus-stream-go/ord"
 	"github.com/mus-format/mus-stream-go/testdata"
-	"github.com/mus-format/mus-stream-go/testdata/mock"
-	"github.com/mus-format/mus-stream-go/varint"
-	"github.com/ymz-ncnk/mok"
 )
-
-func MarshalPointerMappingStruct(v com_testdata.PointerMappingStruct,
-	w muss.Writer) (n int, err error) {
-	mp := com.NewPtrMap()
-	n, err = MarshalPtr[int](v.A1, muss.MarshallerFn[int](varint.MarshalInt),
-		mp,
-		w)
-	if err != nil {
-		return
-	}
-	var n1 int
-	n1, err = MarshalPtr[int](v.A2, muss.MarshallerFn[int](varint.MarshalInt),
-		mp,
-		w)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = MarshalPtr[int](v.B1, muss.MarshallerFn[int](varint.MarshalInt),
-		mp,
-		w)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = MarshalPtr[int](v.B2, muss.MarshallerFn[int](varint.MarshalInt),
-		mp,
-		w)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = MarshalPtr[string](v.C1, muss.MarshallerFn[string](MarshalStringVarint),
-		mp,
-		w)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = MarshalPtr[string](v.C2, muss.MarshallerFn[string](MarshalStringVarint),
-		mp,
-		w)
-	n += n1
-	return
-}
-
-func UnmarshalPointerMappingStruct(r muss.Reader) (
-	v com_testdata.PointerMappingStruct, n int, err error) {
-	mp := com.NewReversePtrMap()
-	v.A1, n, err = UnmarshalPtr[int](muss.UnmarshallerFn[int](varint.UnmarshalInt),
-		mp,
-		r)
-	if err != nil {
-		return
-	}
-	var n1 int
-	v.A2, n1, err = UnmarshalPtr[int](muss.UnmarshallerFn[int](varint.UnmarshalInt),
-		mp,
-		r)
-	n += n1
-	if err != nil {
-		return
-	}
-	v.B1, n1, err = UnmarshalPtr[int](muss.UnmarshallerFn[int](varint.UnmarshalInt),
-		mp,
-		r)
-	n += n1
-	if err != nil {
-		return
-	}
-	v.B2, n1, err = UnmarshalPtr[int](muss.UnmarshallerFn[int](varint.UnmarshalInt),
-		mp,
-		r)
-	n += n1
-	if err != nil {
-		return
-	}
-	v.C1, n1, err = UnmarshalPtr[string](
-		muss.UnmarshallerFn[string](UnmarshalStringVarint),
-		mp,
-		r)
-	n += n1
-	if err != nil {
-		return
-	}
-	v.C2, n1, err = UnmarshalPtr[string](
-		muss.UnmarshallerFn[string](UnmarshalStringVarint),
-		mp,
-		r)
-	n += n1
-	return
-}
-
-func SizePointerMappingStruct(v com_testdata.PointerMappingStruct) (size int) {
-	mp := com.NewPtrMap()
-	size = SizePtr[int](v.A1, muss.SizerFn[int](varint.SizeInt), mp)
-	size += SizePtr[int](v.A2, muss.SizerFn[int](varint.SizeInt), mp)
-	size += SizePtr[int](v.B1, muss.SizerFn[int](varint.SizeInt), mp)
-	size += SizePtr[int](v.B2, muss.SizerFn[int](varint.SizeInt), mp)
-	size += SizePtr[string](v.C1, muss.SizerFn[string](SizeStringVarint), mp)
-	return size + SizePtr[string](v.C2, muss.SizerFn[string](SizeStringVarint),
-		mp)
-}
-
-func SkipPointerMappingStruct(r muss.Reader) (n int, err error) {
-	mp := com.NewReversePtrMap()
-	n, err = SkipPtr(muss.SkipperFn(varint.SkipInt), mp, r)
-	if err != nil {
-		return
-	}
-	var n1 int
-	n1, err = SkipPtr(muss.SkipperFn(varint.SkipInt), mp, r)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = SkipPtr(muss.SkipperFn(varint.SkipInt), mp, r)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = SkipPtr(muss.SkipperFn(varint.SkipInt), mp, r)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = SkipPtr(muss.SkipperFn(SkipStringVarint), mp, r)
-	n += n1
-	if err != nil {
-		return
-	}
-	n1, err = SkipPtr(muss.SkipperFn(SkipStringVarint), mp, r)
-	n += n1
-	return
-}
 
 func TestPM(t *testing.T) {
 
-	t.Run("All MarshalPtr, UnmarshalPtr, SizePtr, SkipPtr functions must work correctly",
-		func(t *testing.T) {
-			var (
-				m = muss.MarshallerFn[com_testdata.PointerMappingStruct](
-					MarshalPointerMappingStruct)
-				u = muss.UnmarshallerFn[com_testdata.PointerMappingStruct](
-					UnmarshalPointerMappingStruct)
-				s = muss.SizerFn[com_testdata.PointerMappingStruct](
-					SizePointerMappingStruct)
-				sk = muss.SkipperFn(SkipPointerMappingStruct)
-			)
-			testdata.Test[com_testdata.PointerMappingStruct](
-				com_testdata.MakePointerMappingTestStruct(), m, u, s, t)
-			testdata.TestSkip[com_testdata.PointerMappingStruct](
-				com_testdata.MakePointerMappingTestStruct(), m, sk, s, t)
-		})
-
-	t.Run("MarshalPtr should be able to marshal the nil pointer", func(t *testing.T) {
+	t.Run("Marshal should be able to marshal the nil pointer", func(t *testing.T) {
 		var (
 			wantN         = 1
 			wantErr error = nil
-			mp            = com.NewPtrMap()
+			ptrMap        = com.NewPtrMap()
 			w             = mock.NewWriter().RegisterWriteByte(
 				func(c byte) (err error) {
 					if c != byte(com.Nil) {
@@ -184,34 +31,34 @@ func TestPM(t *testing.T) {
 				},
 			)
 			mocks  = []*mok.Mock{w.Mock}
-			n, err = MarshalPtr[int](nil, nil, mp, w)
+			n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
 		)
 		testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 	})
 
-	t.Run("If marshal of the pointer Nil flag fails with an error, MarshalPtr should return it",
+	t.Run("If marshal of the pointer Nil flag fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
 				wantN         = 0
 				wantErr error = errors.New("pointer Nil flag marshal error")
-				mp            = com.NewPtrMap()
+				ptrMap        = com.NewPtrMap()
 				w             = mock.NewWriter().RegisterWriteByte(
 					func(c byte) (err error) {
 						return wantErr
 					},
 				)
 				mocks  = []*mok.Mock{w.Mock}
-				n, err = MarshalPtr[int](nil, nil, mp, w)
+				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
 			)
 			testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("If marshal of the pointer Mapping flag fails with an error, MarshalPtr should return it",
+	t.Run("If marshal of the pointer mapping flag fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
 				wantN         = 0
-				wantErr error = errors.New("pointer Mapping flag marshal error")
-				mp            = com.NewPtrMap()
+				wantErr error = errors.New("pointer mapping flag marshal error")
+				ptrMap        = com.NewPtrMap()
 				w             = mock.NewWriter().RegisterWriteByte(
 					func(c byte) (err error) {
 						return wantErr
@@ -219,17 +66,17 @@ func TestPM(t *testing.T) {
 				)
 				num    = 2
 				mocks  = []*mok.Mock{w.Mock}
-				n, err = MarshalPtr[int](&num, nil, mp, w)
+				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
 			)
 			testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("If marshal of the pointer id fails with an error, MarshalPtr should return it",
+	t.Run("If marshal of the pointer id fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
 				wantN         = 1
 				wantErr error = errors.New("pointer id marshal error")
-				mp            = com.NewPtrMap()
+				ptrMap        = com.NewPtrMap()
 				w             = mock.NewWriter().RegisterWriteByte(
 					func(c byte) (err error) {
 						return nil
@@ -241,17 +88,17 @@ func TestPM(t *testing.T) {
 				)
 				num    = 2
 				mocks  = []*mok.Mock{w.Mock}
-				n, err = MarshalPtr[int](&num, nil, mp, w)
+				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
 			)
 			testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("If Marshaller fails with an error, MarshalPtr should return it",
+	t.Run("If baseSer.Marshal fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
 				wantN         = 3
 				wantErr error = errors.New("marshaller error")
-				mp            = com.NewPtrMap()
+				ptrMap        = com.NewPtrMap()
 				w             = mock.NewWriter().RegisterWriteByte(
 					func(c byte) (err error) {
 						return nil
@@ -261,19 +108,19 @@ func TestPM(t *testing.T) {
 						return nil
 					},
 				)
-				m = mock.NewMarshaller[int]().RegisterMarshal(
+				baseSer = mock.NewSerializer[int]().RegisterMarshal(
 					func(t int, w muss.Writer) (n int, err error) {
 						return 1, wantErr
 					},
 				)
 				num    = 2
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = MarshalPtr[int](&num, m, mp, w)
+				mocks  = []*mok.Mock{w.Mock, baseSer.Mock}
+				n, err = NewPtrSer[int](ptrMap, nil, baseSer).Marshal(&num, w)
 			)
 			testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("If unmarshal of the pointer flag fails with an error, UnmarshalPtr should return it",
+	t.Run("If unmarshal of the pointer flag fails with an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
 				wantV   *int = nil
@@ -286,14 +133,13 @@ func TestPM(t *testing.T) {
 					},
 				)
 				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = UnmarshalPtr[int](nil, com.ReversePtrMap{}, r)
+				v, n, err = NewPtrSer[int](nil, nil, nil).Unmarshal(r)
 			)
 			com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+				mocks, t)
 		})
 
-	t.Run("If unmarshal of the pointer id fails with an error, UnmarshalPtr should return it",
+	t.Run("If unmarshal of the pointer id fails with an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
 				wantV   *int = nil
@@ -311,14 +157,14 @@ func TestPM(t *testing.T) {
 					},
 				)
 				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = UnmarshalPtr[int](nil, com.ReversePtrMap{}, r)
+				v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 			)
 			com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
 				mocks,
 				t)
 		})
 
-	t.Run("If Unmarshaller fails with an error, UnmarshalPtr should return it",
+	t.Run("If baseSer.Unmarshal fails with an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
 				wantV   *int = nil
@@ -335,23 +181,22 @@ func TestPM(t *testing.T) {
 						return
 					},
 				)
-				u = mock.NewUnmarshaller[int]().RegisterUnmarshal(
+				baseSer = mock.NewSerializer[int]().RegisterUnmarshal(
 					func(r muss.Reader) (t int, n int, err error) {
 						n = 1
 						err = wantErr
 						return
 					},
 				)
-				mp        = com.NewReversePtrMap()
+				revPtrMap = com.NewReversePtrMap()
 				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = UnmarshalPtr[int](u, mp, r)
+				v, n, err = NewPtrSer[int](nil, revPtrMap, baseSer).Unmarshal(r)
 			)
 			com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+				mocks, t)
 		})
 
-	t.Run("UnmarshalPtr should fail with com.ErrWrongFormat if meets unknown pointer flag",
+	t.Run("Unmarshal should fail with com.ErrWrongFormat if meets unknown pointer flag",
 		func(t *testing.T) {
 			var (
 				wantV   *int = nil
@@ -364,14 +209,13 @@ func TestPM(t *testing.T) {
 					},
 				)
 				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = UnmarshalPtr[int](nil, com.ReversePtrMap{}, r)
+				v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 			)
 			com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+				mocks, t)
 		})
 
-	t.Run("If unmarshal of the pointer flag fails with an error, SkipPtr should return it",
+	t.Run("If unmarshal of the pointer flag fails with an error, Skip should return it",
 		func(t *testing.T) {
 			var (
 				wantN   = 0
@@ -383,12 +227,12 @@ func TestPM(t *testing.T) {
 					},
 				)
 				mocks  = []*mok.Mock{r.Mock}
-				n, err = SkipPtr(nil, com.ReversePtrMap{}, r)
+				n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 			)
 			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("If unmarshal of the pointer id fails with an error, SkipPtr should return it",
+	t.Run("If unmarshal of the pointer id fails with an error, Skip should return it",
 		func(t *testing.T) {
 			var (
 				wantN   = 1
@@ -405,12 +249,12 @@ func TestPM(t *testing.T) {
 					},
 				)
 				mocks  = []*mok.Mock{r.Mock}
-				n, err = SkipPtr(nil, com.ReversePtrMap{}, r)
+				n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 			)
 			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("If Skipper fails with an error, SkipPtr should return it",
+	t.Run("If baseSer.Skip fails with an error, Skip should return it",
 		func(t *testing.T) {
 			var (
 				wantN   = 3
@@ -426,21 +270,21 @@ func TestPM(t *testing.T) {
 						return
 					},
 				)
-				sk = mock.NewSkipper().RegisterSkip(
+				baseSer = mock.NewSerializer[int]().RegisterSkip(
 					func(r muss.Reader) (n int, err error) {
 						n = 1
 						err = wantErr
 						return
 					},
 				)
-				mp     = com.NewReversePtrMap()
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = SkipPtr(sk, mp, r)
+				revPtrMap = com.NewReversePtrMap()
+				mocks     = []*mok.Mock{r.Mock}
+				n, err    = NewPtrSer[int](nil, revPtrMap, baseSer).Skip(r)
 			)
 			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-	t.Run("SkipPtr should fail with com.ErrWrongFormat if meets unknown pointer flag",
+	t.Run("Skip should fail with com.ErrWrongFormat if meets unknown pointer flag",
 		func(t *testing.T) {
 			var (
 				wantN   = 0
@@ -452,34 +296,9 @@ func TestPM(t *testing.T) {
 					},
 				)
 				mocks  = []*mok.Mock{r.Mock}
-				n, err = SkipPtr(nil, com.ReversePtrMap{}, r)
+				n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 			)
 			com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
-}
-
-// StringVarint
-
-func MarshalStringVarint(v string, w muss.Writer) (n int, err error) {
-	return ord.MarshalString(v, muss.MarshallerFn[int](varint.MarshalInt), w)
-}
-
-func UnmarshalStringVarint(r muss.Reader) (v string,
-	n int, err error) {
-	return UnmarshalValidStringVarint(nil, false, r)
-}
-
-func UnmarshalValidStringVarint(lenVl com.Validator[int], skip bool, r muss.Reader) (
-	v string, n int, err error) {
-	return ord.UnmarshalValidString(muss.UnmarshallerFn[int](varint.UnmarshalInt),
-		lenVl, skip, r)
-}
-
-func SizeStringVarint(v string) (n int) {
-	return ord.SizeString(v, muss.SizerFn[int](varint.SizeInt))
-}
-
-func SkipStringVarint(r muss.Reader) (n int, err error) {
-	return ord.SkipString(muss.UnmarshallerFn[int](varint.UnmarshalInt), r)
 }

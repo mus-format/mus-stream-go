@@ -6,153 +6,186 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
-// MarshalUint64 writes an encoded (Varint) uint64 value.
+var (
+	// Uint64 is a uint64 serializer.
+	Uint64 = uint64Ser{}
+	// Uint32 is a uint32 serializer.
+	Uint32 = uint32Ser{}
+	// Uint16 is a uint16 serializer.
+	Uint16 = uint16Ser{}
+	// Uint8 is a uint8 serializer.
+	Uint8 = uint8Ser{}
+	// Uint is a uint serializer.
+	Uint = uintSer{}
+)
+
+// -----------------------------------------------------------------------------
+
+type uint64Ser struct{}
+
+// Marshal writes an encoded (Varint) uint64 value.
 //
-// In addition to the number of used bytes, it may also return a Writer error.
-func MarshalUint64(v uint64, w muss.Writer) (n int, err error) {
+// In addition to the number of bytes written, it may also return a Writer error.
+func (uint64Ser) Marshal(v uint64, w muss.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
-// MarshalUint32 writes an encoded (Varint) uint32 value.
+// Unmarshal reads an encoded (Varint) uint64 value.
 //
-// In addition to the number of used bytes, it may also return a Writer error.
-func MarshalUint32(v uint32, w muss.Writer) (n int, err error) {
-	return marshalUint(v, w)
-}
-
-// MarshalUint16 writes an encoded (Varint) uint16 value.
-//
-// In addition to the number of used bytes, it may also return a Writer error.
-func MarshalUint16(v uint16, w muss.Writer) (n int, err error) {
-	return marshalUint(v, w)
-}
-
-// MarshalUint8 writes an encoded (Varint) uint8 value.
-//
-// In addition to the number of used bytes, it may also return a Writer error.
-func MarshalUint8(v uint8, w muss.Writer) (n int, err error) {
-	return marshalUint(v, w)
-}
-
-// MarshalUint writes an encoded (Varint) uint value.
-//
-// In addition to the number of used bytes, it may also return a Writer error.
-func MarshalUint(v uint, w muss.Writer) (n int, err error) {
-	return marshalUint(v, w)
-}
-
-// UnmarshalUint64 reads an encoded (Varint) uint64 value.
-//
-// In addition to the uint64 value and the number of used bytes, it may also
+// In addition to the uint64 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func UnmarshalUint64(r muss.Reader) (v uint64, n int, err error) {
+func (uint64Ser) Unmarshal(r muss.Reader) (v uint64, n int, err error) {
 	return unmarshalUint[uint64](com.Uint64MaxVarintLen,
 		com.Uint64MaxLastByte,
 		r)
 }
 
-// UnmarshalUint32 reads an encoded (Varint) uint32 value.
+// Size returns the size of an encoded (Varint) uint64 value.
+func (uint64Ser) Size(v uint64) int {
+	return sizeUint(v)
+}
+
+// Skip skips an encoded (Varint) uint64 value.
 //
-// In addition to the uint64 value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return com.ErrOverflow
+// or a Reader error.
+func (uint64Ser) Skip(r muss.Reader) (n int, err error) {
+	return skipUint(com.Uint64MaxVarintLen, com.Uint64MaxLastByte, r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uint32Ser struct{}
+
+// Marshal writes an encoded (Varint) uint32 value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (uint32Ser) Marshal(v uint32, w muss.Writer) (n int, err error) {
+	return marshalUint(v, w)
+}
+
+// Unmarshal reads an encoded (Varint) uint32 value.
+//
+// In addition to the uint32 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func UnmarshalUint32(r muss.Reader) (v uint32, n int, err error) {
+func (uint32Ser) Unmarshal(r muss.Reader) (v uint32, n int, err error) {
 	return unmarshalUint[uint32](com.Uint32MaxVarintLen,
 		com.Uint32MaxLastByte,
 		r)
 }
 
-// UnmarshalUint16 reads an encoded (Varint) uint16 value.
+// Size returns the size of an encoded (Varint) uint32 value.
+func (uint32Ser) Size(v uint32) int {
+	return sizeUint(v)
+}
+
+// Skip skips an encoded (Varint) uint32 value.
 //
-// In addition to the uint64 value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return com.ErrOverflow
+// or a Reader error.
+func (uint32Ser) Skip(r muss.Reader) (n int, err error) {
+	return skipUint(com.Uint32MaxVarintLen, com.Uint32MaxLastByte, r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uint16Ser struct{}
+
+// Marshal writes an encoded (Varint) uint16 value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (uint16Ser) Marshal(v uint16, w muss.Writer) (n int, err error) {
+	return marshalUint(v, w)
+}
+
+// Unmarshal reads an encoded (Varint) uint16 value.
+//
+// In addition to the uint16 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func UnmarshalUint16(r muss.Reader) (v uint16, n int, err error) {
+func (uint16Ser) Unmarshal(r muss.Reader) (v uint16, n int, err error) {
 	return unmarshalUint[uint16](com.Uint16MaxVarintLen,
 		com.Uint16MaxLastByte,
 		r)
 }
 
-// UnmarshalUint8 reads an encoded (Varint) uint8 value.
+// Size returns the size of an encoded (Varint) uint16 value.
+func (uint16Ser) Size(v uint16) int {
+	return sizeUint(v)
+}
+
+// Skip skips an encoded (Varint) uint16 value.
 //
-// In addition to the uint64 value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return com.ErrOverflow
+// or a Reader error.
+func (uint16Ser) Skip(r muss.Reader) (n int, err error) {
+	return skipUint(com.Uint16MaxVarintLen, com.Uint16MaxLastByte, r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uint8Ser struct{}
+
+// Marshal writes an encoded (Varint) uint8 value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (uint8Ser) Marshal(v uint8, w muss.Writer) (n int, err error) {
+	return marshalUint(v, w)
+}
+
+// Unmarshal reads an encoded (Varint) uint8 value.
+//
+// In addition to the uint8 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func UnmarshalUint8(r muss.Reader) (v uint8, n int, err error) {
+func (uint8Ser) Unmarshal(r muss.Reader) (v uint8, n int, err error) {
 	return unmarshalUint[uint8](com.Uint8MaxVarintLen,
 		com.Uint8MaxLastByte,
 		r)
 }
 
-// UnmarshalUint reads an encoded (Varint) uint value.
+// Size returns the size of an encoded (Varint) uint8 value.
+func (uint8Ser) Size(v uint8) int {
+	return sizeUint(v)
+}
+
+// Skip skips an encoded (Varint) uint8 value.
 //
-// In addition to the uint64 value and the number of used bytes, it may also
+// In addition to the number of bytes read, it may also return com.ErrOverflow
+// or a Reader error.
+func (uint8Ser) Skip(r muss.Reader) (n int, err error) {
+	return skipUint(com.Uint8MaxVarintLen, com.Uint8MaxLastByte, r)
+}
+
+// -----------------------------------------------------------------------------
+
+type uintSer struct{}
+
+// Marshal writes an encoded (Varint) uint value.
+//
+// In addition to the number of bytes written, it may also return a Writer error.
+func (uintSer) Marshal(v uint, w muss.Writer) (n int, err error) {
+	return marshalUint(v, w)
+}
+
+// Unmarshal reads an encoded (Varint) uint value.
+//
+// In addition to the uint value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func UnmarshalUint(r muss.Reader) (v uint, n int, err error) {
+func (uintSer) Unmarshal(r muss.Reader) (v uint, n int, err error) {
 	return unmarshalUint[uint](com.UintMaxVarintLen(),
 		com.UintMaxLastByte(),
 		r)
 }
 
-// SizeUint64 returns the size of an encoded (Varint) uint64 value.
-func SizeUint64(v uint64) (size int) {
+// Size returns the size of an encoded (Varint) uint value.
+func (uintSer) Size(v uint) int {
 	return sizeUint(v)
 }
 
-// SizeUint32 returns the size of an encoded (Varint) uint32 value.
-func SizeUint32(v uint32) (size int) {
-	return sizeUint(v)
-}
-
-// SizeUint16 returns the size of an encoded (Varint) uint16 value.
-func SizeUint16(v uint16) (size int) {
-	return sizeUint(v)
-}
-
-// SizeUint8 returns the size of an encoded (Varint) uint8 value.
-func SizeUint8(v uint8) (size int) {
-	return sizeUint(v)
-}
-
-// SizeUint returns the size of an encoded (Varint) uint value.
-func SizeUint(v uint) (size int) {
-	return sizeUint(v)
-}
-
-// SkipUint64 skips an encoded (Varint) uint64 value.
+// Skip skips an encoded (Varint) uint value.
 //
-// In addition to the number of used bytes, it may also return com.ErrOverflow
+// In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func SkipUint64(r muss.Reader) (n int, err error) {
-	return skipUint(com.Uint64MaxVarintLen, com.Uint64MaxLastByte, r)
-}
-
-// SkipUint32 skips an encoded (Varint) uint32 value.
-//
-// In addition to the number of used bytes, it may also return com.ErrOverflow
-// or a Reader error.
-func SkipUint32(r muss.Reader) (n int, err error) {
-	return skipUint(com.Uint32MaxVarintLen, com.Uint32MaxLastByte, r)
-}
-
-// SkipUint16 skips an encoded (Varint) uint16 value.
-//
-// In addition to the number of used bytes, it may also return com.ErrOverflow
-// or a Reader error.
-func SkipUint16(r muss.Reader) (n int, err error) {
-	return skipUint(com.Uint16MaxVarintLen, com.Uint16MaxLastByte, r)
-}
-
-// SkipUint8 skips an encoded (Varint) uint8 value.
-//
-// In addition to the number of used bytes, it may also return com.ErrOverflow
-// or a Reader error.
-func SkipUint8(r muss.Reader) (n int, err error) {
-	return skipUint(com.Uint8MaxVarintLen, com.Uint8MaxLastByte, r)
-}
-
-// SkipUint skips an encoded (Varint) uint value.
-//
-// In addition to the number of used bytes, it may also return com.ErrOverflow
-// or a Reader error.
-func SkipUint(r muss.Reader) (n int, err error) {
+func (uintSer) Skip(r muss.Reader) (n int, err error) {
 	return skipUint(com.UintMaxVarintLen(), com.UintMaxLastByte(), r)
 }
 

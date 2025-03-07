@@ -5,29 +5,34 @@ import (
 	muss "github.com/mus-format/mus-stream-go"
 )
 
-// MarshalByte writes an encoded (Raw) byte value.
+// Byte is a byte serializer.
+var Byte = byteSer{}
+
+type byteSer struct{}
+
+// Marshal writes an encoded (Raw) byte value.
 //
-// Returns the number of used bytes and a Writer error.
-func MarshalByte(v byte, w muss.Writer) (n int, err error) {
+// In addition to the number of bytes written, it may also return a Writer error.
+func (s byteSer) Marshal(v byte, w muss.Writer) (n int, err error) {
 	return marshalInteger8(v, w)
 }
 
-// UnmarshalByte reads an encoded (Raw) byte value.
+// Unmarshal reads an encoded (Raw) byte value.
 //
-// In addition to the byte value and the number of used bytes, it may also
+// In addition to the byte value and the number of bytes read, it may also
 // return a Reader error.
-func UnmarshalByte(r muss.Reader) (v byte, n int, err error) {
+func (s byteSer) Unmarshal(r muss.Reader) (v byte, n int, err error) {
 	return unmarshalInteger8[byte](r)
 }
 
-// SizeByte returns the size of an encoded (Raw) byte value.
-func SizeByte(v byte) (n int) {
+// Size returns the size of an encoded (Raw) byte value.
+func (s byteSer) Size(v byte) (n int) {
 	return com.Num8RawSize
 }
 
-// SkipByte skips an encoded (Raw) byte value.
+// Skip skips an encoded (Raw) byte value.
 //
-// In addition to the number of used bytes, it may also return a Reader error.
-func SkipByte(r muss.Reader) (n int, err error) {
+// In addition to the number of bytes read, it may also return a Reader error.
+func (s byteSer) Skip(r muss.Reader) (n int, err error) {
 	return skipInteger8(r)
 }

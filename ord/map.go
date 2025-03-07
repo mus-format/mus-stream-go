@@ -6,36 +6,76 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// MarshalMap writes an encoded map value.
+// NewMapSer returns a new map serializer with the given key and value serializers.
+func NewMapSer[T comparable, V any](
+	keySer muss.Serializer[T],
+	valSer muss.Serializer[V],
+) mapSer[T, V] {
+	return NewMapSerWith(varint.PositiveInt, keySer, valSer)
+}
+
+// NewMapSerWith returns a new map serializer with the given length serializer,
+// key serializer and value serializer.
+func NewMapSerWith[T comparable, V any](
+	lenSer muss.Serializer[int],
+	keySer muss.Serializer[T],
+	valSer muss.Serializer[V],
+) mapSer[T, V] {
+	return mapSer[T, V]{lenSer: lenSer, keySer: keySer, valSer: valSer}
+}
+
+// NewValidMapSer returns a new valid map serializer with the given key and value
+// serializers and length validator.
+func NewValidMapSer[T comparable, V any](
+	keySer muss.Serializer[T],
+	valSer muss.Serializer[V],
+	lenVl com.Validator[int],
+	keyVl com.Validator[T],
+	valVl com.Validator[V],
+) validMapSer[T, V] {
+	return NewValidMapSerWith(varint.PositiveInt, keySer, valSer, lenVl, keyVl, valVl)
+}
+
+// NewValidMapSerWith returns a new valid map serializer with the given length
+// serializer, key serializer, value serializer, length validator, key validator
+// and value validator.
+func NewValidMapSerWith[T comparable, V any](
+	lenSer muss.Serializer[int],
+	keySer muss.Serializer[T],
+	valSer muss.Serializer[V],
+	lenVl com.Validator[int],
+	keyVl com.Validator[T],
+	valVl com.Validator[V],
+) validMapSer[T, V] {
+	return validMapSer[T, V]{NewMapSerWith(lenSer, keySer, valSer), lenVl, keyVl,
+		valVl}
+}
+
+// -----------------------------------------------------------------------------
+
+type mapSer[T comparable, V any] struct {
+	lenSer muss.Serializer[int]
+	keySer muss.Serializer[T]
+	valSer muss.Serializer[V]
+}
+
+// Marshal writes an encoded map value.
 //
-// The lenM argument specifies the Marshaller for the map length, if nil,
-// varint.MarshalPositiveInt() is used.
-// Arguments m1, m2 specify Marshallers for the keys and map values,
-// respectively.
-//
-// In addition to the number of used bytes, it may also return a Writer or
-// Marshaller error.
-func MarshalMap[T comparable, V any](v map[T]V, lenM muss.Marshaller[int],
-	m1 muss.Marshaller[T],
-	m2 muss.Marshaller[V],
-	w muss.Writer,
-) (n int, err error) {
-	if lenM == nil {
-		n, err = varint.MarshalPositiveInt(len(v), w)
-	} else {
-		n, err = lenM.Marshal(len(v), w)
-	}
+// In addition to the number of bytes written, it may also return a length/key/value
+// marshalling error, or a Writer error.
+func (s mapSer[T, V]) Marshal(v map[T]V, w muss.Writer) (n int, err error) {
+	n, err = s.lenSer.Marshal(len(v), w)
 	if err != nil {
 		return
 	}
 	var n1 int
 	for k, v := range v {
-		n1, err = m1.Marshal(k, w)
+		n1, err = s.keySer.Marshal(k, w)
 		n += n1
 		if err != nil {
 			return
 		}
-		n1, err = m2.Marshal(v, w)
+		n1, err = s.valSer.Marshal(v, w)
 		n += n1
 		if err != nil {
 			return
@@ -44,51 +84,12 @@ func MarshalMap[T comparable, V any](v map[T]V, lenM muss.Marshaller[int],
 	return
 }
 
-// UnmarshalMap reads an encoded map value.
+// Unmarshal reads an encoded map value.
 //
-// The lenU argument specifies the Unmarshaller for the map length, if nil,
-// varint.UnmarshalPositiveInt() is used.
-// Arguments u1, u2 specify Unmarshallers for the keys and map values,
-// respectively.
-//
-// In addition to the map value and the number of used bytes, it may also return
-// com.ErrOverflow, a Reader or Unmarshaller error.
-func UnmarshalMap[T comparable, V any](lenU muss.Unmarshaller[int],
-	u1 muss.Unmarshaller[T],
-	u2 muss.Unmarshaller[V],
-	r muss.Reader,
-) (t map[T]V, n int, err error) {
-	return UnmarshalValidMap(lenU, nil, u1, u2, nil, nil, nil, nil, r)
-}
-
-// UnmarshalValidMap reads an encoded map value.
-//
-// The lenU argument specifies the Unmarshaller for the map length, if nil,
-// varint.UnmarshalPositiveInt() is used.
-// The lenVl argument specifies the map length Validator, arguments u1, u2,
-// vl1, vl2, sk1, sk2 - Unmarshallers, Validators and Skippers for the keys and
-// map values, respectively.
-// If one of the Validators returns an error, UnmarshalValidMap uses Skippers to
-// skip the remaining bytes of the map. If one of the Skippers is nil, a
-// validation error is returned immediately.
-//
-// In addition to the map value and the number of used bytes, it may also return
-// com.ErrOverflow, com.ErrNegativeLength, a Validator or Reader error.
-func UnmarshalValidMap[T comparable, V any](lenU muss.Unmarshaller[int],
-	lenVl com.Validator[int],
-	u1 muss.Unmarshaller[T],
-	u2 muss.Unmarshaller[V],
-	vl1 com.Validator[T],
-	vl2 com.Validator[V],
-	sk1, sk2 muss.Skipper,
-	r muss.Reader,
-) (v map[T]V, n int, err error) {
-	var length int
-	if lenU == nil {
-		length, n, err = varint.UnmarshalPositiveInt(r)
-	} else {
-		length, n, err = lenU.Unmarshal(r)
-	}
+// In addition to the map value and the number of bytes read, it may also return
+// a length/key/value unmarshalling error, or a Reader error.
+func (s mapSer[T, V]) Unmarshal(r muss.Reader) (v map[T]V, n int, err error) {
+	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
 	}
@@ -97,102 +98,46 @@ func UnmarshalValidMap[T comparable, V any](lenU muss.Unmarshaller[int],
 		return
 	}
 	var (
-		n1   int
-		i    int
-		err1 error
-		k    T
-		p    V
+		n1 int
+		i  int
+		k  T
+		p  V
 	)
-	if lenVl != nil {
-		if err = lenVl.Validate(length); err != nil {
-			goto SkipRemainingBytes
-		}
-	}
 	v = make(map[T]V)
 	for i = 0; i < length; i++ {
-		k, n1, err = u1.Unmarshal(r)
+		k, n1, err = s.keySer.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
 		}
-		if vl1 != nil {
-			if err = vl1.Validate(k); err != nil {
-				if sk2 != nil {
-					n1, err1 = sk2.Skip(r)
-					n += n1
-					if err1 != nil {
-						err = err1
-						return
-					}
-					i++
-				}
-				goto SkipRemainingBytes
-			}
-		}
-		p, n1, err = u2.Unmarshal(r)
+		p, n1, err = s.valSer.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
-		}
-		if vl2 != nil {
-			if err = vl2.Validate(p); err != nil {
-				i++
-				goto SkipRemainingBytes
-			}
 		}
 		v[k] = p
 	}
 	return
-SkipRemainingBytes:
-	if sk1 == nil || sk2 == nil {
-		return
-	}
-	n1, err1 = skipRemainingMap(i, length, sk1, sk2, r)
-	n += n1
-	if err1 != nil {
-		err = err1
-	}
-	return
 }
 
-// SizeMap returns the size of an encoded map value.
-//
-// The lenS argument specifies the Sizer for the map length, if nil,
-// varint.SizePositiveInt() is used.
-// Arguments s1, s2 specify Sizers for the keys and map values respectively.
-func SizeMap[T comparable, V any](v map[T]V, lenS muss.Sizer[int],
-	s1 muss.Sizer[T],
-	s2 muss.Sizer[V],
-) (size int) {
-	if lenS == nil {
-		size = varint.SizePositiveInt(len(v))
-	} else {
-		size = lenS.Size(len(v))
-	}
+// Size returns the size of an encoded map value.
+func (s mapSer[T, V]) Size(v map[T]V) (size int) {
+	size = s.lenSer.Size(len(v))
 	for k, v := range v {
-		size += s1.Size(k)
-		size += s2.Size(v)
+		size += s.keySer.Size(k)
+		size += s.valSer.Size(v)
 	}
 	return
 }
 
-// SkipMap skips an encoded map value.
+// Skip skips an encoded map value.
 //
-// The lenU argument specifies the Unmarshaller for the map length, if nil,
-// varint.UnmarshalPositiveInt() is used.
-// Arguments sk1, sk2 specify Skippers for the keys and map values,
-// respectively.
-//
-// In addition to the number of used bytes, it may also return com.ErrOverflow,
-// com.ErrNegativeLength, a Skipper or Reader error.
-func SkipMap(lenU muss.Unmarshaller[int], sk1, sk2 muss.Skipper, r muss.Reader) (
+// In addition to the number of bytes read, it may also return
+// com.ErrNegativeLength, a length unmarshalling error, a key/value skipping
+// error, or a Reader error.
+func (s mapSer[T, V]) Skip(r muss.Reader) (
 	n int, err error) {
-	var length int
-	if lenU == nil {
-		length, n, err = varint.UnmarshalPositiveInt(r)
-	} else {
-		length, n, err = lenU.Unmarshal(r)
-	}
+	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
 	}
@@ -200,25 +145,80 @@ func SkipMap(lenU muss.Unmarshaller[int], sk1, sk2 muss.Skipper, r muss.Reader) 
 		err = com.ErrNegativeLength
 		return
 	}
-	n1, err := skipRemainingMap(0, length, sk1, sk2, r)
-	n += n1
+	var n1 int
+	for i := 0; i < length; i++ {
+		n1, err = s.keySer.Skip(r)
+		n += n1
+		if err != nil {
+			return
+		}
+		n1, err = s.valSer.Skip(r)
+		n += n1
+		if err != nil {
+			return
+		}
+	}
 	return
 }
 
-func skipRemainingMap(from int, length int, sk1, sk2 muss.Skipper,
-	r muss.Reader) (n int, err error) {
-	var n1 int
-	for i := from; i < length; i++ {
-		n1, err = sk1.Skip(r)
+// -----------------------------------------------------------------------------
+
+type validMapSer[T comparable, V any] struct {
+	mapSer[T, V]
+	lenVl com.Validator[int]
+	keyVl com.Validator[T]
+	valVl com.Validator[V]
+}
+
+// Unmarshal reads an encoded map value.
+//
+// In addition to the map value and the number of bytes read, it may also return
+// com.ErrNegativeLength, a length/key/value unmarshalling error, a
+// length/key/value validation error, or a Reader error.
+func (s validMapSer[T, V]) Unmarshal(r muss.Reader) (v map[T]V, n int,
+	err error) {
+	length, n, err := s.lenSer.Unmarshal(r)
+	if err != nil {
+		return
+	}
+	if length < 0 {
+		err = com.ErrNegativeLength
+		return
+	}
+	var (
+		n1 int
+		i  int
+		k  T
+		p  V
+	)
+	if s.lenVl != nil {
+		if err = s.lenVl.Validate(length); err != nil {
+			return
+		}
+	}
+	v = make(map[T]V)
+	for i = 0; i < length; i++ {
+		k, n1, err = s.keySer.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
 		}
-		n1, err = sk2.Skip(r)
+		if s.keyVl != nil {
+			if err = s.keyVl.Validate(k); err != nil {
+				return
+			}
+		}
+		p, n1, err = s.valSer.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
 		}
+		if s.valVl != nil {
+			if err = s.valVl.Validate(p); err != nil {
+				return
+			}
+		}
+		v[k] = p
 	}
 	return
 }
