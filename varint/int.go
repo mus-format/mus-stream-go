@@ -18,8 +18,6 @@ var (
 	Int = intSer{}
 )
 
-// -----------------------------------------------------------------------------
-
 type int64Ser struct{}
 
 // Marshal writes an encoded (Varint) int64 value.

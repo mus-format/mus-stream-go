@@ -19,8 +19,6 @@ var (
 	Uint = uintSer{}
 )
 
-// -----------------------------------------------------------------------------
-
 type uint64Ser struct{}
 
 // Marshal writes an encoded (Varint) uint64 value.

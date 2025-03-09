@@ -14,8 +14,8 @@ func NewMapSer[T comparable, V any](
 	return NewMapSerWith(varint.PositiveInt, keySer, valSer)
 }
 
-// NewMapSerWith returns a new map serializer with the given length serializer,
-// key serializer and value serializer.
+// NewMapSerWith returns a new map serializer with the given length, key and
+// value serializers.
 func NewMapSerWith[T comparable, V any](
 	lenSer muss.Serializer[int],
 	keySer muss.Serializer[T],
@@ -24,8 +24,8 @@ func NewMapSerWith[T comparable, V any](
 	return mapSer[T, V]{lenSer: lenSer, keySer: keySer, valSer: valSer}
 }
 
-// NewValidMapSer returns a new valid map serializer with the given key and value
-// serializers and length validator.
+// NewValidMapSer returns a new valid map serializer with the given key
+// serializer, value serializer, and length validator.
 func NewValidMapSer[T comparable, V any](
 	keySer muss.Serializer[T],
 	valSer muss.Serializer[V],
@@ -37,8 +37,8 @@ func NewValidMapSer[T comparable, V any](
 }
 
 // NewValidMapSerWith returns a new valid map serializer with the given length
-// serializer, key serializer, value serializer, length validator, key validator
-// and value validator.
+// serializer, key serializer, value serializer, length, key, and value
+// validators.
 func NewValidMapSerWith[T comparable, V any](
 	lenSer muss.Serializer[int],
 	keySer muss.Serializer[T],
@@ -50,8 +50,6 @@ func NewValidMapSerWith[T comparable, V any](
 	return validMapSer[T, V]{NewMapSerWith(lenSer, keySer, valSer), lenVl, keyVl,
 		valVl}
 }
-
-// -----------------------------------------------------------------------------
 
 type mapSer[T comparable, V any] struct {
 	lenSer muss.Serializer[int]

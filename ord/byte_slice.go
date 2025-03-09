@@ -30,8 +30,6 @@ func NewValidByteSliceSerWith(lenSer muss.Serializer[int],
 	return validByteSliceSer{NewByteSliceSerWith(lenSer), lenVl}
 }
 
-// -----------------------------------------------------------------------------
-
 type byteSliceSer struct {
 	lenSer muss.Serializer[int]
 }

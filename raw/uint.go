@@ -31,8 +31,6 @@ var (
 	skipUint      func(r muss.Reader) (int, error)
 )
 
-// -----------------------------------------------------------------------------
-
 type uint64Ser struct{}
 
 // Marshal writes an encoded (Raw) uint64 value.

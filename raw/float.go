@@ -13,8 +13,6 @@ var (
 	Float32 = float32Ser{}
 )
 
-// -----------------------------------------------------------------------------
-
 type float64Ser struct{}
 
 // Marshal writes an encoded (Raw) float64 value.

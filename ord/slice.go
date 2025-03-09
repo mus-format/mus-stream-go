@@ -11,8 +11,8 @@ func NewSliceSer[T any](elemSer muss.Serializer[T]) sliceSer[T] {
 	return NewSliceSerWith(varint.PositiveInt, elemSer)
 }
 
-// NewSliceSerWith returns a new slice serializer with the given length serializer
-// and element serializer.
+// NewSliceSerWith returns a new slice serializer with the given length and
+// element serializers.
 func NewSliceSerWith[T any](lenSer muss.Serializer[int], elemSer muss.Serializer[T]) sliceSer[T] {
 	return sliceSer[T]{varint.PositiveInt, elemSer}
 }
@@ -25,7 +25,7 @@ func NewValidSliceSer[T any](elemSer muss.Serializer[T],
 }
 
 // NewValidSliceSerWith returns a new valid slice serializer with the given
-// length serializer, element serializer, length validator and element validator.
+// length serializer, element serializer, length, and element validators.
 func NewValidSliceSerWith[T any](lenSer muss.Serializer[int],
 	elemSer muss.Serializer[T],
 	lenVl com.Validator[int],
@@ -33,8 +33,6 @@ func NewValidSliceSerWith[T any](lenSer muss.Serializer[int],
 ) validSliceSer[T] {
 	return validSliceSer[T]{NewSliceSerWith(lenSer, elemSer), lenVl, elemVl}
 }
-
-// -----------------------------------------------------------------------------
 
 type sliceSer[T any] struct {
 	lenSer  muss.Serializer[int]

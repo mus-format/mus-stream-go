@@ -29,8 +29,6 @@ func NewValidStringSerWith(lenSer muss.Serializer[int], lenVl com.Validator[int]
 	return validStringSer{NewStringSerWith(lenSer), lenVl}
 }
 
-// -----------------------------------------------------------------------------
-
 type stringSer struct {
 	lenSer muss.Serializer[int]
 }
