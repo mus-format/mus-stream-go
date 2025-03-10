@@ -17,13 +17,13 @@ package main
 import "github.com/mus-format/mus-go/varint"
 
 func main() {
-		var (
-			num  = 100
-			size = varint.Int.Size(num)
-			bs   = make([]byte, size)
-			buf  = bytes.NewBuffer(bs) // Create a Writer/Reader.
-		)
-		n, err := varint.Int.Marshal(num, buf)
+    var (
+      num  = 100
+      size = varint.Int.Size(num)
+      bs   = make([]byte, size)
+      buf  = bytes.NewBuffer(bs) // Create a Writer/Reader.
+    )
+    n, err := varint.Int.Marshal(num, buf)
     // ...
     num, n, err = varint.Int.Unmarshal(buf)
     // ...
