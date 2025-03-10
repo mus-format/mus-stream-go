@@ -120,6 +120,7 @@ func (s ptrSer[T]) Skip(r muss.Reader) (n int,
 	switch b {
 	case byte(com.Nil):
 		n = 1
+		return
 	case byte(com.Mapping):
 		n = 1
 		var (
