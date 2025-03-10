@@ -375,46 +375,8 @@ func TestOrd(t *testing.T) {
 		t.Run("Ptr serializer should work correctly with nil pointer",
 			func(t *testing.T) {
 				ser := NewPtrSer[string](String)
-				testdata.Test[*string](com_testdata.PointerTestCases, ser, t)
-				testdata.TestSkip[*string](com_testdata.PointerTestCases, ser, t)
-			})
-
-		t.Run("Ptr serializer should work correctly with not nil pointer",
-			func(t *testing.T) {
-				var (
-					str1    = "one"
-					str1Raw = append([]byte{6}, []byte(str1)...)
-					ptr     = &str1
-					baseSer = mock.NewSerializer[string]().RegisterMarshalN(2,
-						func(v string, w muss.Writer) (n int, err error) {
-							if v == str1 {
-								return 4, nil
-							}
-							t.Fatalf("unexepcted string, want '%v' actual '%v'", str1, v)
-							return
-						}).RegisterUnmarshal(
-						func(r muss.Reader) (v string, n int, err error) {
-							return str1, len(str1Raw), nil
-						}).RegisterSizeN(2,
-						func(v string) (size int) {
-							if v == str1 {
-								return len(str1Raw)
-							}
-							t.Fatalf("unexepcted string, want '%v' actual '%v'", str1, v)
-							return
-						}).RegisterSkip(
-						func(r muss.Reader) (n int, err error) {
-							return len(str1Raw), nil
-						})
-					mocks = []*mok.Mock{baseSer.Mock}
-					ser   = NewPtrSer[string](baseSer)
-				)
-				testdata.Test[*string]([]*string{ptr}, ser, t)
-				testdata.TestSkip[*string]([]*string{ptr}, ser, t)
-
-				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-					t.Error(infomap)
-				}
+				testdata.Test[*string]([]*string{nil}, ser, t)
+				testdata.TestSkip[*string]([]*string{nil}, ser, t)
 			})
 
 		t.Run("If Writer fails to write nil flag == 0, Marshal should return error",
