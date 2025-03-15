@@ -5,28 +5,35 @@ import (
 
 	com "github.com/mus-format/common-go"
 	muss "github.com/mus-format/mus-stream-go"
+	strops "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// String is the string serializer.
-var String = NewStringSerWith(varint.PositiveInt)
+// String is a string serializer.
+var String = NewStringSer()
 
-// NewStringSerWith returns a new string serializer with the given length
-// serializer.
-func NewStringSerWith(lenSer muss.Serializer[int]) stringSer {
+// NewStringSer returns a new string serializer. To specify a length validator,
+// use NewValidStringSer instead.
+func NewStringSer(ops ...strops.SetOption) stringSer {
+	o := strops.Options{}
+	strops.Apply(ops, &o)
+
+	return newStringSer(o)
+}
+
+// NewStringSer returns a new valid string serializer.
+func NewValidStringSer(ops ...strops.SetOption) validStringSer {
+	o := strops.Options{}
+	strops.Apply(ops, &o)
+	return validStringSer{newStringSer(o), o.LenVl}
+}
+
+func newStringSer(o strops.Options) stringSer {
+	var lenSer muss.Serializer[int] = varint.PositiveInt
+	if o.LenSer != nil {
+		lenSer = o.LenSer
+	}
 	return stringSer{lenSer}
-}
-
-// NewValidStringSer returns a new valid string serializer with the given length
-// validator.
-func NewValidStringSer(lenVl com.Validator[int]) validStringSer {
-	return NewValidStringSerWith(varint.PositiveInt, lenVl)
-}
-
-// NewValidStringSerWith returns a new valid string serializer with the given
-// length serializer and length validator.
-func NewValidStringSerWith(lenSer muss.Serializer[int], lenVl com.Validator[int]) validStringSer {
-	return validStringSer{NewStringSerWith(lenSer), lenVl}
 }
 
 type stringSer struct {

@@ -10,6 +10,7 @@ import (
 	com "github.com/mus-format/common-go"
 	com_testdata "github.com/mus-format/common-go/testdata"
 	com_mock "github.com/mus-format/common-go/testdata/mock"
+	strops "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/raw"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/testdata/mock"
@@ -280,6 +281,21 @@ func TestUnsafe(t *testing.T) {
 				testdata.TestSkip[string](com_testdata.StringTestCases, ser, t)
 			})
 
+		t.Run("We should be able to set a length serializer",
+			func(t *testing.T) {
+				var (
+					str, lenSer = testdata.StringSerData(t)
+					ser         = NewStringSer(strops.WithLenSer(lenSer))
+					mocks       = []*mok.Mock{lenSer.Mock}
+				)
+				testdata.Test[string]([]string{str}, ser, t)
+				testdata.TestSkip[string]([]string{str}, ser, t)
+
+				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
+					t.Error(infomap)
+				}
+			})
+
 		t.Run("If Writer fails to write a string length, Marshal should return an error",
 			func(t *testing.T) {
 				var (
@@ -397,7 +413,7 @@ func TestUnsafe(t *testing.T) {
 					)
 					r         = LengthReader(wantLength)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = NewValidStringSer(lenVl).Unmarshal(r)
+					v, n, err = NewValidStringSer(strops.WithLenValidator(lenVl)).Unmarshal(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
@@ -416,7 +432,7 @@ func TestUnsafe(t *testing.T) {
 						return 0, nil
 					},
 				)
-				v, n, err = NewValidStringSer(lenVl).Unmarshal(r)
+				v, n, err = NewValidStringSer(strops.WithLenValidator(lenVl)).Unmarshal(r)
 			)
 			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
 		})

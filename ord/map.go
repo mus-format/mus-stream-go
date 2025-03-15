@@ -3,52 +3,57 @@ package ord
 import (
 	com "github.com/mus-format/common-go"
 	muss "github.com/mus-format/mus-stream-go"
+	mapops "github.com/mus-format/mus-stream-go/options/map"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-// NewMapSer returns a new map serializer with the given key and value serializers.
-func NewMapSer[T comparable, V any](
-	keySer muss.Serializer[T],
-	valSer muss.Serializer[V],
-) mapSer[T, V] {
-	return NewMapSerWith(varint.PositiveInt, keySer, valSer)
+// NewMapSer returns a new map serializer with the given key and value
+// serializers. To specify a length, key or value validator, use NewValidMapSer
+// instead.
+func NewMapSer[T comparable, V any](keySer muss.Serializer[T],
+	valueSer muss.Serializer[V], ops ...mapops.SetOption[T, V]) mapSer[T, V] {
+	o := mapops.Options[T, V]{}
+	mapops.Apply(ops, &o)
+
+	return newMapSer(keySer, valueSer, o)
 }
 
-// NewMapSerWith returns a new map serializer with the given length, key and
-// value serializers.
-func NewMapSerWith[T comparable, V any](
-	lenSer muss.Serializer[int],
-	keySer muss.Serializer[T],
-	valSer muss.Serializer[V],
-) mapSer[T, V] {
-	return mapSer[T, V]{lenSer: lenSer, keySer: keySer, valSer: valSer}
+// NewValidMapSer returns a new valid map serializer.
+func NewValidMapSer[T comparable, V any](keySer muss.Serializer[T],
+	valueSer muss.Serializer[V], ops ...mapops.SetOption[T, V]) validMapSer[T, V] {
+	o := mapops.Options[T, V]{}
+	mapops.Apply(ops, &o)
+
+	var (
+		lenVl   com.Validator[int]
+		keyVl   com.Validator[T]
+		valueVl com.Validator[V]
+	)
+	if o.LenVl != nil {
+		lenVl = o.LenVl
+	}
+	if o.KeyVl != nil {
+		keyVl = o.KeyVl
+	}
+	if o.ValueVl != nil {
+		valueVl = o.ValueVl
+	}
+
+	return validMapSer[T, V]{
+		mapSer:  newMapSer(keySer, valueSer, o),
+		lenVl:   lenVl,
+		keyVl:   keyVl,
+		valueVl: valueVl,
+	}
 }
 
-// NewValidMapSer returns a new valid map serializer with the given key
-// serializer, value serializer, and length validator.
-func NewValidMapSer[T comparable, V any](
-	keySer muss.Serializer[T],
-	valSer muss.Serializer[V],
-	lenVl com.Validator[int],
-	keyVl com.Validator[T],
-	valVl com.Validator[V],
-) validMapSer[T, V] {
-	return NewValidMapSerWith(varint.PositiveInt, keySer, valSer, lenVl, keyVl, valVl)
-}
-
-// NewValidMapSerWith returns a new valid map serializer with the given length
-// serializer, key serializer, value serializer, length, key, and value
-// validators.
-func NewValidMapSerWith[T comparable, V any](
-	lenSer muss.Serializer[int],
-	keySer muss.Serializer[T],
-	valSer muss.Serializer[V],
-	lenVl com.Validator[int],
-	keyVl com.Validator[T],
-	valVl com.Validator[V],
-) validMapSer[T, V] {
-	return validMapSer[T, V]{NewMapSerWith(lenSer, keySer, valSer), lenVl, keyVl,
-		valVl}
+func newMapSer[T comparable, V any](keySer muss.Serializer[T],
+	valueSer muss.Serializer[V], o mapops.Options[T, V]) mapSer[T, V] {
+	var lenSer muss.Serializer[int] = varint.PositiveInt
+	if o.LenSer != nil {
+		lenSer = o.LenSer
+	}
+	return mapSer[T, V]{lenSer, keySer, valueSer}
 }
 
 type mapSer[T comparable, V any] struct {
@@ -163,9 +168,9 @@ func (s mapSer[T, V]) Skip(r muss.Reader) (
 
 type validMapSer[T comparable, V any] struct {
 	mapSer[T, V]
-	lenVl com.Validator[int]
-	keyVl com.Validator[T]
-	valVl com.Validator[V]
+	lenVl   com.Validator[int]
+	keyVl   com.Validator[T]
+	valueVl com.Validator[V]
 }
 
 // Unmarshal reads an encoded map value.
@@ -211,8 +216,8 @@ func (s validMapSer[T, V]) Unmarshal(r muss.Reader) (v map[T]V, n int,
 		if err != nil {
 			return
 		}
-		if s.valVl != nil {
-			if err = s.valVl.Validate(p); err != nil {
+		if s.valueVl != nil {
+			if err = s.valueVl.Validate(p); err != nil {
 				return
 			}
 		}
