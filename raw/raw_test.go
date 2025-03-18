@@ -2,7 +2,9 @@ package raw
 
 import (
 	"errors"
+	"os"
 	"testing"
+	"time"
 
 	com "github.com/mus-format/common-go"
 	com_testdata "github.com/mus-format/common-go/testdata"
@@ -420,6 +422,148 @@ func TestRaw(t *testing.T) {
 						n, err = Float32.Skip(r)
 					)
 					com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+				})
+
+		})
+
+	})
+
+	t.Run("time", func(t *testing.T) {
+		os.Setenv("TZ", "")
+
+		t.Run("time_unix_utc", func(t *testing.T) {
+
+			t.Run("TimeUnixUTC serializer should work correctly",
+				func(t *testing.T) {
+					var (
+						sec = time.Now().Unix()
+						tm  = time.Unix(sec, 0)
+					)
+					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixUTC, t)
+				})
+
+			t.Run("We should be able to serializer the zero Time",
+				func(t *testing.T) {
+					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnixUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnixUTC, t)
+				})
+
+			t.Run("If Reader fails to read a byte, Unmarshal should return error",
+				func(t *testing.T) {
+					var (
+						wantV   = time.Time{}
+						wantN   = 0
+						wantErr = errors.New("read byte error")
+						r       = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) { err = wantErr; return },
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = TimeUnixUTC.Unmarshal(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks, t)
+				})
+		})
+
+		t.Run("time_unix_milli", func(t *testing.T) {
+
+			t.Run("TimeUnixMilliUTC serializer should work correctly",
+				func(t *testing.T) {
+					var (
+						milli = time.Now().UnixMilli()
+						tm    = time.UnixMilli(milli)
+					)
+					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixMilliUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixMilliUTC, t)
+				})
+
+			t.Run("We should be able to serializer the zero Time",
+				func(t *testing.T) {
+					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnixMilliUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnixMilliUTC, t)
+				})
+
+			t.Run("If Reader fails to read a byte, Unmarshal should return error",
+				func(t *testing.T) {
+					var (
+						wantV   = time.Time{}
+						wantN   = 0
+						wantErr = errors.New("read byte error")
+						r       = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) { err = wantErr; return },
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = TimeUnixMilliUTC.Unmarshal(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks, t)
+				})
+
+		})
+
+		t.Run("time_unix_micro_utc", func(t *testing.T) {
+
+			t.Run("TimeUnixMicroUTC serializer should work correctly",
+				func(t *testing.T) {
+					var (
+						milli = time.Now().UnixMicro()
+						tm    = time.UnixMicro(milli)
+					)
+					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixMicroUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixMicroUTC, t)
+				})
+
+			t.Run("We should be able to serializer the zero Time",
+				func(t *testing.T) {
+					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
+					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
+				})
+
+			t.Run("If Reader fails to read a byte, Unmarshal should return error",
+				func(t *testing.T) {
+					var (
+						wantV   = time.Time{}
+						wantN   = 0
+						wantErr = errors.New("read byte error")
+						r       = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) { err = wantErr; return },
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = TimeUnixMicroUTC.Unmarshal(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks, t)
+				})
+
+		})
+
+		t.Run("time_unix_nano_utc", func(t *testing.T) {
+
+			t.Run("TimeUnixNanoUTC serializer should work correctly",
+				func(t *testing.T) {
+					var (
+						nano = time.Now().UnixNano()
+						tm   = time.Unix(0, nano)
+					)
+					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixNanoUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixNanoUTC, t)
+				})
+
+			t.Run("If Reader fails to read a byte, Unmarshal should return error",
+				func(t *testing.T) {
+					var (
+						wantV   = time.Time{}
+						wantN   = 0
+						wantErr = errors.New("read byte error")
+						r       = mock.NewReader().RegisterReadByte(
+							func() (b byte, err error) { err = wantErr; return },
+						)
+						mocks     = []*mok.Mock{r.Mock}
+						v, n, err = TimeUnixNanoUTC.Unmarshal(r)
+					)
+					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+						mocks, t)
 				})
 
 		})
