@@ -4,12 +4,12 @@
 [![GoReportCard](https://goreportcard.com/badge/mus-format/mus-stream-go)](https://goreportcard.com/report/github.com/mus-format/mus-stream-go)
 [![codecov](https://codecov.io/gh/mus-format/mus-stream-go/graph/badge.svg?token=91OM0S4D9Q)](https://codecov.io/gh/mus-format/mus-stream-go)
 
-mus-stream-go is a streaming version of [mus-go](https://github.com/mus-format/mus-go). 
-It maintains the same structure but replaces byte slices with the `Writer` and 
-`Reader` interfaces for streaming data.
+mus-stream-go offers a streaming version of [mus-go](https://github.com/mus-format/mus-go), 
+keeping the same structure but using `Writer` and `Reader` interfaces instead of 
+byte slices.
 
 # How To
-You can learn more about this in the mus-go [documentation](https://github.com/mus-format/mus-go#how-to-use). 
+More information can be found in the mus-go [documentation](https://github.com/mus-format/mus-go#how-to-use). 
 Here is just a small example:
 ```go
 package main
@@ -30,10 +30,16 @@ func main() {
 }
 ```
 
-Another thing to note is that with a real connection (instead of `bytes.Buffer`), 
-you need to use the `bufio` package. This is because `bufio.Writer` and 
-`bufio.Reader` implement the `muss.Writer` and `muss.Reader` interfaces.
+When working with real connections (e.g., network or file I/O) rather than 
+`bytes.Buffer`, you must use `bufio.Writer` and `bufio.Reader`. This is 
+required because:
+1. They implement the `muss.Writer` and `muss.Reader` interfaces.
+2. They provide the necessary buffering for efficient I/O operations.
 
-# DTM (Data Type Metadata) Support
-[mus-stream-dts-go](https://github.com/mus-format/mus-stream-dts-go) provides [DTM](https://medium.com/p/21d7be309e8d) 
-support.
+# DTS (Data Type metadata Support) 
+[mus-stream-dts-go](https://github.com/mus-format/mus-stream-dts-go) enables 
+typed data serialization using [DTM](https://medium.com/p/21d7be309e8d).
+
+# MarshallerMUS Interface
+The `MarshallerMUS` interface is defined in the [ext-mus-stream-go](https://github.com/mus-format/ext-mus-stream-go)
+module.
