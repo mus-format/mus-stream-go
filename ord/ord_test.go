@@ -823,8 +823,7 @@ func TestOrd(t *testing.T) {
 			var (
 				arr, elemSer = testdata.ArraySerData(t)
 				mocks        = []*mok.Mock{elemSer.Mock}
-				ser          = NewArraySer[[3]int, int](3,
-					elemSer)
+				ser          = NewArraySer[[3]int, int](elemSer)
 			)
 			testdata.Test[[3]int]([][3]int{arr}, ser, t)
 			testdata.TestSkip[[3]int]([][3]int{arr}, ser, t)
@@ -846,7 +845,7 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = NewArraySer[[3]int, int](3, nil).Unmarshal(r)
+					v, n, err = NewArraySer[[3]int, int](nil).Unmarshal(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
@@ -856,8 +855,7 @@ func TestOrd(t *testing.T) {
 			var (
 				arr, elemSer = testdata.ArraySerData(t)
 				mocks        = []*mok.Mock{elemSer.Mock}
-				ser          = NewValidArraySer[[3]int, int](3,
-					elemSer, nil)
+				ser          = NewValidArraySer[[3]int, int](elemSer, nil)
 			)
 			testdata.Test[[3]int]([][3]int{arr}, ser, t)
 			testdata.TestSkip[[3]int]([][3]int{arr}, ser, t)
@@ -879,7 +877,7 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = NewValidArraySer[[3]int, int](3, nil, nil).Unmarshal(r)
+					v, n, err = NewValidArraySer[[3]int, int](nil, nil).Unmarshal(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
@@ -910,7 +908,7 @@ func TestOrd(t *testing.T) {
 							return wantErr
 						},
 					)
-					ser   = NewValidArraySer[[3]int, int](3, elemSer, arrops.WithElemValidator[int](elemVl))
+					ser   = NewValidArraySer[[3]int, int](elemSer, arrops.WithElemValidator[int](elemVl))
 					mocks = []*mok.Mock{r.Mock, elemSer.Mock, elemVl.Mock}
 				)
 				v, n, err := ser.Unmarshal(r)

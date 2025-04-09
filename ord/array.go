@@ -1,6 +1,7 @@
 package ord
 
 import (
+	"reflect"
 	unsafe_mod "unsafe"
 
 	com "github.com/mus-format/common-go"
@@ -9,12 +10,17 @@ import (
 	slops "github.com/mus-format/mus-stream-go/options/slice"
 )
 
-// NewArraySer returns a new array serializer with the given array length and
-// element serializer. To specify a length or element validator, use
-// NewValidArraySer instead.
-func NewArraySer[T, V any](length int, elemSer muss.Serializer[V],
+// NewArraySer returns a new array serializer with the given element serializer.
+// To specify a length or element validator, use NewValidArraySer instead.
+//
+// Panics if T is not an array type.
+func NewArraySer[T, V any](elemSer muss.Serializer[V],
 	ops ...arrops.SetOption[V]) (s arraySer[T, V]) {
-	o := arrops.Options[V]{}
+	var (
+		o      = arrops.Options[V]{}
+		t      = reflect.TypeFor[T]()
+		length = t.Len()
+	)
 	arrops.Apply(ops, &o)
 
 	var (
@@ -25,10 +31,17 @@ func NewArraySer[T, V any](length int, elemSer muss.Serializer[V],
 	return arraySer[T, V]{length, sliceSer}
 }
 
-// NewValidArraySer returns a new valid array serializer.
-func NewValidArraySer[T, V any](length int, elemSer muss.Serializer[V],
+// NewValidArraySer returns a new valid array serializer with the given element
+// serializer.
+//
+// Panics if T is not an array type.
+func NewValidArraySer[T, V any](elemSer muss.Serializer[V],
 	ops ...arrops.SetOption[V]) arraySer[T, V] {
-	o := arrops.Options[V]{}
+	var (
+		o      = arrops.Options[V]{}
+		t      = reflect.TypeFor[T]()
+		length = t.Len()
+	)
 	arrops.Apply(ops, &o)
 
 	var (
