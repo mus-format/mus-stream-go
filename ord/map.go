@@ -106,7 +106,7 @@ func (s mapSer[T, V]) Unmarshal(r muss.Reader) (v map[T]V, n int, err error) {
 		k  T
 		p  V
 	)
-	v = make(map[T]V)
+	v = make(map[T]V, length)
 	for i = 0; i < length; i++ {
 		k, n1, err = s.keySer.Unmarshal(r)
 		n += n1
@@ -199,7 +199,7 @@ func (s validMapSer[T, V]) Unmarshal(r muss.Reader) (v map[T]V, n int,
 			return
 		}
 	}
-	v = make(map[T]V)
+	v = make(map[T]V, length)
 	for i = 0; i < length; i++ {
 		k, n1, err = s.keySer.Unmarshal(r)
 		n += n1
