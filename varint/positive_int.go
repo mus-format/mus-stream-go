@@ -36,10 +36,8 @@ func (positiveInt64Ser) Marshal(v int64, w muss.Writer) (n int, err error) {
 // return com.ErrOverflow or a Reader error.
 func (positiveInt64Ser) Unmarshal(r muss.Reader) (v int64, n int, err error) {
 	uv, n, err := Uint64.Unmarshal(r)
-	if err != nil {
-		return
-	}
-	return int64(uv), n, nil
+	v = int64(uv)
+	return
 }
 
 // Size returns the size of an encoded (Varint without ZigZag) int64 value.
@@ -76,10 +74,8 @@ func (positiveInt32Ser) Marshal(v int32, w muss.Writer) (n int, err error) {
 // return com.ErrOverflow or a Reader error.
 func (positiveInt32Ser) Unmarshal(r muss.Reader) (v int32, n int, err error) {
 	uv, n, err := Uint32.Unmarshal(r)
-	if err != nil {
-		return
-	}
-	return int32(uv), n, nil
+	v = int32(uv)
+	return
 }
 
 // Size returns the size of an encoded (Varint without ZigZag) int32 value.
@@ -116,10 +112,8 @@ func (positiveInt16Ser) Marshal(v int16, w muss.Writer) (n int, err error) {
 // return com.ErrOverflow or a Reader error.
 func (positiveInt16Ser) Unmarshal(r muss.Reader) (v int16, n int, err error) {
 	uv, n, err := Uint16.Unmarshal(r)
-	if err != nil {
-		return
-	}
-	return int16(uv), n, nil
+	v = int16(uv)
+	return
 }
 
 // Size returns the size of an encoded (Varint without ZigZag) int16 value.
@@ -156,10 +150,8 @@ func (positiveInt8Ser) Marshal(v int8, w muss.Writer) (n int, err error) {
 // return com.ErrOverflow or a Reader error.
 func (positiveInt8Ser) Unmarshal(r muss.Reader) (v int8, n int, err error) {
 	uv, n, err := Uint8.Unmarshal(r)
-	if err != nil {
-		return
-	}
-	return int8(uv), n, nil
+	v = int8(uv)
+	return
 }
 
 // Size returns the size of an encoded (Varint without ZigZag) int8 value.
@@ -196,10 +188,8 @@ func (positiveIntSer) Marshal(v int, w muss.Writer) (n int, err error) {
 // return com.ErrOverflow or a Reader error.
 func (positiveIntSer) Unmarshal(r muss.Reader) (v int, n int, err error) {
 	uv, n, err := Uint.Unmarshal(r)
-	if err != nil {
-		return
-	}
-	return int(uv), n, nil
+	v = int(uv)
+	return
 }
 
 // Size returns the size of an encoded (Varint without ZigZag) int value.
