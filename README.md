@@ -37,7 +37,7 @@ required because:
 2. They provide the necessary buffering for efficient I/O operations.
 
 # DTS (Data Type metadata Support) 
-[mus-stream-dts-go](https://github.com/mus-format/mus-stream-dts-go) enables 
+[dts-stream-go](https://github.com/mus-format/dts-stream-go) enables 
 typed data serialization using [DTM](https://medium.com/p/21d7be309e8d).
 
 # MarshallerMUS Interface
