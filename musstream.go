@@ -1,4 +1,5 @@
-package muss
+// Package mus provides streaming serialization interfaces.
+package mus
 
 import "io"
 

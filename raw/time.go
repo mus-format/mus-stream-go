@@ -4,7 +4,7 @@ import (
 	"time"
 
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 var (
@@ -42,7 +42,7 @@ type timeUnixSer struct{}
 // Marshal writes an encoded time.Time value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (s timeUnixSer) Marshal(v time.Time, w muss.Writer) (n int, err error) {
+func (s timeUnixSer) Marshal(v time.Time, w mus.Writer) (n int, err error) {
 	return Int64.Marshal(v.Unix(), w)
 }
 
@@ -50,7 +50,7 @@ func (s timeUnixSer) Marshal(v time.Time, w muss.Writer) (n int, err error) {
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixSer) Unmarshal(r muss.Reader) (v time.Time, n int, err error) {
+func (s timeUnixSer) Unmarshal(r mus.Reader) (v time.Time, n int, err error) {
 	sec, n, err := Int64.Unmarshal(r)
 	if err != nil {
 		return
@@ -67,7 +67,7 @@ func (s timeUnixSer) Size(v time.Time) (size int) {
 // Skip skips an encoded time.Time value.
 //
 // In addition to the number of skipped bytes, it may also return a Reader error.
-func (s timeUnixSer) Skip(r muss.Reader) (n int, err error) {
+func (s timeUnixSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
@@ -78,8 +78,9 @@ type timeUnixMilliSer struct{}
 // Marshal writes an encoded time.Time value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (s timeUnixMilliSer) Marshal(v time.Time, w muss.Writer) (n int,
-	err error) {
+func (s timeUnixMilliSer) Marshal(v time.Time, w mus.Writer) (n int,
+	err error,
+) {
 	return Int64.Marshal(v.UnixMilli(), w)
 }
 
@@ -87,8 +88,9 @@ func (s timeUnixMilliSer) Marshal(v time.Time, w muss.Writer) (n int,
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixMilliSer) Unmarshal(r muss.Reader) (v time.Time, n int,
-	err error) {
+func (s timeUnixMilliSer) Unmarshal(r mus.Reader) (v time.Time, n int,
+	err error,
+) {
 	milli, n, err := Int64.Unmarshal(r)
 	if err != nil {
 		return
@@ -105,7 +107,7 @@ func (s timeUnixMilliSer) Size(v time.Time) (size int) {
 // Skip skips an encoded time.Time value.
 //
 // In addition to the number of skipped bytes, it may also return a Reader error.
-func (s timeUnixMilliSer) Skip(r muss.Reader) (n int, err error) {
+func (s timeUnixMilliSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
@@ -116,8 +118,9 @@ type timeUnixMicroSer struct{}
 // Marshal writes an encoded time.Time value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (s timeUnixMicroSer) Marshal(v time.Time, w muss.Writer) (n int,
-	err error) {
+func (s timeUnixMicroSer) Marshal(v time.Time, w mus.Writer) (n int,
+	err error,
+) {
 	return Int64.Marshal(v.UnixMicro(), w)
 }
 
@@ -125,8 +128,9 @@ func (s timeUnixMicroSer) Marshal(v time.Time, w muss.Writer) (n int,
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixMicroSer) Unmarshal(r muss.Reader) (v time.Time, n int,
-	err error) {
+func (s timeUnixMicroSer) Unmarshal(r mus.Reader) (v time.Time, n int,
+	err error,
+) {
 	micro, n, err := Int64.Unmarshal(r)
 	if err != nil {
 		return
@@ -143,7 +147,7 @@ func (s timeUnixMicroSer) Size(v time.Time) (size int) {
 // Skip skips an encoded time.Time value.
 //
 // In addition to the number of skipped bytes, it may also return a Reader error.
-func (s timeUnixMicroSer) Skip(r muss.Reader) (n int, err error) {
+func (s timeUnixMicroSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
@@ -155,7 +159,7 @@ type timeUnixNanoSer struct{}
 //
 // In addition to the number of bytes written, it may also return a Writer error.
 // The result will be unpredictable if v is the zero Time.
-func (s timeUnixNanoSer) Marshal(v time.Time, w muss.Writer) (n int, err error) {
+func (s timeUnixNanoSer) Marshal(v time.Time, w mus.Writer) (n int, err error) {
 	return Int64.Marshal(v.UnixNano(), w)
 }
 
@@ -163,7 +167,7 @@ func (s timeUnixNanoSer) Marshal(v time.Time, w muss.Writer) (n int, err error) 
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixNanoSer) Unmarshal(r muss.Reader) (v time.Time, n int, err error) {
+func (s timeUnixNanoSer) Unmarshal(r mus.Reader) (v time.Time, n int, err error) {
 	nano, n, err := Int64.Unmarshal(r)
 	if err != nil {
 		return
@@ -181,7 +185,7 @@ func (s timeUnixNanoSer) Size(v time.Time) (size int) {
 // Skip skips an encoded time.Time value.
 //
 // In addition to the number of skipped bytes, it may also return a Reader error.
-func (s timeUnixNanoSer) Skip(r muss.Reader) (n int, err error) {
+func (s timeUnixNanoSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
@@ -195,7 +199,7 @@ type timeUnixUTCSer struct {
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixUTCSer) Unmarshal(r muss.Reader) (v time.Time, n int, err error) {
+func (s timeUnixUTCSer) Unmarshal(r mus.Reader) (v time.Time, n int, err error) {
 	v, n, err = s.timeUnixSer.Unmarshal(r)
 	if err == nil {
 		v = v.UTC()
@@ -213,7 +217,7 @@ type timeUnixMilliUTCSer struct {
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixMilliUTCSer) Unmarshal(r muss.Reader) (v time.Time, n int, err error) {
+func (s timeUnixMilliUTCSer) Unmarshal(r mus.Reader) (v time.Time, n int, err error) {
 	v, n, err = s.timeUnixMilliSer.Unmarshal(r)
 	if err == nil {
 		v = v.UTC()
@@ -231,7 +235,7 @@ type timeUnixMicroUTCSer struct {
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixMicroUTCSer) Unmarshal(r muss.Reader) (v time.Time, n int, err error) {
+func (s timeUnixMicroUTCSer) Unmarshal(r mus.Reader) (v time.Time, n int, err error) {
 	v, n, err = s.timeUnixMicroSer.Unmarshal(r)
 	if err == nil {
 		v = v.UTC()
@@ -249,7 +253,7 @@ type timeUnixNanoUTCSer struct {
 //
 // In addition to the time.Time value and the number of read bytes, it may also
 // return a Reader error.
-func (s timeUnixNanoUTCSer) Unmarshal(r muss.Reader) (v time.Time, n int, err error) {
+func (s timeUnixNanoUTCSer) Unmarshal(r mus.Reader) (v time.Time, n int, err error) {
 	v, n, err = s.timeUnixNanoSer.Unmarshal(r)
 	if err == nil {
 		v = v.UTC()

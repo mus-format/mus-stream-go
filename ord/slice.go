@@ -2,15 +2,16 @@ package ord
 
 import (
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	slops "github.com/mus-format/mus-stream-go/options/slice"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
 // NewSliceSer returns a new slice serializer with the given element serializer.
 // To specify a length or element validator, use NewValidStringSer instead.
-func NewSliceSer[T any](elemSer muss.Serializer[T], ops ...slops.SetOption[T]) (
-	s sliceSer[T]) {
+func NewSliceSer[T any](elemSer mus.Serializer[T], ops ...slops.SetOption[T]) (
+	s sliceSer[T],
+) {
 	o := slops.Options[T]{}
 	slops.Apply(ops, &o)
 
@@ -18,8 +19,9 @@ func NewSliceSer[T any](elemSer muss.Serializer[T], ops ...slops.SetOption[T]) (
 }
 
 // NewValidSliceSer returns a new valid slice serializer.
-func NewValidSliceSer[T any](elemSer muss.Serializer[T],
-	ops ...slops.SetOption[T]) validSliceSer[T] {
+func NewValidSliceSer[T any](elemSer mus.Serializer[T],
+	ops ...slops.SetOption[T],
+) validSliceSer[T] {
 	o := slops.Options[T]{}
 	slops.Apply(ops, &o)
 
@@ -40,9 +42,10 @@ func NewValidSliceSer[T any](elemSer muss.Serializer[T],
 	}
 }
 
-func newSliceSer[T any](elemSer muss.Serializer[T], o slops.Options[T]) (
-	s sliceSer[T]) {
-	var lenSer muss.Serializer[int] = varint.PositiveInt
+func newSliceSer[T any](elemSer mus.Serializer[T], o slops.Options[T]) (
+	s sliceSer[T],
+) {
+	var lenSer mus.Serializer[int] = varint.PositiveInt
 	if o.LenSer != nil {
 		lenSer = o.LenSer
 	}
@@ -53,15 +56,15 @@ func newSliceSer[T any](elemSer muss.Serializer[T], o slops.Options[T]) (
 }
 
 type sliceSer[T any] struct {
-	lenSer  muss.Serializer[int]
-	elemSer muss.Serializer[T]
+	lenSer  mus.Serializer[int]
+	elemSer mus.Serializer[T]
 }
 
 // Marshal writes an encoded slice value.
 //
 // In addition to the number of bytes written, it may also return an element
 // marshalling error, or a Writer error.
-func (s sliceSer[T]) Marshal(v []T, w muss.Writer) (n int, err error) {
+func (s sliceSer[T]) Marshal(v []T, w mus.Writer) (n int, err error) {
 	n, err = s.lenSer.Marshal(len(v), w)
 	if err != nil {
 		return
@@ -82,7 +85,7 @@ func (s sliceSer[T]) Marshal(v []T, w muss.Writer) (n int, err error) {
 // In addition to the slice value and the number of bytes read, it may also return
 // com.ErrNegativeLength, a length unmarshalling error, an element unmarshalling
 // error, or a Reader error.
-func (s sliceSer[T]) Unmarshal(r muss.Reader) (v []T, n int, err error) {
+func (s sliceSer[T]) Unmarshal(r mus.Reader) (v []T, n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -122,8 +125,9 @@ func (s sliceSer[T]) Size(v []T) (size int) {
 // In addition to the number of bytes read, it may also return
 // com.ErrNegativeLength, a length unmarshalling error, an element skipping
 // error, or a Reader error.
-func (s sliceSer[T]) Skip(r muss.Reader) (
-	n int, err error) {
+func (s sliceSer[T]) Skip(r mus.Reader) (
+	n int, err error,
+) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -156,7 +160,7 @@ type validSliceSer[T any] struct {
 // In addition to the slice value and the number of bytes read, it may also
 // return com.ErrNegativeLength, a length/element unmarshalling error, a
 // length/element validation error, or a Reader error.
-func (s validSliceSer[T]) Unmarshal(r muss.Reader) (v []T, n int, err error) {
+func (s validSliceSer[T]) Unmarshal(r mus.Reader) (v []T, n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return

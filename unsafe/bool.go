@@ -4,7 +4,7 @@ import (
 	unsafe_mod "unsafe"
 
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/ord"
 )
 
@@ -16,7 +16,7 @@ type boolSer struct{}
 // Marshal writes an encoded bool value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (s boolSer) Marshal(v bool, w muss.Writer) (n int, err error) {
+func (s boolSer) Marshal(v bool, w mus.Writer) (n int, err error) {
 	err = w.WriteByte(*(*byte)(unsafe_mod.Pointer(&v)))
 	if err != nil {
 		return
@@ -29,7 +29,7 @@ func (s boolSer) Marshal(v bool, w muss.Writer) (n int, err error) {
 //
 // In addition to the bool value and the number of bytes read, it may also
 // return a Reader error.
-func (s boolSer) Unmarshal(r muss.Reader) (v bool, n int, err error) {
+func (s boolSer) Unmarshal(r mus.Reader) (v bool, n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
 		return
@@ -51,6 +51,6 @@ func (s boolSer) Size(v bool) (n int) {
 // Skip skips an encoded bool value.
 //
 // In addition to the number of bytes read, it may also return a Reader error.
-func (s boolSer) Skip(r muss.Reader) (n int, err error) {
+func (s boolSer) Skip(r mus.Reader) (n int, err error) {
 	return ord.SkipBool(r)
 }

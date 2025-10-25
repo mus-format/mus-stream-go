@@ -4,7 +4,7 @@ import (
 	"io"
 
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	strops "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -21,7 +21,7 @@ func NewStringSer(ops ...strops.SetOption) stringSer {
 	return newStringSer(o)
 }
 
-// NewStringSer returns a new valid string serializer.
+// NewValidStringSer returns a new valid string serializer.
 func NewValidStringSer(ops ...strops.SetOption) validStringSer {
 	o := strops.Options{}
 	strops.Apply(ops, &o)
@@ -29,7 +29,7 @@ func NewValidStringSer(ops ...strops.SetOption) validStringSer {
 }
 
 func newStringSer(o strops.Options) stringSer {
-	var lenSer muss.Serializer[int] = varint.PositiveInt
+	var lenSer mus.Serializer[int] = varint.PositiveInt
 	if o.LenSer != nil {
 		lenSer = o.LenSer
 	}
@@ -37,13 +37,13 @@ func newStringSer(o strops.Options) stringSer {
 }
 
 type stringSer struct {
-	lenSer muss.Serializer[int]
+	lenSer mus.Serializer[int]
 }
 
 // Marshal writes an encoded string value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (s stringSer) Marshal(v string, w muss.Writer) (n int, err error) {
+func (s stringSer) Marshal(v string, w mus.Writer) (n int, err error) {
 	return MarshalString(v, s.lenSer, w)
 }
 
@@ -54,7 +54,7 @@ func (s stringSer) Marshal(v string, w muss.Writer) (n int, err error) {
 //
 // Unmarshal will panic if the length of the resulting string is too big
 // for the string type.
-func (s stringSer) Unmarshal(r muss.Reader) (v string, n int, err error) {
+func (s stringSer) Unmarshal(r mus.Reader) (v string, n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -89,7 +89,7 @@ func (s stringSer) Size(v string) (n int) {
 //
 // In addition to the number of bytes read, it may also return
 // mus.ErrNegativeLength, or a Reader error.
-func (s stringSer) Skip(r muss.Reader) (n int, err error) {
+func (s stringSer) Skip(r mus.Reader) (n int, err error) {
 	return SkipString(r, s.lenSer)
 }
 
@@ -108,7 +108,7 @@ type validStringSer struct {
 //
 // UnmarshalValidString will panic if the length of the resulting string is too
 // big for the string type.
-func (s validStringSer) Unmarshal(r muss.Reader) (v string, n int, err error) {
+func (s validStringSer) Unmarshal(r mus.Reader) (v string, n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -141,7 +141,7 @@ func (s validStringSer) Unmarshal(r muss.Reader) (v string, n int, err error) {
 
 // -----------------------------------------------------------------------------
 
-func MarshalString(v string, lenSer muss.Serializer[int], w muss.Writer) (n int, err error) {
+func MarshalString(v string, lenSer mus.Serializer[int], w mus.Writer) (n int, err error) {
 	n, err = lenSer.Marshal(len(v), w)
 	if err != nil {
 		return
@@ -152,12 +152,12 @@ func MarshalString(v string, lenSer muss.Serializer[int], w muss.Writer) (n int,
 	return
 }
 
-func SizeString(v string, lenSer muss.Serializer[int]) (n int) {
+func SizeString(v string, lenSer mus.Serializer[int]) (n int) {
 	length := len(v)
 	return lenSer.Size(length) + length
 }
 
-func SkipString(r muss.Reader, lenSer muss.Serializer[int]) (n int, err error) {
+func SkipString(r mus.Reader, lenSer mus.Serializer[int]) (n int, err error) {
 	length, n, err := lenSer.Unmarshal(r)
 	if err != nil {
 		return

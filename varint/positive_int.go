@@ -1,7 +1,7 @@
 package varint
 
 import (
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 var (
@@ -25,7 +25,7 @@ type positiveInt64Ser struct{}
 // It should only be used with positive values, such as string length.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (positiveInt64Ser) Marshal(v int64, w muss.Writer) (n int, err error) {
+func (positiveInt64Ser) Marshal(v int64, w mus.Writer) (n int, err error) {
 	return marshalUint(uint64(v), w)
 }
 
@@ -34,7 +34,7 @@ func (positiveInt64Ser) Marshal(v int64, w muss.Writer) (n int, err error) {
 //
 // In addition to the int64 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (positiveInt64Ser) Unmarshal(r muss.Reader) (v int64, n int, err error) {
+func (positiveInt64Ser) Unmarshal(r mus.Reader) (v int64, n int, err error) {
 	uv, n, err := Uint64.Unmarshal(r)
 	v = int64(uv)
 	return
@@ -51,7 +51,7 @@ func (positiveInt64Ser) Size(v int64) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (positiveInt64Ser) Skip(r muss.Reader) (n int, err error) {
+func (positiveInt64Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint64.Skip(r)
 }
 
@@ -63,7 +63,7 @@ type positiveInt32Ser struct{}
 // It should only be used with positive values, such as string length.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (positiveInt32Ser) Marshal(v int32, w muss.Writer) (n int, err error) {
+func (positiveInt32Ser) Marshal(v int32, w mus.Writer) (n int, err error) {
 	return marshalUint(uint32(v), w)
 }
 
@@ -72,7 +72,7 @@ func (positiveInt32Ser) Marshal(v int32, w muss.Writer) (n int, err error) {
 //
 // In addition to the int32 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (positiveInt32Ser) Unmarshal(r muss.Reader) (v int32, n int, err error) {
+func (positiveInt32Ser) Unmarshal(r mus.Reader) (v int32, n int, err error) {
 	uv, n, err := Uint32.Unmarshal(r)
 	v = int32(uv)
 	return
@@ -89,7 +89,7 @@ func (positiveInt32Ser) Size(v int32) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (positiveInt32Ser) Skip(r muss.Reader) (n int, err error) {
+func (positiveInt32Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint32.Skip(r)
 }
 
@@ -101,7 +101,7 @@ type positiveInt16Ser struct{}
 // It should only be used with positive values, such as string length.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (positiveInt16Ser) Marshal(v int16, w muss.Writer) (n int, err error) {
+func (positiveInt16Ser) Marshal(v int16, w mus.Writer) (n int, err error) {
 	return marshalUint(uint16(v), w)
 }
 
@@ -110,7 +110,7 @@ func (positiveInt16Ser) Marshal(v int16, w muss.Writer) (n int, err error) {
 //
 // In addition to the int16 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (positiveInt16Ser) Unmarshal(r muss.Reader) (v int16, n int, err error) {
+func (positiveInt16Ser) Unmarshal(r mus.Reader) (v int16, n int, err error) {
 	uv, n, err := Uint16.Unmarshal(r)
 	v = int16(uv)
 	return
@@ -127,7 +127,7 @@ func (positiveInt16Ser) Size(v int16) (size int) {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (positiveInt16Ser) Skip(r muss.Reader) (n int, err error) {
+func (positiveInt16Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint16.Skip(r)
 }
 
@@ -139,7 +139,7 @@ type positiveInt8Ser struct{}
 // It should only be used with positive values, such as string length.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (positiveInt8Ser) Marshal(v int8, w muss.Writer) (n int, err error) {
+func (positiveInt8Ser) Marshal(v int8, w mus.Writer) (n int, err error) {
 	return marshalUint(uint8(v), w)
 }
 
@@ -148,7 +148,7 @@ func (positiveInt8Ser) Marshal(v int8, w muss.Writer) (n int, err error) {
 //
 // In addition to the int8 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (positiveInt8Ser) Unmarshal(r muss.Reader) (v int8, n int, err error) {
+func (positiveInt8Ser) Unmarshal(r mus.Reader) (v int8, n int, err error) {
 	uv, n, err := Uint8.Unmarshal(r)
 	v = int8(uv)
 	return
@@ -165,7 +165,7 @@ func (positiveInt8Ser) Size(v int8) (size int) {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (positiveInt8Ser) Skip(r muss.Reader) (n int, err error) {
+func (positiveInt8Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint8.Skip(r)
 }
 
@@ -177,7 +177,7 @@ type positiveIntSer struct{}
 // It should only be used with positive values, such as string length.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (positiveIntSer) Marshal(v int, w muss.Writer) (n int, err error) {
+func (positiveIntSer) Marshal(v int, w mus.Writer) (n int, err error) {
 	return marshalUint(uint(v), w)
 }
 
@@ -186,7 +186,7 @@ func (positiveIntSer) Marshal(v int, w muss.Writer) (n int, err error) {
 //
 // In addition to the int value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (positiveIntSer) Unmarshal(r muss.Reader) (v int, n int, err error) {
+func (positiveIntSer) Unmarshal(r mus.Reader) (v int, n int, err error) {
 	uv, n, err := Uint.Unmarshal(r)
 	v = int(uv)
 	return
@@ -203,6 +203,6 @@ func (positiveIntSer) Size(v int) (size int) {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (positiveIntSer) Skip(r muss.Reader) (n int, err error) {
+func (positiveIntSer) Skip(r mus.Reader) (n int, err error) {
 	return Uint.Skip(r)
 }

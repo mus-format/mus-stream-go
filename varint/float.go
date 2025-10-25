@@ -3,7 +3,7 @@ package varint
 import (
 	"math"
 
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 var (
@@ -18,7 +18,7 @@ type float64Ser struct{}
 // Marshal writes an encoded (Varint) float64 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (float64Ser) Marshal(v float64, w muss.Writer) (n int, err error) {
+func (float64Ser) Marshal(v float64, w mus.Writer) (n int, err error) {
 	return marshalUint(math.Float64bits(v), w)
 }
 
@@ -26,7 +26,7 @@ func (float64Ser) Marshal(v float64, w muss.Writer) (n int, err error) {
 //
 // In addition to the float64 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (float64Ser) Unmarshal(r muss.Reader) (v float64, n int, err error) {
+func (float64Ser) Unmarshal(r mus.Reader) (v float64, n int, err error) {
 	uv, n, err := Uint64.Unmarshal(r)
 	if err != nil {
 		return
@@ -43,7 +43,7 @@ func (float64Ser) Size(v float64) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (float64Ser) Skip(r muss.Reader) (n int, err error) {
+func (float64Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint64.Skip(r)
 }
 
@@ -54,7 +54,7 @@ type float32Ser struct{}
 // Marshal writes an encoded (Varint) float32 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (float32Ser) Marshal(v float32, w muss.Writer) (n int, err error) {
+func (float32Ser) Marshal(v float32, w mus.Writer) (n int, err error) {
 	return marshalUint(math.Float32bits(v), w)
 }
 
@@ -62,7 +62,7 @@ func (float32Ser) Marshal(v float32, w muss.Writer) (n int, err error) {
 //
 // In addition to the float32 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (float32Ser) Unmarshal(r muss.Reader) (v float32, n int, err error) {
+func (float32Ser) Unmarshal(r mus.Reader) (v float32, n int, err error) {
 	uv, n, err := Uint32.Unmarshal(r)
 	if err != nil {
 		return
@@ -79,6 +79,6 @@ func (float32Ser) Size(v float32) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (float32Ser) Skip(r muss.Reader) (n int, err error) {
+func (float32Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint32.Skip(r)
 }

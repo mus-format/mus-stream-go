@@ -12,9 +12,7 @@ import (
 )
 
 func TestVarint(t *testing.T) {
-
 	t.Run("marshalUint", func(t *testing.T) {
-
 		t.Run("If Writer fails to write a byte, marshalUint should return an error",
 			func(t *testing.T) {
 				var (
@@ -50,11 +48,9 @@ func TestVarint(t *testing.T) {
 				)
 				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
-
 	})
 
 	t.Run("unmarshalUint", func(t *testing.T) {
-
 		t.Run("If Reader fails to read a byte, unmarshalUint should return an error",
 			func(t *testing.T) {
 				var (
@@ -96,11 +92,9 @@ func TestVarint(t *testing.T) {
 					mocks,
 					t)
 			})
-
 	})
 
 	t.Run("skipUint", func(t *testing.T) {
-
 		t.Run("If Reader fails to read a byte, skipUint should return an error",
 			func(t *testing.T) {
 				var (
@@ -138,11 +132,9 @@ func TestVarint(t *testing.T) {
 				)
 				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
-
 	})
 
 	t.Run("unsigned", func(t *testing.T) {
-
 		t.Run("Uint64 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint64
@@ -176,13 +168,10 @@ func TestVarint(t *testing.T) {
 				testdata.Test[uint](com_testdata.UintTestCases, ser, t)
 				testdata.TestSkip[uint](com_testdata.UintTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("signed", func(t *testing.T) {
-
 		t.Run("int64", func(t *testing.T) {
-
 			t.Run("Int64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int64
@@ -208,11 +197,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("int32", func(t *testing.T) {
-
 			t.Run("Int32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int32
@@ -238,11 +225,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("int16", func(t *testing.T) {
-
 			t.Run("Int16 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int16
@@ -268,11 +253,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("int8", func(t *testing.T) {
-
 			t.Run("Int8 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int8
@@ -298,7 +281,6 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("int", func(t *testing.T) {
@@ -312,10 +294,10 @@ func TestVarint(t *testing.T) {
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 				func(t *testing.T) {
 					var (
-						wantV   int = 0
-						wantN       = 0
-						wantErr     = errors.New("read byte error")
-						r           = mock.NewReader().RegisterReadByte(
+						wantV   = 0
+						wantN   = 0
+						wantErr = errors.New("read byte error")
+						r       = mock.NewReader().RegisterReadByte(
 							func() (b byte, err error) {
 								return 0, wantErr
 							},
@@ -327,11 +309,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("positive_int64", func(t *testing.T) {
-
 			t.Run("PositiveInt64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt64
@@ -357,11 +337,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("positive_int32", func(t *testing.T) {
-
 			t.Run("PositiveInt32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt32
@@ -387,11 +365,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("positive_int16", func(t *testing.T) {
-
 			t.Run("PositiveInt16 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt16
@@ -417,11 +393,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("positive_int8", func(t *testing.T) {
-
 			t.Run("PositiveInt8 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt8
@@ -447,11 +421,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("positive_int", func(t *testing.T) {
-
 			t.Run("PositiveInt serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt
@@ -462,10 +434,10 @@ func TestVarint(t *testing.T) {
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 				func(t *testing.T) {
 					var (
-						wantV   int = 0
-						wantN       = 0
-						wantErr     = errors.New("read byte error")
-						r           = mock.NewReader().RegisterReadByte(
+						wantV   = 0
+						wantN   = 0
+						wantErr = errors.New("read byte error")
+						r       = mock.NewReader().RegisterReadByte(
 							func() (b byte, err error) {
 								return 0, wantErr
 							},
@@ -477,26 +449,20 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
-
 	})
 
 	t.Run("byte", func(t *testing.T) {
-
 		t.Run("Byte serializer should work correctly",
 			func(t *testing.T) {
 				ser := Byte
 				testdata.Test[byte](com_testdata.ByteTestCases, ser, t)
 				testdata.TestSkip[byte](com_testdata.ByteTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("float", func(t *testing.T) {
-
 		t.Run("float64", func(t *testing.T) {
-
 			t.Run("Float64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float64
@@ -522,11 +488,9 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("float32", func(t *testing.T) {
-
 			t.Run("Float32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float32
@@ -552,9 +516,6 @@ func TestVarint(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
-
 	})
-
 }

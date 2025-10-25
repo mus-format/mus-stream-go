@@ -4,7 +4,7 @@ import (
 	"io"
 
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	bslops "github.com/mus-format/mus-stream-go/options/byte_slice"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -34,7 +34,7 @@ func NewValidByteSliceSer(ops ...bslops.SetOption) validByteSliceSer {
 }
 
 func newByteSliceSer(o bslops.Options) byteSliceSer {
-	var lenSer muss.Serializer[int] = varint.PositiveInt
+	var lenSer mus.Serializer[int] = varint.PositiveInt
 	if o.LenSer != nil {
 		lenSer = o.LenSer
 	}
@@ -42,14 +42,15 @@ func newByteSliceSer(o bslops.Options) byteSliceSer {
 }
 
 type byteSliceSer struct {
-	lenSer muss.Serializer[int]
+	lenSer mus.Serializer[int]
 }
 
 // Marshal writes an encoded slice value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (s byteSliceSer) Marshal(v []byte, w muss.Writer) (
-	n int, err error) {
+func (s byteSliceSer) Marshal(v []byte, w mus.Writer) (
+	n int, err error,
+) {
 	n, err = s.lenSer.Marshal(len(v), w)
 	if err != nil {
 		return
@@ -63,7 +64,7 @@ func (s byteSliceSer) Marshal(v []byte, w muss.Writer) (
 
 // In addition to the slice value and the number of bytes read, it may also
 // return com.ErrOverflow, com.ErrNegativeLength, or a Reader error.
-func (s byteSliceSer) Unmarshal(r muss.Reader) (v []byte, n int, err error) {
+func (s byteSliceSer) Unmarshal(r mus.Reader) (v []byte, n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -89,7 +90,7 @@ func (s byteSliceSer) Size(v []byte) (size int) {
 //
 // In addition to the number of used bytes, it may also return com.ErrOverflow,
 // com.ErrNegativeLength, or a Reader error.
-func (s byteSliceSer) Skip(r muss.Reader) (n int, err error) {
+func (s byteSliceSer) Skip(r mus.Reader) (n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -120,7 +121,7 @@ type validByteSliceSer struct {
 // In addition to the slice value and the number of bytes read, it may also
 // return com.ErrOverflow, com.ErrNegativeLength, a length validation error,
 // or a Reader error.
-func (s validByteSliceSer) Unmarshal(r muss.Reader) (v []byte, n int, err error) {
+func (s validByteSliceSer) Unmarshal(r mus.Reader) (v []byte, n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return

@@ -7,34 +7,36 @@ import (
 
 	com "github.com/mus-format/common-go"
 	com_testdata "github.com/mus-format/common-go/testdata"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/testdata"
 	mock "github.com/mus-format/mus-stream-go/testdata/mock"
 	"github.com/ymz-ncnk/mok"
 )
 
 func TestWrapper(t *testing.T) {
-
 	t.Run("wrapper serializer should work correctly",
 		func(t *testing.T) {
 			var (
 				st, baseSer = testdata.PtrStructSerData(t)
 				ptrMap      = com.NewPtrMap()
 				revPtrMap   = com.NewReversePtrMap()
-				ser         = Wrap(ptrMap, revPtrMap, newPtrStructSer(ptrMap, revPtrMap, baseSer))
+				ser         = Wrap(ptrMap, revPtrMap, newPtrStructSer(ptrMap, revPtrMap,
+					baseSer))
 			)
-			testdata.Test[com_testdata.PtrStruct]([]com_testdata.PtrStruct{st}, ser, t)
-			testdata.TestSkip[com_testdata.PtrStruct]([]com_testdata.PtrStruct{st}, ser, t)
+			testdata.Test[com_testdata.PtrStruct]([]com_testdata.PtrStruct{st}, ser,
+				t)
+			testdata.TestSkip[com_testdata.PtrStruct]([]com_testdata.PtrStruct{st},
+				ser, t)
 		})
 
 	t.Run("Marshal should call ser.Marshal and empty the ptrMap",
 		func(t *testing.T) {
 			var (
 				wantV  byte = 1
-				wantN  int  = 1
+				wantN       = 1
 				ptrMap      = com.NewPtrMap()
 				ptrSer      = mock.NewSerializer[byte]().RegisterMarshal(
-					func(v byte, w muss.Writer) (n int, err error) {
+					func(v byte, w mus.Writer) (n int, err error) {
 						ptrMap.Put(unsafe.Pointer(&v))
 						n = wantN
 						err = w.WriteByte(v)
@@ -65,17 +67,16 @@ func TestWrapper(t *testing.T) {
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
 			}
-
 		})
 
 	t.Run("Unmarshal should call ser.Unmarshal and empty the revPtrMap",
 		func(t *testing.T) {
 			var (
 				wantV     byte = 1
-				wantN     int  = 1
+				wantN          = 1
 				revPtrMap      = com.NewReversePtrMap()
 				ptrSer         = mock.NewSerializer[byte]().RegisterUnmarshal(
-					func(r muss.Reader) (v byte, n int, err error) {
+					func(r mus.Reader) (v byte, n int, err error) {
 						v, err = r.ReadByte()
 						if err != nil {
 							return
@@ -120,7 +121,7 @@ func TestWrapper(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				wantV    byte = 1
-				wantSize int  = 1
+				wantSize      = 1
 				ptrMap        = com.NewPtrMap()
 				ptrSer        = mock.NewSerializer[byte]().RegisterSize(
 					func(v byte) (size int) {
@@ -147,10 +148,10 @@ func TestWrapper(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				wantV     byte = 1
-				wantN     int  = 1
+				wantN          = 1
 				revPtrMap      = com.NewReversePtrMap()
 				ptrSer         = mock.NewSerializer[byte]().RegisterSkip(
-					func(r muss.Reader) (n int, err error) {
+					func(r mus.Reader) (n int, err error) {
 						v, err := r.ReadByte()
 						if err != nil {
 							return
@@ -187,19 +188,21 @@ func TestWrapper(t *testing.T) {
 				t.Error(infomap)
 			}
 		})
-
 }
 
 func newPtrStructSer(ptrMap *com.PtrMap, revPtrMap *com.ReversePtrMap,
-	baseSer muss.Serializer[int]) muss.Serializer[com_testdata.PtrStruct] {
-	return ptrStructSer{NewPtrSer[int](ptrMap, revPtrMap, baseSer)}
+	baseSer mus.Serializer[int],
+) mus.Serializer[com_testdata.PtrStruct] {
+	return ptrStructSer{NewPtrSer(ptrMap, revPtrMap, baseSer)}
 }
 
 type ptrStructSer struct {
-	intPtrSer muss.Serializer[*int]
+	intPtrSer mus.Serializer[*int]
 }
 
-func (s ptrStructSer) Marshal(v com_testdata.PtrStruct, w muss.Writer) (n int, err error) {
+func (s ptrStructSer) Marshal(v com_testdata.PtrStruct, w mus.Writer) (n int,
+	err error,
+) {
 	n, err = s.intPtrSer.Marshal(v.A1, w)
 	if err != nil {
 		return
@@ -215,7 +218,9 @@ func (s ptrStructSer) Marshal(v com_testdata.PtrStruct, w muss.Writer) (n int, e
 	return
 }
 
-func (s ptrStructSer) Unmarshal(r muss.Reader) (v com_testdata.PtrStruct, n int, err error) {
+func (s ptrStructSer) Unmarshal(r mus.Reader) (v com_testdata.PtrStruct, n int,
+	err error,
+) {
 	v.A1, n, err = s.intPtrSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -239,7 +244,7 @@ func (s ptrStructSer) Size(v com_testdata.PtrStruct) (size int) {
 	return
 }
 
-func (s ptrStructSer) Skip(r muss.Reader) (n int, err error) {
+func (s ptrStructSer) Skip(r mus.Reader) (n int, err error) {
 	n, err = s.intPtrSer.Skip(r)
 	if err != nil {
 		return

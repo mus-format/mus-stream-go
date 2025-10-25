@@ -2,7 +2,7 @@ package ord
 
 import (
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 // Bool is the bool serializer.
@@ -13,7 +13,7 @@ type boolSer struct{}
 // Marshal writes an encoded bool value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (boolSer) Marshal(v bool, w muss.Writer) (n int, err error) {
+func (boolSer) Marshal(v bool, w mus.Writer) (n int, err error) {
 	if v {
 		err = w.WriteByte(1)
 	} else {
@@ -30,7 +30,7 @@ func (boolSer) Marshal(v bool, w muss.Writer) (n int, err error) {
 //
 // In addition to the bool value and the number of bytes read, it may also
 // return com.ErrWrongFormat, or a Reader error.
-func (boolSer) Unmarshal(r muss.Reader) (v bool, n int, err error) {
+func (boolSer) Unmarshal(r mus.Reader) (v bool, n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
 		return
@@ -53,7 +53,7 @@ func (boolSer) Size(v bool) (size int) {
 //
 // In addition to the number of bytes read, it may also return
 // com.ErrWrongFormat, or a Reader error.
-func (boolSer) Skip(r muss.Reader) (n int, err error) {
+func (boolSer) Skip(r mus.Reader) (n int, err error) {
 	return SkipBool(r)
 }
 
@@ -63,7 +63,7 @@ func SizeBool(v bool) (size int) {
 	return 1
 }
 
-func SkipBool(r muss.Reader) (n int, err error) {
+func SkipBool(r mus.Reader) (n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
 		return

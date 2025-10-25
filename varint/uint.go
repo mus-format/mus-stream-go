@@ -2,7 +2,7 @@ package varint
 
 import (
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"golang.org/x/exp/constraints"
 )
 
@@ -24,7 +24,7 @@ type uint64Ser struct{}
 // Marshal writes an encoded (Varint) uint64 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (uint64Ser) Marshal(v uint64, w muss.Writer) (n int, err error) {
+func (uint64Ser) Marshal(v uint64, w mus.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -32,7 +32,7 @@ func (uint64Ser) Marshal(v uint64, w muss.Writer) (n int, err error) {
 //
 // In addition to the uint64 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (uint64Ser) Unmarshal(r muss.Reader) (v uint64, n int, err error) {
+func (uint64Ser) Unmarshal(r mus.Reader) (v uint64, n int, err error) {
 	return unmarshalUint[uint64](com.Uint64MaxVarintLen,
 		com.Uint64MaxLastByte,
 		r)
@@ -47,7 +47,7 @@ func (uint64Ser) Size(v uint64) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (uint64Ser) Skip(r muss.Reader) (n int, err error) {
+func (uint64Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint64MaxVarintLen, com.Uint64MaxLastByte, r)
 }
 
@@ -58,7 +58,7 @@ type uint32Ser struct{}
 // Marshal writes an encoded (Varint) uint32 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (uint32Ser) Marshal(v uint32, w muss.Writer) (n int, err error) {
+func (uint32Ser) Marshal(v uint32, w mus.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -66,7 +66,7 @@ func (uint32Ser) Marshal(v uint32, w muss.Writer) (n int, err error) {
 //
 // In addition to the uint32 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (uint32Ser) Unmarshal(r muss.Reader) (v uint32, n int, err error) {
+func (uint32Ser) Unmarshal(r mus.Reader) (v uint32, n int, err error) {
 	return unmarshalUint[uint32](com.Uint32MaxVarintLen,
 		com.Uint32MaxLastByte,
 		r)
@@ -81,7 +81,7 @@ func (uint32Ser) Size(v uint32) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (uint32Ser) Skip(r muss.Reader) (n int, err error) {
+func (uint32Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint32MaxVarintLen, com.Uint32MaxLastByte, r)
 }
 
@@ -92,7 +92,7 @@ type uint16Ser struct{}
 // Marshal writes an encoded (Varint) uint16 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (uint16Ser) Marshal(v uint16, w muss.Writer) (n int, err error) {
+func (uint16Ser) Marshal(v uint16, w mus.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -100,7 +100,7 @@ func (uint16Ser) Marshal(v uint16, w muss.Writer) (n int, err error) {
 //
 // In addition to the uint16 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (uint16Ser) Unmarshal(r muss.Reader) (v uint16, n int, err error) {
+func (uint16Ser) Unmarshal(r mus.Reader) (v uint16, n int, err error) {
 	return unmarshalUint[uint16](com.Uint16MaxVarintLen,
 		com.Uint16MaxLastByte,
 		r)
@@ -115,7 +115,7 @@ func (uint16Ser) Size(v uint16) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (uint16Ser) Skip(r muss.Reader) (n int, err error) {
+func (uint16Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint16MaxVarintLen, com.Uint16MaxLastByte, r)
 }
 
@@ -126,7 +126,7 @@ type uint8Ser struct{}
 // Marshal writes an encoded (Varint) uint8 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (uint8Ser) Marshal(v uint8, w muss.Writer) (n int, err error) {
+func (uint8Ser) Marshal(v uint8, w mus.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -134,7 +134,7 @@ func (uint8Ser) Marshal(v uint8, w muss.Writer) (n int, err error) {
 //
 // In addition to the uint8 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (uint8Ser) Unmarshal(r muss.Reader) (v uint8, n int, err error) {
+func (uint8Ser) Unmarshal(r mus.Reader) (v uint8, n int, err error) {
 	return unmarshalUint[uint8](com.Uint8MaxVarintLen,
 		com.Uint8MaxLastByte,
 		r)
@@ -149,7 +149,7 @@ func (uint8Ser) Size(v uint8) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (uint8Ser) Skip(r muss.Reader) (n int, err error) {
+func (uint8Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint8MaxVarintLen, com.Uint8MaxLastByte, r)
 }
 
@@ -160,7 +160,7 @@ type uintSer struct{}
 // Marshal writes an encoded (Varint) uint value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (uintSer) Marshal(v uint, w muss.Writer) (n int, err error) {
+func (uintSer) Marshal(v uint, w mus.Writer) (n int, err error) {
 	return marshalUint(v, w)
 }
 
@@ -168,7 +168,7 @@ func (uintSer) Marshal(v uint, w muss.Writer) (n int, err error) {
 //
 // In addition to the uint value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
-func (uintSer) Unmarshal(r muss.Reader) (v uint, n int, err error) {
+func (uintSer) Unmarshal(r mus.Reader) (v uint, n int, err error) {
 	return unmarshalUint[uint](com.UintMaxVarintLen(),
 		com.UintMaxLastByte(),
 		r)
@@ -183,12 +183,13 @@ func (uintSer) Size(v uint) int {
 //
 // In addition to the number of bytes read, it may also return com.ErrOverflow
 // or a Reader error.
-func (uintSer) Skip(r muss.Reader) (n int, err error) {
+func (uintSer) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.UintMaxVarintLen(), com.UintMaxLastByte(), r)
 }
 
-func marshalUint[T constraints.Unsigned](t T, w muss.Writer) (n int,
-	err error) {
+func marshalUint[T constraints.Unsigned](t T, w mus.Writer) (n int,
+	err error,
+) {
 	for t >= 0x80 {
 		err = w.WriteByte(byte(t) | 0x80)
 		if err != nil {
@@ -206,7 +207,8 @@ func marshalUint[T constraints.Unsigned](t T, w muss.Writer) (n int,
 }
 
 func unmarshalUint[T constraints.Unsigned](maxVarintLen int, maxLastByte byte,
-	r muss.Reader) (t T, n int, err error) {
+	r mus.Reader,
+) (t T, n int, err error) {
 	var (
 		b     byte
 		shift int
@@ -237,8 +239,9 @@ func sizeUint[T constraints.Unsigned](t T) (size int) {
 	return size + 1
 }
 
-func skipUint(maxVarintLen int, maxLastByte byte, r muss.Reader) (n int,
-	err error) {
+func skipUint(maxVarintLen int, maxLastByte byte, r mus.Reader) (n int,
+	err error,
+) {
 	var b byte
 	for {
 		b, err = r.ReadByte()

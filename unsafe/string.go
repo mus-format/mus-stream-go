@@ -5,7 +5,7 @@ import (
 	unsafe_mod "unsafe"
 
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	strops "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/ord"
 	"github.com/mus-format/mus-stream-go/varint"
@@ -23,7 +23,7 @@ func NewStringSer(ops ...strops.SetOption) stringSer {
 	return newStringSer(o)
 }
 
-// NewStringSer returns a new valid string serializer.
+// NewValidStringSer returns a new valid string serializer.
 func NewValidStringSer(ops ...strops.SetOption) validStringSer {
 	o := strops.Options{}
 	strops.Apply(ops, &o)
@@ -31,7 +31,7 @@ func NewValidStringSer(ops ...strops.SetOption) validStringSer {
 }
 
 func newStringSer(o strops.Options) stringSer {
-	var lenSer muss.Serializer[int] = varint.PositiveInt
+	var lenSer mus.Serializer[int] = varint.PositiveInt
 	if o.LenSer != nil {
 		lenSer = o.LenSer
 	}
@@ -39,14 +39,15 @@ func newStringSer(o strops.Options) stringSer {
 }
 
 type stringSer struct {
-	lenSer muss.Serializer[int]
+	lenSer mus.Serializer[int]
 }
 
 // Marshal writes an encoded string value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (s stringSer) Marshal(v string, w muss.Writer) (n int,
-	err error) {
+func (s stringSer) Marshal(v string, w mus.Writer) (n int,
+	err error,
+) {
 	return ord.MarshalString(v, s.lenSer, w)
 }
 
@@ -58,8 +59,9 @@ func (s stringSer) Marshal(v string, w muss.Writer) (n int,
 //
 // Unmarshal will panic if the length of the resulting string is too big
 // for the string type.
-func (s stringSer) Unmarshal(r muss.Reader) (v string,
-	n int, err error) {
+func (s stringSer) Unmarshal(r mus.Reader) (v string,
+	n int, err error,
+) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return
@@ -94,7 +96,7 @@ func (s stringSer) Size(v string) (n int) {
 //
 // In addition to the number of bytes read, it may also return
 // mus.ErrNegativeLength, a length unmarshalling error, or a Reader error.
-func (s stringSer) Skip(r muss.Reader) (n int, err error) {
+func (s stringSer) Skip(r mus.Reader) (n int, err error) {
 	return ord.SkipString(r, s.lenSer)
 }
 
@@ -113,7 +115,7 @@ type validStringSer struct {
 //
 // Unmarshal will panic if the length of the resulting string is too big
 // for the string type.
-func (s validStringSer) Unmarshal(r muss.Reader) (v string, n int, err error) {
+func (s validStringSer) Unmarshal(r mus.Reader) (v string, n int, err error) {
 	length, n, err := s.lenSer.Unmarshal(r)
 	if err != nil {
 		return

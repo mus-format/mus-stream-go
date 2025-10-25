@@ -1,13 +1,14 @@
+// Package mapops provides options for customizing map serialization.
 package mapops
 
 import (
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 // Options for the map serializer.
 type Options[T, V any] struct {
-	LenSer  muss.Serializer[int]
+	LenSer  mus.Serializer[int]
 	LenVl   com.Validator[int]
 	KeyVl   com.Validator[T]
 	ValueVl com.Validator[V]
@@ -15,7 +16,7 @@ type Options[T, V any] struct {
 
 type SetOption[T, V any] func(o *Options[T, V])
 
-func WithLenSer[T, V any](lenSer muss.Serializer[int]) SetOption[T, V] {
+func WithLenSer[T, V any](lenSer mus.Serializer[int]) SetOption[T, V] {
 	return func(o *Options[T, V]) { o.LenSer = lenSer }
 }
 

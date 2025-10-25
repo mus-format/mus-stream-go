@@ -3,7 +3,7 @@ package raw
 import (
 	"math"
 
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 var (
@@ -18,7 +18,7 @@ type float64Ser struct{}
 // Marshal writes an encoded (Raw) float64 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (float64Ser) Marshal(v float64, w muss.Writer) (n int, err error) {
+func (float64Ser) Marshal(v float64, w mus.Writer) (n int, err error) {
 	return marshalInteger64(math.Float64bits(v), w)
 }
 
@@ -26,7 +26,7 @@ func (float64Ser) Marshal(v float64, w muss.Writer) (n int, err error) {
 //
 // In addition to the float64 value and the number of bytes read, it may also
 // return a Reader error.
-func (float64Ser) Unmarshal(r muss.Reader) (v float64, n int, err error) {
+func (float64Ser) Unmarshal(r mus.Reader) (v float64, n int, err error) {
 	uv, n, err := unmarshalInteger64[uint64](r)
 	if err != nil {
 		return
@@ -42,7 +42,7 @@ func (float64Ser) Size(v float64) int {
 // Skip skips an encoded (Raw) float64 value.
 //
 // In addition to the number of used bytes, it may also return a Reader error.
-func (float64Ser) Skip(r muss.Reader) (n int, err error) {
+func (float64Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipInteger64(r)
 }
 
@@ -53,7 +53,7 @@ type float32Ser struct{}
 // Marshal writes an encoded (Raw) float32 value.
 //
 // In addition to the number of bytes written, it may also return a Writer error.
-func (float32Ser) Marshal(v float32, w muss.Writer) (n int, err error) {
+func (float32Ser) Marshal(v float32, w mus.Writer) (n int, err error) {
 	return marshalInteger32(math.Float32bits(v), w)
 }
 
@@ -61,7 +61,7 @@ func (float32Ser) Marshal(v float32, w muss.Writer) (n int, err error) {
 //
 // In addition to the float32 value and the number of bytes read, it may also
 // return a Reader error.
-func (float32Ser) Unmarshal(r muss.Reader) (v float32, n int, err error) {
+func (float32Ser) Unmarshal(r mus.Reader) (v float32, n int, err error) {
 	uv, n, err := unmarshalInteger32[uint32](r)
 	if err != nil {
 		return
@@ -77,6 +77,6 @@ func (float32Ser) Size(v float32) int {
 // Skip skips an encoded (Raw) float32 value.
 //
 // In addition to the number of bytes read, it may also return a Reader error.
-func (float32Ser) Skip(r muss.Reader) (n int, err error) {
+func (float32Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipInteger32(r)
 }

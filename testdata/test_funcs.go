@@ -62,7 +62,8 @@ func TestSkip[T any](cases []T, ser muss.Serializer[T], t *testing.T) {
 }
 
 func TestMarshalResults(wantN, n int, wantErr, err error, mocks []*mok.Mock,
-	t *testing.T) {
+	t *testing.T,
+) {
 	if n != wantN {
 		t.Errorf("unexpected n, want '%v' actual '%v'", wantN, n)
 	}

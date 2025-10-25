@@ -2,7 +2,7 @@ package ord
 
 import (
 	com "github.com/mus-format/common-go"
-	mus "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 // NewPtrSer returns a new pointer serializer with the given base serializer.

@@ -4,28 +4,29 @@ import (
 	"unsafe"
 
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
 // NewPtrSer returns a new pointer serializer with the given pointer map,
 // reverse pointer map and base serializer.
 func NewPtrSer[T any](ptrMap *com.PtrMap, revPtrMap *com.ReversePtrMap,
-	baseSer muss.Serializer[T]) ptrSer[T] {
+	baseSer mus.Serializer[T],
+) ptrSer[T] {
 	return ptrSer[T]{ptrMap, revPtrMap, baseSer}
 }
 
 type ptrSer[T any] struct {
 	ptrMap    *com.PtrMap
 	revPtrMap *com.ReversePtrMap
-	baseSer   muss.Serializer[T]
+	baseSer   mus.Serializer[T]
 }
 
 // Marshal writes an encoded pointer.
 //
 // In addition to the number of bytes written, it may also return a base type
 // marshalling error, or a Writer error.
-func (s ptrSer[T]) Marshal(v *T, w muss.Writer) (n int, err error) {
+func (s ptrSer[T]) Marshal(v *T, w mus.Writer) (n int, err error) {
 	if v == nil {
 		err = w.WriteByte(byte(com.Nil))
 		if err != nil {
@@ -58,7 +59,7 @@ func (s ptrSer[T]) Marshal(v *T, w muss.Writer) (n int, err error) {
 // In addition to the pointer and the number of bytes read, it may also return
 // mus.ErrTooSmallByteSlice, com.ErrWrongFormat, a base type unmarshalling error,
 // or a Reader error.
-func (s ptrSer[T]) Unmarshal(r muss.Reader) (v *T, n int, err error) {
+func (s ptrSer[T]) Unmarshal(r mus.Reader) (v *T, n int, err error) {
 	b, err := r.ReadByte()
 	if err != nil {
 		return
@@ -111,8 +112,9 @@ func (s ptrSer[T]) Size(v *T) (size int) {
 // In addition to the number of bytes read, it may also return
 // mus.ErrTooSmallByteSlice, com.ErrWrongFormat, a base type skipping error,
 // or a Reader error.
-func (s ptrSer[T]) Skip(r muss.Reader) (n int,
-	err error) {
+func (s ptrSer[T]) Skip(r mus.Reader) (n int,
+	err error,
+) {
 	b, err := r.ReadByte()
 	if err != nil {
 		return
@@ -147,7 +149,7 @@ func (s ptrSer[T]) Skip(r muss.Reader) (n int,
 	return
 }
 
-func (s ptrSer[T]) unmarshalData(id int, r muss.Reader) (v *T, n int, err error) {
+func (s ptrSer[T]) unmarshalData(id int, r mus.Reader) (v *T, n int, err error) {
 	var (
 		k  T
 		n1 int

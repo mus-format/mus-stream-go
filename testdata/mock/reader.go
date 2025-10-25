@@ -16,7 +16,8 @@ func (m Reader) RegisterRead(fn func(p []byte) (n int, err error)) Reader {
 }
 
 func (m Reader) RegisterNReadByte(n int,
-	fn func() (b byte, err error)) Reader {
+	fn func() (b byte, err error),
+) Reader {
 	m.RegisterN("ReadByte", n, fn)
 	return m
 }

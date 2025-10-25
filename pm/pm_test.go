@@ -10,14 +10,12 @@ import (
 	"github.com/ymz-ncnk/mok"
 
 	com_testdata "github.com/mus-format/common-go/testdata"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/testdata"
 )
 
 func TestPM(t *testing.T) {
-
 	t.Run("pointer", func(t *testing.T) {
-
 		t.Run("Marshal should be able to marshal the nil pointer", func(t *testing.T) {
 			var (
 				wantN         = 1
@@ -41,10 +39,10 @@ func TestPM(t *testing.T) {
 		t.Run("If marshal of the pointer Nil flag fails with an error, Marshal should return it",
 			func(t *testing.T) {
 				var (
-					wantN         = 0
-					wantErr error = errors.New("pointer Nil flag marshal error")
-					ptrMap        = com.NewPtrMap()
-					w             = mock.NewWriter().RegisterWriteByte(
+					wantN   = 0
+					wantErr = errors.New("pointer Nil flag marshal error")
+					ptrMap  = com.NewPtrMap()
+					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) (err error) {
 							return wantErr
 						},
@@ -58,10 +56,10 @@ func TestPM(t *testing.T) {
 		t.Run("If marshal of the pointer mapping flag fails with an error, Marshal should return it",
 			func(t *testing.T) {
 				var (
-					wantN         = 0
-					wantErr error = errors.New("pointer mapping flag marshal error")
-					ptrMap        = com.NewPtrMap()
-					w             = mock.NewWriter().RegisterWriteByte(
+					wantN   = 0
+					wantErr = errors.New("pointer mapping flag marshal error")
+					ptrMap  = com.NewPtrMap()
+					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) (err error) {
 							return wantErr
 						},
@@ -76,10 +74,10 @@ func TestPM(t *testing.T) {
 		t.Run("If marshal of the pointer id fails with an error, Marshal should return it",
 			func(t *testing.T) {
 				var (
-					wantN         = 1
-					wantErr error = errors.New("pointer id marshal error")
-					ptrMap        = com.NewPtrMap()
-					w             = mock.NewWriter().RegisterWriteByte(
+					wantN   = 1
+					wantErr = errors.New("pointer id marshal error")
+					ptrMap  = com.NewPtrMap()
+					w       = mock.NewWriter().RegisterWriteByte(
 						func(c byte) (err error) {
 							return nil
 						},
@@ -111,7 +109,7 @@ func TestPM(t *testing.T) {
 						},
 					)
 					baseSer = mock.NewSerializer[int]().RegisterMarshal(
-						func(t int, w muss.Writer) (n int, err error) {
+						func(t int, w mus.Writer) (n int, err error) {
 							return 1, wantErr
 						},
 					)
@@ -137,7 +135,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, nil, nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -161,7 +159,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -184,7 +182,7 @@ func TestPM(t *testing.T) {
 						},
 					)
 					baseSer = mock.NewSerializer[int]().RegisterUnmarshal(
-						func(r muss.Reader) (t int, n int, err error) {
+						func(r mus.Reader) (t int, n int, err error) {
 							n = 1
 							err = wantErr
 							return
@@ -194,7 +192,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, revPtrMap, baseSer).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -213,7 +211,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults[*int](wantV, v, wantN, n, wantErr, err,
+				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -273,7 +271,7 @@ func TestPM(t *testing.T) {
 						},
 					)
 					baseSer = mock.NewSerializer[int]().RegisterSkip(
-						func(r muss.Reader) (n int, err error) {
+						func(r mus.Reader) (n int, err error) {
 							n = 1
 							err = wantErr
 							return
@@ -302,7 +300,5 @@ func TestPM(t *testing.T) {
 				)
 				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
-
 	})
-
 }

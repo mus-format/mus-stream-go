@@ -1,19 +1,20 @@
+// Package bslops provides options for customizing byte slice serialization.
 package bslops
 
 import (
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 // Options for the byte slice serializer.
 type Options struct {
-	LenSer muss.Serializer[int]
+	LenSer mus.Serializer[int]
 	LenVl  com.Validator[int]
 }
 
 type SetOption func(o *Options)
 
-func WithLenSer(lenSer muss.Serializer[int]) SetOption {
+func WithLenSer(lenSer mus.Serializer[int]) SetOption {
 	return func(o *Options) { o.LenSer = lenSer }
 }
 

@@ -2,11 +2,12 @@ package raw
 
 import (
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
-func marshalInteger64[T com.Integer64](t T, w muss.Writer) (n int,
-	err error) {
+func marshalInteger64[T com.Integer64](t T, w mus.Writer) (n int,
+	err error,
+) {
 	err = w.WriteByte(byte(t))
 	if err != nil {
 		return
@@ -50,8 +51,9 @@ func marshalInteger64[T com.Integer64](t T, w muss.Writer) (n int,
 	return
 }
 
-func marshalInteger32[T com.Integer32](t T, w muss.Writer) (n int,
-	err error) {
+func marshalInteger32[T com.Integer32](t T, w mus.Writer) (n int,
+	err error,
+) {
 	err = w.WriteByte(byte(t))
 	if err != nil {
 		return
@@ -75,8 +77,9 @@ func marshalInteger32[T com.Integer32](t T, w muss.Writer) (n int,
 	return
 }
 
-func marshalInteger16[T com.Integer16](t T, w muss.Writer) (n int,
-	err error) {
+func marshalInteger16[T com.Integer16](t T, w mus.Writer) (n int,
+	err error,
+) {
 	err = w.WriteByte(byte(t))
 	if err != nil {
 		return
@@ -90,8 +93,9 @@ func marshalInteger16[T com.Integer16](t T, w muss.Writer) (n int,
 	return
 }
 
-func marshalInteger8[T com.Integer8](t T, w muss.Writer) (n int,
-	err error) {
+func marshalInteger8[T com.Integer8](t T, w mus.Writer) (n int,
+	err error,
+) {
 	err = w.WriteByte(byte(t))
 	if err != nil {
 		return
@@ -100,8 +104,9 @@ func marshalInteger8[T com.Integer8](t T, w muss.Writer) (n int,
 	return
 }
 
-func unmarshalInteger64[T com.Integer64](r muss.Reader) (t T, n int,
-	err error) {
+func unmarshalInteger64[T com.Integer64](r mus.Reader) (t T, n int,
+	err error,
+) {
 	var b byte
 	b, err = r.ReadByte()
 	if err != nil {
@@ -154,8 +159,9 @@ func unmarshalInteger64[T com.Integer64](r muss.Reader) (t T, n int,
 	return
 }
 
-func unmarshalInteger32[T com.Integer32](r muss.Reader) (t T, n int,
-	err error) {
+func unmarshalInteger32[T com.Integer32](r mus.Reader) (t T, n int,
+	err error,
+) {
 	var b byte
 	b, err = r.ReadByte()
 	if err != nil {
@@ -184,8 +190,9 @@ func unmarshalInteger32[T com.Integer32](r muss.Reader) (t T, n int,
 	return
 }
 
-func unmarshalInteger16[T com.Integer16](r muss.Reader) (t T, n int,
-	err error) {
+func unmarshalInteger16[T com.Integer16](r mus.Reader) (t T, n int,
+	err error,
+) {
 	var b byte
 	b, err = r.ReadByte()
 	if err != nil {
@@ -202,8 +209,9 @@ func unmarshalInteger16[T com.Integer16](r muss.Reader) (t T, n int,
 	return
 }
 
-func unmarshalInteger8[T com.Integer8](r muss.Reader) (t T, n int,
-	err error) {
+func unmarshalInteger8[T com.Integer8](r mus.Reader) (t T, n int,
+	err error,
+) {
 	var b byte
 	b, err = r.ReadByte()
 	if err != nil {
@@ -222,23 +230,23 @@ func sizeNum32[T com.Num32](t T) int {
 	return com.Num32RawSize
 }
 
-func skipInteger64(r muss.Reader) (int, error) {
+func skipInteger64(r mus.Reader) (int, error) {
 	return skipInteger(com.Num64RawSize, r)
 }
 
-func skipInteger32(r muss.Reader) (int, error) {
+func skipInteger32(r mus.Reader) (int, error) {
 	return skipInteger(com.Num32RawSize, r)
 }
 
-func skipInteger16(r muss.Reader) (int, error) {
+func skipInteger16(r mus.Reader) (int, error) {
 	return skipInteger(com.Num16RawSize, r)
 }
 
-func skipInteger8(r muss.Reader) (int, error) {
+func skipInteger8(r mus.Reader) (int, error) {
 	return skipInteger(com.Num8RawSize, r)
 }
 
-func skipInteger(integerSize int, r muss.Reader) (n int, err error) {
+func skipInteger(integerSize int, r mus.Reader) (n int, err error) {
 	for i := 0; i < integerSize; i++ {
 		_, err = r.ReadByte()
 		if err != nil {

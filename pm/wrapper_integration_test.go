@@ -10,7 +10,6 @@ import (
 )
 
 func TestIntegrationWrapper(t *testing.T) {
-
 	t.Run("wrapper serializer should work correctly", func(t *testing.T) {
 		var (
 			ptrMap    = com.NewPtrMap()
@@ -37,5 +36,4 @@ func TestIntegrationWrapper(t *testing.T) {
 		testdata.Test[com_testdata.PtrStruct]([]com_testdata.PtrStruct{{A1: &a, A2: &b, A3: &c}}, ser, t)
 		testdata.TestSkip[com_testdata.PtrStruct]([]com_testdata.PtrStruct{{A1: &d, A2: &e, A3: &f}}, ser, t)
 	})
-
 }

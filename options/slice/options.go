@@ -1,20 +1,21 @@
+// Package slops provides options for customizing slice serialization.
 package slops
 
 import (
 	com "github.com/mus-format/common-go"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 )
 
 // Options for the slice serializer.
 type Options[T any] struct {
-	LenSer muss.Serializer[int]
+	LenSer mus.Serializer[int]
 	LenVl  com.Validator[int]
 	ElemVl com.Validator[T]
 }
 
 type SetOption[T any] func(o *Options[T])
 
-func WithLenSer[T any](lenSer muss.Serializer[int]) SetOption[T] {
+func WithLenSer[T any](lenSer mus.Serializer[int]) SetOption[T] {
 	return func(o *Options[T]) { o.LenSer = lenSer }
 }
 

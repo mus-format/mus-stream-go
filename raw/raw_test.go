@@ -8,7 +8,7 @@ import (
 
 	com "github.com/mus-format/common-go"
 	com_testdata "github.com/mus-format/common-go/testdata"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/testdata"
 	"github.com/mus-format/mus-stream-go/testdata/mock"
 	"github.com/ymz-ncnk/mok"
@@ -16,9 +16,7 @@ import (
 )
 
 func TestRaw(t *testing.T) {
-
 	t.Run("setUpUintFuncs", func(t *testing.T) {
-
 		t.Run("If the system int size is not 32 or 64, setUpUintFuncs should panic with ErrUnsupportedIntSize",
 			func(t *testing.T) {
 				wantErr := com.ErrUnsupportedIntSize
@@ -66,11 +64,9 @@ func TestRaw(t *testing.T) {
 					t.Error("unexpected skipUint func")
 				}
 			})
-
 	})
 
 	t.Run("setUpIntFuncs", func(t *testing.T) {
-
 		t.Run("If the system int size is not 32 or 64, setUpIntFuncs should panic with ErrUnsupportedIntSize",
 			func(t *testing.T) {
 				wantErr := com.ErrUnsupportedIntSize
@@ -118,7 +114,6 @@ func TestRaw(t *testing.T) {
 					t.Error("unexpected skipInt func")
 				}
 			})
-
 	})
 
 	t.Run("If Writer fails to write a byte, marshalInteger64 should return an error",
@@ -248,18 +243,15 @@ func TestRaw(t *testing.T) {
 		})
 
 	t.Run("byte", func(t *testing.T) {
-
 		t.Run("Byte serializer should work correctly",
 			func(t *testing.T) {
 				ser := Byte
 				testdata.Test[byte](com_testdata.ByteTestCases, ser, t)
 				testdata.TestSkip[byte](com_testdata.ByteTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("unsigned", func(t *testing.T) {
-
 		t.Run("Uint64 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint64
@@ -292,11 +284,9 @@ func TestRaw(t *testing.T) {
 				testdata.Test[uint](com_testdata.UintTestCases, ser, t)
 				testdata.TestSkip[uint](com_testdata.UintTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("signed", func(t *testing.T) {
-
 		t.Run("Int64 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int64
@@ -331,13 +321,10 @@ func TestRaw(t *testing.T) {
 				testdata.Test[int](com_testdata.IntTestCases, ser, t)
 				testdata.TestSkip[int](com_testdata.IntTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("float", func(t *testing.T) {
-
 		t.Run("float64", func(t *testing.T) {
-
 			t.Run("Float64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float64
@@ -378,11 +365,9 @@ func TestRaw(t *testing.T) {
 					)
 					com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 				})
-
 		})
 
 		t.Run("float32", func(t *testing.T) {
-
 			t.Run("Float32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float32
@@ -423,16 +408,13 @@ func TestRaw(t *testing.T) {
 					)
 					com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 				})
-
 		})
-
 	})
 
 	t.Run("time", func(t *testing.T) {
 		os.Setenv("TZ", "")
 
 		t.Run("time_unix_utc", func(t *testing.T) {
-
 			t.Run("TimeUnixUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -445,8 +427,8 @@ func TestRaw(t *testing.T) {
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnixUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnixUTC, t)
+					testdata.Test[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -467,7 +449,6 @@ func TestRaw(t *testing.T) {
 		})
 
 		t.Run("time_unix_milli", func(t *testing.T) {
-
 			t.Run("TimeUnixMilliUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -480,8 +461,8 @@ func TestRaw(t *testing.T) {
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnixMilliUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnixMilliUTC, t)
+					testdata.Test[time.Time]([]time.Time{{}}, TimeUnixMilliUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnixMilliUTC, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -499,11 +480,9 @@ func TestRaw(t *testing.T) {
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
-
 		})
 
 		t.Run("time_unix_micro_utc", func(t *testing.T) {
-
 			t.Run("TimeUnixMicroUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -516,8 +495,8 @@ func TestRaw(t *testing.T) {
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
-					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
+					testdata.Test[time.Time]([]time.Time{{}}, TimeUnix, t)
+					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnix, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -535,11 +514,9 @@ func TestRaw(t *testing.T) {
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
-
 		})
 
 		t.Run("time_unix_nano_utc", func(t *testing.T) {
-
 			t.Run("TimeUnixNanoUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -565,16 +542,14 @@ func TestRaw(t *testing.T) {
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
-
 		})
-
 	})
-
 }
 
 func testMarshalIntegerError[T constraints.Integer](k int,
-	fn func(t T, w muss.Writer) (n int, err error),
-	t *testing.T) {
+	fn func(t T, w mus.Writer) (n int, err error),
+	t *testing.T,
+) {
 	var (
 		num     T = 0
 		wantN     = k
@@ -591,7 +566,7 @@ func testMarshalIntegerError[T constraints.Integer](k int,
 }
 
 func testUnmarshalIntegerError[T constraints.Integer](k int,
-	fn func(r muss.Reader) (t T, n int, err error),
+	fn func(r mus.Reader) (t T, n int, err error),
 	t *testing.T,
 ) {
 	var (

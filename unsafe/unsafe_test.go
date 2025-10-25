@@ -21,9 +21,7 @@ import (
 )
 
 func TestUnsafe(t *testing.T) {
-
 	t.Run("setUpUintFuncs", func(t *testing.T) {
-
 		t.Run("If the system int size is not 32 or 64, setUpUintFuncs should panic with ErrUnsupportedIntSize",
 			func(t *testing.T) {
 				wantErr := com.ErrUnsupportedIntSize
@@ -71,11 +69,9 @@ func TestUnsafe(t *testing.T) {
 					t.Error("unexpected skipUint func")
 				}
 			})
-
 	})
 
 	t.Run("setUpIntFuncs", func(t *testing.T) {
-
 		t.Run("If the system int size is not 32 or 64, setUpIntFuncs should panic with ErrUnsupportedIntSize",
 			func(t *testing.T) {
 				wantErr := com.ErrUnsupportedIntSize
@@ -123,7 +119,6 @@ func TestUnsafe(t *testing.T) {
 					t.Error("unexpected skipInt func")
 				}
 			})
-
 	})
 
 	t.Run("If Reader fails to read a byte slice, unmarshalInteger64 should return an error",
@@ -149,7 +144,7 @@ func TestUnsafe(t *testing.T) {
 			var (
 				wantV   uint64 = 0
 				wantN          = 4
-				wantErr error  = io.ErrUnexpectedEOF
+				wantErr        = io.ErrUnexpectedEOF
 				r              = mock.NewReader().RegisterRead(
 					func(p []byte) (n int, err error) {
 						return wantN, nil
@@ -187,7 +182,7 @@ func TestUnsafe(t *testing.T) {
 			var (
 				wantV   uint32 = 0
 				wantN          = 2
-				wantErr error  = io.ErrUnexpectedEOF
+				wantErr        = io.ErrUnexpectedEOF
 				r              = mock.NewReader().RegisterRead(
 					func(p []byte) (n int, err error) {
 						return wantN, nil
@@ -225,7 +220,7 @@ func TestUnsafe(t *testing.T) {
 			var (
 				wantV   uint16 = 0
 				wantN          = 1
-				wantErr error  = io.ErrUnexpectedEOF
+				wantErr        = io.ErrUnexpectedEOF
 				r              = mock.NewReader().RegisterRead(
 					func(p []byte) (n int, err error) {
 						return wantN, nil
@@ -263,7 +258,7 @@ func TestUnsafe(t *testing.T) {
 			var (
 				wantV   uint8 = 0
 				wantN         = 0
-				wantErr error = io.EOF
+				wantErr       = io.EOF
 				r             = mock.NewReader().RegisterRead(
 					func(p []byte) (n int, err error) { return 0, io.EOF },
 				)
@@ -275,7 +270,6 @@ func TestUnsafe(t *testing.T) {
 		})
 
 	t.Run("string", func(t *testing.T) {
-
 		t.Run("String serializer should work correctly",
 			func(t *testing.T) {
 				ser := String
@@ -318,10 +312,10 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If Reader fails with an io.EOF, Unmarshal should return io.ErrUnexpectedEOF",
 			func(t *testing.T) {
 				var (
-					wantV   string = ""
-					wantN          = 5
-					wantErr error  = io.ErrUnexpectedEOF
-					r              = mock.NewReader().RegisterReadByte(
+					wantV   = ""
+					wantN   = 5
+					wantErr = io.ErrUnexpectedEOF
+					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) { return 22, nil },
 					).RegisterRead(
 						func(p []byte) (n int, err error) {
@@ -340,10 +334,10 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If Reader fails to read a string length, Unmarshal should return an error",
 			func(t *testing.T) {
 				var (
-					wantV   string = ""
-					wantN          = 0
-					wantErr        = errors.New("unmarshal length error")
-					r              = mock.NewReader().RegisterReadByte(
+					wantV   = ""
+					wantN   = 0
+					wantErr = errors.New("unmarshal length error")
+					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 0, wantErr
 						},
@@ -358,12 +352,12 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Unmarshal should return ErrNegativeLength if meets negative length",
 			func(t *testing.T) {
 				var (
-					wantV     string = ""
-					wantN            = 10
-					wantErr          = com.ErrNegativeLength
-					r                = LengthReader(-1)
-					mocks            = []*mok.Mock{r.Mock}
-					v, n, err        = String.Unmarshal(r)
+					wantV     = ""
+					wantN     = 10
+					wantErr   = com.ErrNegativeLength
+					r         = LengthReader(-1)
+					mocks     = []*mok.Mock{r.Mock}
+					v, n, err = String.Unmarshal(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
@@ -442,10 +436,10 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If Reader fails to read a string length, ValidString.Unmarshal should return an error",
 			func(t *testing.T) {
 				var (
-					wantV   string = ""
-					wantN          = 0
-					wantErr        = errors.New("unmarshal length error")
-					r              = mock.NewReader().RegisterReadByte(
+					wantV   = ""
+					wantN   = 0
+					wantErr = errors.New("unmarshal length error")
+					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 0, wantErr
 						},
@@ -460,12 +454,12 @@ func TestUnsafe(t *testing.T) {
 		t.Run("ValidString.Unmarshal should return ErrNegativeLength if meets negative length",
 			func(t *testing.T) {
 				var (
-					wantV     string = ""
-					wantN            = 10
-					wantErr          = com.ErrNegativeLength
-					r                = LengthReader(-1)
-					mocks            = []*mok.Mock{r.Mock}
-					v, n, err        = NewValidStringSer(nil).Unmarshal(r)
+					wantV     = ""
+					wantN     = 10
+					wantErr   = com.ErrNegativeLength
+					r         = LengthReader(-1)
+					mocks     = []*mok.Mock{r.Mock}
+					v, n, err = NewValidStringSer(nil).Unmarshal(r)
 				)
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
@@ -492,22 +486,18 @@ func TestUnsafe(t *testing.T) {
 				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
-
 	})
 
 	t.Run("byte", func(t *testing.T) {
-
 		t.Run("Byte serializer should work correctly",
 			func(t *testing.T) {
 				ser := Byte
 				testdata.Test[byte](com_testdata.ByteTestCases, ser, t)
 				testdata.TestSkip[byte](com_testdata.ByteTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("unsigned", func(t *testing.T) {
-
 		t.Run("Uint64 should work correctly",
 			func(t *testing.T) {
 				ser := Uint64
@@ -542,11 +532,9 @@ func TestUnsafe(t *testing.T) {
 				testdata.Test[uint](com_testdata.UintTestCases, ser, t)
 				testdata.TestSkip[uint](com_testdata.UintTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("signed", func(t *testing.T) {
-
 		t.Run("Int64 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int64
@@ -581,13 +569,10 @@ func TestUnsafe(t *testing.T) {
 				testdata.Test[int](com_testdata.IntTestCases, ser, t)
 				testdata.TestSkip[int](com_testdata.IntTestCases, ser, t)
 			})
-
 	})
 
 	t.Run("float", func(t *testing.T) {
-
 		t.Run("float64", func(t *testing.T) {
-
 			t.Run("Float64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float64
@@ -598,10 +583,10 @@ func TestUnsafe(t *testing.T) {
 			t.Run("If Reader fails to read a byte slice, Unmarshal should return an error",
 				func(t *testing.T) {
 					var (
-						wantV   float64 = 0.0
-						wantN           = 0
-						wantErr         = errors.New("read byte error")
-						r               = mock.NewReader().RegisterRead(
+						wantV   = 0.0
+						wantN   = 0
+						wantErr = errors.New("read byte error")
+						r       = mock.NewReader().RegisterRead(
 							func(p []byte) (n int, err error) {
 								return 0, wantErr
 							},
@@ -613,11 +598,9 @@ func TestUnsafe(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
 
 		t.Run("float32", func(t *testing.T) {
-
 			t.Run("Float32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float32
@@ -643,13 +626,10 @@ func TestUnsafe(t *testing.T) {
 						mocks,
 						t)
 				})
-
 		})
-
 	})
 
 	t.Run("bool", func(t *testing.T) {
-
 		t.Run("Bool serializer should work correctly",
 			func(t *testing.T) {
 				ser := Bool
@@ -676,10 +656,10 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 			func(t *testing.T) {
 				var (
-					wantV   bool = false
-					wantN        = 0
-					wantErr      = errors.New("read byte error")
-					r            = mock.NewReader().RegisterReadByte(
+					wantV   = false
+					wantN   = 0
+					wantErr = errors.New("read byte error")
+					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 0, wantErr
 						},
@@ -695,10 +675,10 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Unmarshal should return ErrWrongFormat if meets wrong format",
 			func(t *testing.T) {
 				var (
-					wantV   bool = false
-					wantN        = 1
-					wantErr      = com.ErrWrongFormat
-					r            = mock.NewReader().RegisterReadByte(
+					wantV   = false
+					wantN   = 1
+					wantErr = com.ErrWrongFormat
+					r       = mock.NewReader().RegisterReadByte(
 						func() (b byte, err error) {
 							return 3, nil
 						},
@@ -710,14 +690,12 @@ func TestUnsafe(t *testing.T) {
 					mocks,
 					t)
 			})
-
 	})
 
 	t.Run("time", func(t *testing.T) {
 		os.Setenv("TZ", "")
 
 		t.Run("time_unix_utc", func(t *testing.T) {
-
 			t.Run("TimeUnixUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -730,8 +708,8 @@ func TestUnsafe(t *testing.T) {
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnixUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnixUTC, t)
+					testdata.Test[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
+					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -752,7 +730,6 @@ func TestUnsafe(t *testing.T) {
 		})
 
 		t.Run("time_unix_milli_utc", func(t *testing.T) {
-
 			t.Run("TimeUnixMilliUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -765,8 +742,8 @@ func TestUnsafe(t *testing.T) {
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
-					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
+					testdata.Test[time.Time]([]time.Time{{}}, TimeUnix, t)
+					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnix, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -784,11 +761,9 @@ func TestUnsafe(t *testing.T) {
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
-
 		})
 
 		t.Run("time_unix_micro_utc", func(t *testing.T) {
-
 			t.Run("TimeUnixMicroUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -801,8 +776,8 @@ func TestUnsafe(t *testing.T) {
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
-					testdata.TestSkip[time.Time]([]time.Time{time.Time{}}, TimeUnix, t)
+					testdata.Test[time.Time]([]time.Time{{}}, TimeUnix, t)
+					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnix, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -820,11 +795,9 @@ func TestUnsafe(t *testing.T) {
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
-
 		})
 
 		t.Run("time_unix_nano_utc", func(t *testing.T) {
-
 			t.Run("TimeUnixNanoUTC serializer should work correctly",
 				func(t *testing.T) {
 					var (
@@ -850,11 +823,8 @@ func TestUnsafe(t *testing.T) {
 					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
-
 		})
-
 	})
-
 }
 
 func LengthReader(length int) mock.Reader {
