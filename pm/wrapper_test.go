@@ -6,10 +6,10 @@ import (
 	"unsafe"
 
 	com "github.com/mus-format/common-go"
-	com_testdata "github.com/mus-format/common-go/testdata"
+	ctestutil "github.com/mus-format/common-go/testutil"
 	"github.com/mus-format/mus-stream-go"
-	"github.com/mus-format/mus-stream-go/testdata"
-	mock "github.com/mus-format/mus-stream-go/testdata/mock"
+	"github.com/mus-format/mus-stream-go/testutil"
+	mock "github.com/mus-format/mus-stream-go/testutil/mock"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -17,15 +17,15 @@ func TestWrapper(t *testing.T) {
 	t.Run("wrapper serializer should work correctly",
 		func(t *testing.T) {
 			var (
-				st, baseSer = testdata.PtrStructSerData(t)
+				st, baseSer = testutil.PtrStructSerData(t)
 				ptrMap      = com.NewPtrMap()
 				revPtrMap   = com.NewReversePtrMap()
 				ser         = Wrap(ptrMap, revPtrMap, newPtrStructSer(ptrMap, revPtrMap,
 					baseSer))
 			)
-			testdata.Test[com_testdata.PtrStruct]([]com_testdata.PtrStruct{st}, ser,
+			testutil.Test[ctestutil.PtrStruct]([]ctestutil.PtrStruct{st}, ser,
 				t)
-			testdata.TestSkip[com_testdata.PtrStruct]([]com_testdata.PtrStruct{st},
+			testutil.TestSkip[ctestutil.PtrStruct]([]ctestutil.PtrStruct{st},
 				ser, t)
 		})
 
@@ -192,7 +192,7 @@ func TestWrapper(t *testing.T) {
 
 func newPtrStructSer(ptrMap *com.PtrMap, revPtrMap *com.ReversePtrMap,
 	baseSer mus.Serializer[int],
-) mus.Serializer[com_testdata.PtrStruct] {
+) mus.Serializer[ctestutil.PtrStruct] {
 	return ptrStructSer{NewPtrSer(ptrMap, revPtrMap, baseSer)}
 }
 
@@ -200,7 +200,7 @@ type ptrStructSer struct {
 	intPtrSer mus.Serializer[*int]
 }
 
-func (s ptrStructSer) Marshal(v com_testdata.PtrStruct, w mus.Writer) (n int,
+func (s ptrStructSer) Marshal(v ctestutil.PtrStruct, w mus.Writer) (n int,
 	err error,
 ) {
 	n, err = s.intPtrSer.Marshal(v.A1, w)
@@ -218,7 +218,7 @@ func (s ptrStructSer) Marshal(v com_testdata.PtrStruct, w mus.Writer) (n int,
 	return
 }
 
-func (s ptrStructSer) Unmarshal(r mus.Reader) (v com_testdata.PtrStruct, n int,
+func (s ptrStructSer) Unmarshal(r mus.Reader) (v ctestutil.PtrStruct, n int,
 	err error,
 ) {
 	v.A1, n, err = s.intPtrSer.Unmarshal(r)
@@ -236,7 +236,7 @@ func (s ptrStructSer) Unmarshal(r mus.Reader) (v com_testdata.PtrStruct, n int,
 	return
 }
 
-func (s ptrStructSer) Size(v com_testdata.PtrStruct) (size int) {
+func (s ptrStructSer) Size(v ctestutil.PtrStruct) (size int) {
 	size = s.intPtrSer.Size(v.A1)
 	size += s.intPtrSer.Size(v.A2)
 	size += s.intPtrSer.Size(v.A3)

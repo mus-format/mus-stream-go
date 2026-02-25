@@ -1,9 +1,9 @@
-package testdata
+package testutil
 
 import (
 	"testing"
 
-	mock "github.com/mus-format/mus-stream-go/testdata/mock"
+	mock "github.com/mus-format/mus-stream-go/testutil/mock"
 )
 
 func ArraySerData(t *testing.T) (ar [3]int, elemSer mock.Serializer[int]) {

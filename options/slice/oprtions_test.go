@@ -3,8 +3,8 @@ package slops
 import (
 	"testing"
 
-	com_mock "github.com/mus-format/common-go/testdata/mock"
-	"github.com/mus-format/mus-stream-go/testdata/mock"
+	com_mock "github.com/mus-format/common-go/testutil/mock"
+	"github.com/mus-format/mus-stream-go/testutil/mock"
 )
 
 func TestOptions(t *testing.T) {

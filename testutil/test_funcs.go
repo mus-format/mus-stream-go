@@ -1,7 +1,8 @@
-package testdata
+package testutil
 
 import (
 	"bytes"
+	"math"
 	"reflect"
 	"testing"
 	"time"
@@ -38,8 +39,20 @@ func Test[T any](cases []T, ser muss.Serializer[T], t *testing.T) {
 			if !tm.Equal(tm1) {
 				t.Errorf("case '%v', unexpected v, want '%v' actual '%v'", i, cases[i], v)
 			}
-		} else if !reflect.DeepEqual(v, cases[i]) {
-			t.Errorf("case '%v', unexpected v, want '%v' actual '%v'", i, cases[i], v)
+		} else {
+			if f64, ok := any(v).(float64); ok {
+				if math.Float64bits(f64) == math.Float64bits(any(cases[i]).(float64)) {
+					continue
+				}
+			}
+			if f32, ok := any(v).(float32); ok {
+				if math.Float32bits(f32) == math.Float32bits(any(cases[i]).(float32)) {
+					continue
+				}
+			}
+			if !reflect.DeepEqual(v, cases[i]) {
+				t.Errorf("case '%v', unexpected v, want '%v' actual '%v'", i, cases[i], v)
+			}
 		}
 	}
 }

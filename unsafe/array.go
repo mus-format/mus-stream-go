@@ -1,4 +1,4 @@
-package ord
+package unsafe
 
 import (
 	"reflect"
@@ -7,7 +7,8 @@ import (
 	com "github.com/mus-format/common-go"
 	"github.com/mus-format/mus-stream-go"
 	arrops "github.com/mus-format/mus-stream-go/options/array"
-	slops "github.com/mus-format/mus-stream-go/options/slice"
+	"github.com/mus-format/mus-stream-go/ord"
+	"github.com/mus-format/mus-stream-go/varint"
 )
 
 // NewArraySer returns a new array serializer with the given element serializer.
@@ -23,13 +24,16 @@ func NewArraySer[T, V any](elemSer mus.Serializer[V],
 		length = t.Len()
 	)
 	arrops.Apply(ops, &o)
-
-	var (
-		lenVl    = newLenVl(length)
-		sliceSer = NewValidSliceSer(elemSer, slops.WithLenSer[V](o.LenSer),
-			slops.WithLenValidator[V](lenVl))
-	)
-	return arraySer[T, V]{length, sliceSer}
+	var lenSer mus.Serializer[int] = varint.PositiveInt
+	if o.LenSer != nil {
+		lenSer = o.LenSer
+	}
+	return arraySer[T, V]{
+		length:  length,
+		elemSer: elemSer,
+		lenSer:  lenSer,
+		lenVl:   newLenVl(length),
+	}
 }
 
 // NewValidArraySer returns a new valid array serializer with the given element
@@ -45,18 +49,25 @@ func NewValidArraySer[T, V any](elemSer mus.Serializer[V],
 		length = t.Len()
 	)
 	arrops.Apply(ops, &o)
-
-	var (
-		lenVl    = newLenVl(length)
-		sliceSer = NewValidSliceSer(elemSer, slops.WithLenSer[V](o.LenSer),
-			slops.WithLenValidator[V](lenVl), slops.WithElemValidator(o.ElemVl))
-	)
-	return arraySer[T, V]{length, sliceSer}
+	var lenSer mus.Serializer[int] = varint.PositiveInt
+	if o.LenSer != nil {
+		lenSer = o.LenSer
+	}
+	return arraySer[T, V]{
+		length:  length,
+		elemSer: elemSer,
+		lenSer:  lenSer,
+		lenVl:   newLenVl(length),
+		elemVl:  o.ElemVl,
+	}
 }
 
 type arraySer[T, V any] struct {
-	length   int
-	sliceSer validSliceSer[V]
+	length  int
+	elemSer mus.Serializer[V]
+	lenSer  mus.Serializer[int]
+	lenVl   com.Validator[int]
+	elemVl  com.Validator[V]
 }
 
 // Marshal writes an encoded array value.
@@ -65,7 +76,7 @@ type arraySer[T, V any] struct {
 // marshalling error, or a Writer error.
 func (s arraySer[T, V]) Marshal(v T, w mus.Writer) (n int, err error) {
 	sl := unsafe_mod.Slice((*V)(unsafe_mod.Pointer(&v)), s.length)
-	return s.sliceSer.Marshal(sl, w)
+	return ord.MarshalSlice(sl, s.elemSer, s.lenSer, w)
 }
 
 // Unmarshal reads an encoded array value.
@@ -74,7 +85,8 @@ func (s arraySer[T, V]) Marshal(v T, w mus.Writer) (n int, err error) {
 // return com.ErrNegativeLength, a length unmarshalling error, an element
 // unmarshalling error, or a Reader error.
 func (s arraySer[T, V]) Unmarshal(r mus.Reader) (v T, n int, err error) {
-	sl, n, err := s.sliceSer.Unmarshal(r)
+	sl, n, err := ord.UnmarshalValidSlice(s.elemSer, s.lenSer, s.lenVl, s.elemVl,
+		r)
 	if err != nil {
 		return
 	}
@@ -85,7 +97,7 @@ func (s arraySer[T, V]) Unmarshal(r mus.Reader) (v T, n int, err error) {
 // Size returns the size of an encoded array value.
 func (s arraySer[T, V]) Size(v T) (size int) {
 	sl := unsafe_mod.Slice((*V)(unsafe_mod.Pointer(&v)), s.length)
-	return s.sliceSer.Size(sl)
+	return ord.SizeSlice(sl, s.elemSer, s.lenSer)
 }
 
 // Skip skips an encoded array value.
@@ -94,7 +106,7 @@ func (s arraySer[T, V]) Size(v T) (size int) {
 // com.ErrNegativeLength, a length unmarshalling error, an element skipping
 // error, or a Reader error.
 func (s arraySer[T, V]) Skip(r mus.Reader) (n int, err error) {
-	return s.sliceSer.Skip(r)
+	return ord.SkipSlice(s.elemSer, s.lenSer, r)
 }
 
 func newLenVl(length int) com.ValidatorFn[int] {

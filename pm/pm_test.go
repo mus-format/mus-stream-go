@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	com "github.com/mus-format/common-go"
-	mock "github.com/mus-format/mus-stream-go/testdata/mock"
+	mock "github.com/mus-format/mus-stream-go/testutil/mock"
 	"github.com/ymz-ncnk/mok"
 
-	com_testdata "github.com/mus-format/common-go/testdata"
+	ctestutil "github.com/mus-format/common-go/testutil"
 	"github.com/mus-format/mus-stream-go"
-	"github.com/mus-format/mus-stream-go/testdata"
+	"github.com/mus-format/mus-stream-go/testutil"
 )
 
 func TestPM(t *testing.T) {
@@ -33,7 +33,7 @@ func TestPM(t *testing.T) {
 				mocks  = []*mok.Mock{w.Mock}
 				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
 			)
-			testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 		t.Run("If marshal of the pointer Nil flag fails with an error, Marshal should return it",
@@ -50,7 +50,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
 				)
-				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If marshal of the pointer mapping flag fails with an error, Marshal should return it",
@@ -68,7 +68,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
 				)
-				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If marshal of the pointer id fails with an error, Marshal should return it",
@@ -90,7 +90,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
 				)
-				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If baseSer.Marshal fails with an error, Marshal should return it",
@@ -117,7 +117,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock, baseSer.Mock}
 					n, err = NewPtrSer[int](ptrMap, nil, baseSer).Marshal(&num, w)
 				)
-				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If unmarshal of the pointer flag fails with an error, Unmarshal should return it",
@@ -135,7 +135,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, nil, nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -159,7 +159,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -192,7 +192,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, revPtrMap, baseSer).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -211,7 +211,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -229,7 +229,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{r.Mock}
 					n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+				ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If unmarshal of the pointer id fails with an error, Skip should return it",
@@ -251,7 +251,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{r.Mock}
 					n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+				ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If baseSer.Skip fails with an error, Skip should return it",
@@ -281,7 +281,7 @@ func TestPM(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					n, err    = NewPtrSer[int](nil, revPtrMap, baseSer).Skip(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+				ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("Skip should fail with com.ErrWrongFormat if meets unknown pointer flag",
@@ -298,7 +298,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{r.Mock}
 					n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 				)
-				com_testdata.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+				ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
 	})
 }

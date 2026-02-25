@@ -1,11 +1,11 @@
-package testdata
+package testutil
 
 import (
 	"reflect"
 	"testing"
 
 	muss "github.com/mus-format/mus-stream-go"
-	"github.com/mus-format/mus-stream-go/testdata/mock"
+	"github.com/mus-format/mus-stream-go/testutil/mock"
 )
 
 func m[T comparable](wantV T, wantBs []byte, t *testing.T) mock.MarshalFn[T] {

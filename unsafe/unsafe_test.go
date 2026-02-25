@@ -3,6 +3,7 @@ package unsafe
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"math"
 	"os"
@@ -10,12 +11,14 @@ import (
 	"time"
 
 	com "github.com/mus-format/common-go"
-	com_testdata "github.com/mus-format/common-go/testdata"
-	com_mock "github.com/mus-format/common-go/testdata/mock"
+	ctestutil "github.com/mus-format/common-go/testutil"
+	com_mock "github.com/mus-format/common-go/testutil/mock"
+	muss "github.com/mus-format/mus-stream-go"
+	arrops "github.com/mus-format/mus-stream-go/options/array"
 	strops "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/raw"
-	"github.com/mus-format/mus-stream-go/testdata"
-	"github.com/mus-format/mus-stream-go/testdata/mock"
+	"github.com/mus-format/mus-stream-go/testutil"
+	"github.com/mus-format/mus-stream-go/testutil/mock"
 	"github.com/mus-format/mus-stream-go/varint"
 	"github.com/ymz-ncnk/mok"
 )
@@ -39,16 +42,16 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If the system int size is equal to 32, setUpUintFuncs should initialize the uint functions with 32-bit versions",
 			func(t *testing.T) {
 				setUpUintFuncs(32)
-				if !com_testdata.ComparePtrs(marshalUint, marshalInteger32[uint]) {
+				if !ctestutil.ComparePtrs(marshalUint, marshalInteger32[uint]) {
 					t.Error("unexpected marshalUint func")
 				}
-				if !com_testdata.ComparePtrs(unmarshalUint, unmarshalInteger32[uint]) {
+				if !ctestutil.ComparePtrs(unmarshalUint, unmarshalInteger32[uint]) {
 					t.Error("unexpected unmarshalUint func")
 				}
-				if !com_testdata.ComparePtrs(sizeUint, raw.Uint.Size) {
+				if !ctestutil.ComparePtrs(sizeUint, raw.Uint.Size) {
 					t.Error("unexpected sizeUint func")
 				}
-				if !com_testdata.ComparePtrs(skipUint, raw.Uint.Skip) {
+				if !ctestutil.ComparePtrs(skipUint, raw.Uint.Skip) {
 					t.Error("unexpected skipUint func")
 				}
 			})
@@ -56,16 +59,16 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If the system int size is equal to 64, setUpUintFuncs should initialize the uint functions with 64-bit versions",
 			func(t *testing.T) {
 				setUpUintFuncs(64)
-				if !com_testdata.ComparePtrs(marshalUint, marshalInteger64[uint]) {
+				if !ctestutil.ComparePtrs(marshalUint, marshalInteger64[uint]) {
 					t.Error("unexpected marshalUint func")
 				}
-				if !com_testdata.ComparePtrs(unmarshalUint, unmarshalInteger64[uint]) {
+				if !ctestutil.ComparePtrs(unmarshalUint, unmarshalInteger64[uint]) {
 					t.Error("unexpected unmarshalUint func")
 				}
-				if !com_testdata.ComparePtrs(sizeUint, raw.Uint.Size) {
+				if !ctestutil.ComparePtrs(sizeUint, raw.Uint.Size) {
 					t.Error("unexpected sizeUint func")
 				}
-				if !com_testdata.ComparePtrs(skipUint, raw.Uint.Skip) {
+				if !ctestutil.ComparePtrs(skipUint, raw.Uint.Skip) {
 					t.Error("unexpected skipUint func")
 				}
 			})
@@ -89,16 +92,16 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If the system int size is equal to 32, setUpIntFuncs should initialize the uint functions with 32-bit versions",
 			func(t *testing.T) {
 				setUpIntFuncs(32)
-				if !com_testdata.ComparePtrs(marshalInt, marshalInteger32[int]) {
+				if !ctestutil.ComparePtrs(marshalInt, marshalInteger32[int]) {
 					t.Error("unexpected marshalInt func")
 				}
-				if !com_testdata.ComparePtrs(unmarshalInt, unmarshalInteger32[int]) {
+				if !ctestutil.ComparePtrs(unmarshalInt, unmarshalInteger32[int]) {
 					t.Error("unexpected unmarshalInt func")
 				}
-				if !com_testdata.ComparePtrs(sizeInt, raw.Int.Size) {
+				if !ctestutil.ComparePtrs(sizeInt, raw.Int.Size) {
 					t.Error("unexpected sizeInt func")
 				}
-				if !com_testdata.ComparePtrs(skipInt, raw.Int.Skip) {
+				if !ctestutil.ComparePtrs(skipInt, raw.Int.Skip) {
 					t.Error("unexpected skipInt func")
 				}
 			})
@@ -106,16 +109,16 @@ func TestUnsafe(t *testing.T) {
 		t.Run("If the system int size is equal to 64, setUpIntFuncs should initialize the uint functions with 64-bit versions",
 			func(t *testing.T) {
 				setUpIntFuncs(64)
-				if !com_testdata.ComparePtrs(marshalInt, marshalInteger64[int]) {
+				if !ctestutil.ComparePtrs(marshalInt, marshalInteger64[int]) {
 					t.Error("unexpected marshalInt func")
 				}
-				if !com_testdata.ComparePtrs(unmarshalInt, unmarshalInteger64[int]) {
+				if !ctestutil.ComparePtrs(unmarshalInt, unmarshalInteger64[int]) {
 					t.Error("unexpected unmarshalInt func")
 				}
-				if !com_testdata.ComparePtrs(sizeInt, raw.Int.Size) {
+				if !ctestutil.ComparePtrs(sizeInt, raw.Int.Size) {
 					t.Error("unexpected sizeInt func")
 				}
-				if !com_testdata.ComparePtrs(skipInt, raw.Int.Skip) {
+				if !ctestutil.ComparePtrs(skipInt, raw.Int.Skip) {
 					t.Error("unexpected skipInt func")
 				}
 			})
@@ -135,7 +138,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger64[uint64](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -155,7 +158,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger64[uint64](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -173,7 +176,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger32[uint32](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -193,7 +196,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger32[uint32](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -211,7 +214,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger16[uint16](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -231,7 +234,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger16[uint16](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -249,7 +252,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger8[uint8](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -265,7 +268,7 @@ func TestUnsafe(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger8[uint8](r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -273,19 +276,19 @@ func TestUnsafe(t *testing.T) {
 		t.Run("String serializer should work correctly",
 			func(t *testing.T) {
 				ser := String
-				testdata.Test[string](com_testdata.StringTestCases, ser, t)
-				testdata.TestSkip[string](com_testdata.StringTestCases, ser, t)
+				testutil.Test[string](ctestutil.StringTestCases, ser, t)
+				testutil.TestSkip[string](ctestutil.StringTestCases, ser, t)
 			})
 
 		t.Run("We should be able to set a length serializer",
 			func(t *testing.T) {
 				var (
-					str, lenSer = testdata.StringSerData(t)
+					str, lenSer = testutil.StringSerData(t)
 					ser         = NewStringSer(strops.WithLenSer(lenSer))
 					mocks       = []*mok.Mock{lenSer.Mock}
 				)
-				testdata.Test[string]([]string{str}, ser, t)
-				testdata.TestSkip[string]([]string{str}, ser, t)
+				testutil.Test[string]([]string{str}, ser, t)
+				testutil.TestSkip[string]([]string{str}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -306,7 +309,7 @@ func TestUnsafe(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = String.Marshal(s, w)
 				)
-				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails with an io.EOF, Unmarshal should return io.ErrUnexpectedEOF",
@@ -327,7 +330,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = String.Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -345,7 +348,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = String.Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -359,7 +362,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = String.Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -381,15 +384,15 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = String.Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
 		t.Run("ValidString should work correctly",
 			func(t *testing.T) {
 				ser := NewValidStringSer(nil)
-				testdata.Test[string](com_testdata.StringTestCases, ser, t)
-				testdata.TestSkip[string](com_testdata.StringTestCases, ser, t)
+				testutil.Test[string](ctestutil.StringTestCases, ser, t)
+				testutil.TestSkip[string](ctestutil.StringTestCases, ser, t)
 			})
 
 		t.Run("If lenVl validator returns an error, ValidString.Unmarshal should return it",
@@ -411,7 +414,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewValidStringSer(strops.WithLenValidator(lenVl)).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -430,7 +433,7 @@ func TestUnsafe(t *testing.T) {
 				)
 				v, n, err = NewValidStringSer(strops.WithLenValidator(lenVl)).Unmarshal(r)
 			)
-			com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
+			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
 		})
 
 		t.Run("If Reader fails to read a string length, ValidString.Unmarshal should return an error",
@@ -447,7 +450,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewValidStringSer(nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -461,7 +464,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewValidStringSer(nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 
@@ -483,7 +486,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = NewValidStringSer(nil).Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
 			})
 	})
@@ -492,8 +495,8 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Byte serializer should work correctly",
 			func(t *testing.T) {
 				ser := Byte
-				testdata.Test[byte](com_testdata.ByteTestCases, ser, t)
-				testdata.TestSkip[byte](com_testdata.ByteTestCases, ser, t)
+				testutil.Test[byte](ctestutil.ByteTestCases, ser, t)
+				testutil.TestSkip[byte](ctestutil.ByteTestCases, ser, t)
 			})
 	})
 
@@ -501,36 +504,36 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Uint64 should work correctly",
 			func(t *testing.T) {
 				ser := Uint64
-				testdata.Test[uint64](com_testdata.Uint64TestCases, ser, t)
-				testdata.TestSkip[uint64](com_testdata.Uint64TestCases, ser, t)
+				testutil.Test[uint64](ctestutil.Uint64TestCases, ser, t)
+				testutil.TestSkip[uint64](ctestutil.Uint64TestCases, ser, t)
 			})
 
 		t.Run("Uint32 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint32
-				testdata.Test[uint32](com_testdata.Uint32TestCases, ser, t)
-				testdata.TestSkip[uint32](com_testdata.Uint32TestCases, ser, t)
+				testutil.Test[uint32](ctestutil.Uint32TestCases, ser, t)
+				testutil.TestSkip[uint32](ctestutil.Uint32TestCases, ser, t)
 			})
 
 		t.Run("Uint16 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint16
-				testdata.Test[uint16](com_testdata.Uint16TestCases, ser, t)
-				testdata.TestSkip[uint16](com_testdata.Uint16TestCases, ser, t)
+				testutil.Test[uint16](ctestutil.Uint16TestCases, ser, t)
+				testutil.TestSkip[uint16](ctestutil.Uint16TestCases, ser, t)
 			})
 
 		t.Run("Uint8 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint8
-				testdata.Test[uint8](com_testdata.Uint8TestCases, ser, t)
-				testdata.TestSkip[uint8](com_testdata.Uint8TestCases, ser, t)
+				testutil.Test[uint8](ctestutil.Uint8TestCases, ser, t)
+				testutil.TestSkip[uint8](ctestutil.Uint8TestCases, ser, t)
 			})
 
 		t.Run("Uint serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint
-				testdata.Test[uint](com_testdata.UintTestCases, ser, t)
-				testdata.TestSkip[uint](com_testdata.UintTestCases, ser, t)
+				testutil.Test[uint](ctestutil.UintTestCases, ser, t)
+				testutil.TestSkip[uint](ctestutil.UintTestCases, ser, t)
 			})
 	})
 
@@ -538,36 +541,36 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Int64 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int64
-				testdata.Test[int64](com_testdata.Int64TestCases, ser, t)
-				testdata.TestSkip[int64](com_testdata.Int64TestCases, ser, t)
+				testutil.Test[int64](ctestutil.Int64TestCases, ser, t)
+				testutil.TestSkip[int64](ctestutil.Int64TestCases, ser, t)
 			})
 
 		t.Run("Int32 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int32
-				testdata.Test[int32](com_testdata.Int32TestCases, ser, t)
-				testdata.TestSkip[int32](com_testdata.Int32TestCases, ser, t)
+				testutil.Test[int32](ctestutil.Int32TestCases, ser, t)
+				testutil.TestSkip[int32](ctestutil.Int32TestCases, ser, t)
 			})
 
 		t.Run("Int16 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int16
-				testdata.Test[int16](com_testdata.Int16TestCases, ser, t)
-				testdata.TestSkip[int16](com_testdata.Int16TestCases, ser, t)
+				testutil.Test[int16](ctestutil.Int16TestCases, ser, t)
+				testutil.TestSkip[int16](ctestutil.Int16TestCases, ser, t)
 			})
 
 		t.Run("Int8 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int8
-				testdata.Test[int8](com_testdata.Int8TestCases, ser, t)
-				testdata.TestSkip[int8](com_testdata.Int8TestCases, ser, t)
+				testutil.Test[int8](ctestutil.Int8TestCases, ser, t)
+				testutil.TestSkip[int8](ctestutil.Int8TestCases, ser, t)
 			})
 
 		t.Run("Int serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int
-				testdata.Test[int](com_testdata.IntTestCases, ser, t)
-				testdata.TestSkip[int](com_testdata.IntTestCases, ser, t)
+				testutil.Test[int](ctestutil.IntTestCases, ser, t)
+				testutil.TestSkip[int](ctestutil.IntTestCases, ser, t)
 			})
 	})
 
@@ -576,8 +579,8 @@ func TestUnsafe(t *testing.T) {
 			t.Run("Float64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float64
-					testdata.Test[float64](com_testdata.Float64TestCases, ser, t)
-					testdata.TestSkip[float64](com_testdata.Float64TestCases, ser, t)
+					testutil.Test[float64](ctestutil.Float64TestCases, ser, t)
+					testutil.TestSkip[float64](ctestutil.Float64TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte slice, Unmarshal should return an error",
@@ -594,7 +597,7 @@ func TestUnsafe(t *testing.T) {
 						mocks     = []*mok.Mock{r.Mock}
 						v, n, err = Float64.Unmarshal(r)
 					)
-					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks,
 						t)
 				})
@@ -604,8 +607,8 @@ func TestUnsafe(t *testing.T) {
 			t.Run("Float32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float32
-					testdata.Test[float32](com_testdata.Float32TestCases, ser, t)
-					testdata.TestSkip[float32](com_testdata.Float32TestCases, ser, t)
+					testutil.Test[float32](ctestutil.Float32TestCases, ser, t)
+					testutil.TestSkip[float32](ctestutil.Float32TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte slice, Unmarshal should return an error",
@@ -622,7 +625,7 @@ func TestUnsafe(t *testing.T) {
 						mocks     = []*mok.Mock{r.Mock}
 						v, n, err = Float32.Unmarshal(r)
 					)
-					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks,
 						t)
 				})
@@ -633,8 +636,8 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Bool serializer should work correctly",
 			func(t *testing.T) {
 				ser := Bool
-				testdata.Test[bool](com_testdata.BoolTestCases, ser, t)
-				testdata.TestSkip[bool](com_testdata.BoolTestCases, ser, t)
+				testutil.Test[bool](ctestutil.BoolTestCases, ser, t)
+				testutil.TestSkip[bool](ctestutil.BoolTestCases, ser, t)
 			})
 
 		t.Run("If Writer fails to write a byte, Marshal should return an error",
@@ -650,7 +653,7 @@ func TestUnsafe(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = Bool.Marshal(true, w)
 				)
-				testdata.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -667,7 +670,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = Bool.Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -686,7 +689,7 @@ func TestUnsafe(t *testing.T) {
 					mocks     = []*mok.Mock{r.Mock}
 					v, n, err = Bool.Unmarshal(r)
 				)
-				com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
 					t)
 			})
@@ -702,14 +705,14 @@ func TestUnsafe(t *testing.T) {
 						sec = time.Now().Unix()
 						tm  = time.Unix(sec, 0)
 					)
-					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixUTC, t)
+					testutil.Test[time.Time]([]time.Time{tm}, TimeUnixUTC, t)
+					testutil.TestSkip[time.Time]([]time.Time{tm}, TimeUnixUTC, t)
 				})
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
+					testutil.Test[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
+					testutil.TestSkip[time.Time]([]time.Time{{}}, TimeUnixUTC, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -724,7 +727,7 @@ func TestUnsafe(t *testing.T) {
 						mocks     = []*mok.Mock{r.Mock}
 						v, n, err = TimeUnixUTC.Unmarshal(r)
 					)
-					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
 		})
@@ -736,14 +739,14 @@ func TestUnsafe(t *testing.T) {
 						milli = time.Now().UnixMilli()
 						tm    = time.UnixMilli(milli)
 					)
-					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixMilliUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixMilliUTC, t)
+					testutil.Test[time.Time]([]time.Time{tm}, TimeUnixMilliUTC, t)
+					testutil.TestSkip[time.Time]([]time.Time{tm}, TimeUnixMilliUTC, t)
 				})
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{{}}, TimeUnix, t)
-					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnix, t)
+					testutil.Test[time.Time]([]time.Time{{}}, TimeUnix, t)
+					testutil.TestSkip[time.Time]([]time.Time{{}}, TimeUnix, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -758,7 +761,7 @@ func TestUnsafe(t *testing.T) {
 						mocks     = []*mok.Mock{r.Mock}
 						v, n, err = TimeUnixMilliUTC.Unmarshal(r)
 					)
-					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
 		})
@@ -770,14 +773,14 @@ func TestUnsafe(t *testing.T) {
 						milli = time.Now().UnixMicro()
 						tm    = time.UnixMicro(milli)
 					)
-					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixMicroUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixMicroUTC, t)
+					testutil.Test[time.Time]([]time.Time{tm}, TimeUnixMicroUTC, t)
+					testutil.TestSkip[time.Time]([]time.Time{tm}, TimeUnixMicroUTC, t)
 				})
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testdata.Test[time.Time]([]time.Time{{}}, TimeUnix, t)
-					testdata.TestSkip[time.Time]([]time.Time{{}}, TimeUnix, t)
+					testutil.Test[time.Time]([]time.Time{{}}, TimeUnix, t)
+					testutil.TestSkip[time.Time]([]time.Time{{}}, TimeUnix, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -792,7 +795,7 @@ func TestUnsafe(t *testing.T) {
 						mocks     = []*mok.Mock{r.Mock}
 						v, n, err = TimeUnixMicroUTC.Unmarshal(r)
 					)
-					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
 		})
@@ -804,8 +807,8 @@ func TestUnsafe(t *testing.T) {
 						nano = time.Now().UnixNano()
 						tm   = time.Unix(0, nano)
 					)
-					testdata.Test[time.Time]([]time.Time{tm}, TimeUnixNanoUTC, t)
-					testdata.TestSkip[time.Time]([]time.Time{tm}, TimeUnixNanoUTC, t)
+					testutil.Test[time.Time]([]time.Time{tm}, TimeUnixNanoUTC, t)
+					testutil.TestSkip[time.Time]([]time.Time{tm}, TimeUnixNanoUTC, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -820,10 +823,129 @@ func TestUnsafe(t *testing.T) {
 						mocks     = []*mok.Mock{r.Mock}
 						v, n, err = TimeUnixNanoUTC.Unmarshal(r)
 					)
-					com_testdata.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 						mocks, t)
 				})
 		})
+	})
+
+	t.Run("array", func(t *testing.T) {
+		t.Run("Array serializer should work correctly", func(t *testing.T) {
+			var (
+				arr, elemSer = testutil.ArraySerData(t)
+				mocks        = []*mok.Mock{elemSer.Mock}
+				ser          = NewArraySer[[3]int, int](elemSer)
+			)
+			testutil.Test[[3]int]([][3]int{arr}, ser, t)
+			testutil.TestSkip[[3]int]([][3]int{arr}, ser, t)
+
+			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
+				t.Error(infomap)
+			}
+		})
+
+		t.Run("Unmarshal of the too large array should return ErrTooLargeLength",
+			func(t *testing.T) {
+				var (
+					wantV   [3]int = [3]int{0, 0, 0}
+					wantN          = 1
+					wantErr        = com.ErrTooLargeLength
+					r              = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 4, nil
+						},
+					)
+					mocks     = []*mok.Mock{r.Mock}
+					v, n, err = NewArraySer[[3]int, int](nil).Unmarshal(r)
+				)
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks, t)
+			})
+
+		t.Run("Valid array serializer should work correctly", func(t *testing.T) {
+			var (
+				arr, elemSer = testutil.ArraySerData(t)
+				mocks        = []*mok.Mock{elemSer.Mock}
+				ser          = NewValidArraySer[[3]int, int](elemSer, nil)
+			)
+			testutil.Test[[3]int]([][3]int{arr}, ser, t)
+			testutil.TestSkip[[3]int]([][3]int{arr}, ser, t)
+
+			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
+				t.Error(infomap)
+			}
+		})
+
+		t.Run("Valid Unmarshal of the too large array should return ErrTooLargeLength",
+			func(t *testing.T) {
+				var (
+					wantV   [3]int = [3]int{0, 0, 0}
+					wantN          = 1
+					wantErr        = com.ErrTooLargeLength
+					r              = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 4, nil
+						},
+					)
+					mocks     = []*mok.Mock{r.Mock}
+					v, n, err = NewValidArraySer[[3]int, int](nil, nil).Unmarshal(r)
+				)
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks, t)
+			})
+
+		t.Run("If elemVl returns an error, valid Unmarshal should return it",
+			func(t *testing.T) {
+				var (
+					wantV    [3]int = [3]int{0, 0, 0}
+					wantElem        = 11
+					wantN           = 2
+					wantErr         = errors.New("elemVl error")
+					r               = mock.NewReader().RegisterReadByte(
+						func() (b byte, err error) {
+							return 3, nil
+						},
+					)
+					elemSer = mock.NewSerializer[int]().RegisterUnmarshal(
+						func(r muss.Reader) (t int, n int, err error) {
+							return 11, 1, nil
+						},
+					)
+					elemVl = com_mock.NewValidator[int]().RegisterValidate(
+						func(v int) (err error) {
+							if v != wantElem {
+								return fmt.Errorf("unexpected v, want %v actual %v", wantElem, v)
+							}
+							return wantErr
+						},
+					)
+					ser   = NewValidArraySer[[3]int, int](elemSer, arrops.WithElemValidator[int](elemVl))
+					mocks = []*mok.Mock{r.Mock, elemSer.Mock, elemVl.Mock}
+				)
+				v, n, err := ser.Unmarshal(r)
+				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+					mocks, t)
+			})
+
+		t.Run("We should be able to set a length serializer for NewArraySer",
+			func(t *testing.T) {
+				var (
+					arr = [3]int{1, 2, 3}
+					ser = NewArraySer[[3]int, int](varint.Int, arrops.WithLenSer[int](varint.Int))
+				)
+				testutil.Test[[3]int]([][3]int{arr}, ser, t)
+				testutil.TestSkip[[3]int]([][3]int{arr}, ser, t)
+			})
+
+		t.Run("We should be able to set a length serializer for NewValidArraySer",
+			func(t *testing.T) {
+				var (
+					arr = [3]int{1, 2, 3}
+					ser = NewValidArraySer[[3]int, int](varint.Int, arrops.WithLenSer[int](varint.Int))
+				)
+				testutil.Test[[3]int]([][3]int{arr}, ser, t)
+				testutil.TestSkip[[3]int]([][3]int{arr}, ser, t)
+			})
 	})
 }
 

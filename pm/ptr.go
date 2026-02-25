@@ -136,12 +136,12 @@ func (s ptrSer[T]) Skip(r mus.Reader) (n int,
 		}
 		_, pst := s.revPtrMap.Get(id)
 		if !pst {
+			s.revPtrMap.Put(id, nil)
 			n1, err = s.baseSer.Skip(r)
 			n += n1
 			if err != nil {
 				return
 			}
-			s.revPtrMap.Put(id, nil)
 		}
 	default:
 		err = com.ErrWrongFormat

@@ -1,11 +1,11 @@
-package testdata
+package testutil
 
 import (
 	"bytes"
 	"testing"
 
 	muss "github.com/mus-format/mus-stream-go"
-	mock "github.com/mus-format/mus-stream-go/testdata/mock"
+	mock "github.com/mus-format/mus-stream-go/testutil/mock"
 )
 
 func MapSerData(t *testing.T) (mp map[string]int, keySer mock.Serializer[string],

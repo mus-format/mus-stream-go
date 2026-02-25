@@ -65,19 +65,7 @@ type sliceSer[T any] struct {
 // In addition to the number of bytes written, it may also return an element
 // marshalling error, or a Writer error.
 func (s sliceSer[T]) Marshal(v []T, w mus.Writer) (n int, err error) {
-	n, err = s.lenSer.Marshal(len(v), w)
-	if err != nil {
-		return
-	}
-	var n1 int
-	for _, e := range v {
-		n1, err = s.elemSer.Marshal(e, w)
-		n += n1
-		if err != nil {
-			return
-		}
-	}
-	return
+	return MarshalSlice(v, s.elemSer, s.lenSer, w)
 }
 
 // Unmarshal reads an encoded slice value.
@@ -86,38 +74,12 @@ func (s sliceSer[T]) Marshal(v []T, w mus.Writer) (n int, err error) {
 // com.ErrNegativeLength, a length unmarshalling error, an element unmarshalling
 // error, or a Reader error.
 func (s sliceSer[T]) Unmarshal(r mus.Reader) (v []T, n int, err error) {
-	length, n, err := s.lenSer.Unmarshal(r)
-	if err != nil {
-		return
-	}
-	if length < 0 {
-		err = com.ErrNegativeLength
-		return
-	}
-	var (
-		n1 int
-		e  T
-		i  int
-	)
-	v = make([]T, length)
-	for i = 0; i < length; i++ {
-		e, n1, err = s.elemSer.Unmarshal(r)
-		n += n1
-		if err != nil {
-			return
-		}
-		v[i] = e
-	}
-	return
+	return UnmarshalSlice(s.elemSer, s.lenSer, r)
 }
 
 // Size returns the size of an encoded slice value.
 func (s sliceSer[T]) Size(v []T) (size int) {
-	size = s.lenSer.Size(len(v))
-	for i := 0; i < len(v); i++ {
-		size += s.elemSer.Size(v[i])
-	}
-	return
+	return SizeSlice(v, s.elemSer, s.lenSer)
 }
 
 // Skip skips an encoded slice value.
@@ -128,23 +90,7 @@ func (s sliceSer[T]) Size(v []T) (size int) {
 func (s sliceSer[T]) Skip(r mus.Reader) (
 	n int, err error,
 ) {
-	length, n, err := s.lenSer.Unmarshal(r)
-	if err != nil {
-		return
-	}
-	if length < 0 {
-		err = com.ErrNegativeLength
-		return
-	}
-	var n1 int
-	for i := 0; i < length; i++ {
-		n1, err = s.elemSer.Skip(r)
-		n += n1
-		if err != nil {
-			return
-		}
-	}
-	return
+	return SkipSlice(s.elemSer, s.lenSer, r)
 }
 
 // -----------------------------------------------------------------------------
@@ -161,7 +107,31 @@ type validSliceSer[T any] struct {
 // return com.ErrNegativeLength, a length/element unmarshalling error, a
 // length/element validation error, or a Reader error.
 func (s validSliceSer[T]) Unmarshal(r mus.Reader) (v []T, n int, err error) {
-	length, n, err := s.lenSer.Unmarshal(r)
+	return UnmarshalValidSlice(s.elemSer, s.lenSer, s.lenVl, s.elemVl, r)
+}
+
+// -----------------------------------------------------------------------------
+
+func MarshalSlice[T any](v []T, elemSer mus.Serializer[T],
+	lenSer mus.Serializer[int], w mus.Writer) (n int, err error) {
+	n, err = lenSer.Marshal(len(v), w)
+	if err != nil {
+		return
+	}
+	var n1 int
+	for _, e := range v {
+		n1, err = elemSer.Marshal(e, w)
+		n += n1
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
+func UnmarshalSlice[T any](elemSer mus.Serializer[T],
+	lenSer mus.Serializer[int], r mus.Reader) (v []T, n int, err error) {
+	length, n, err := lenSer.Unmarshal(r)
 	if err != nil {
 		return
 	}
@@ -172,22 +142,78 @@ func (s validSliceSer[T]) Unmarshal(r mus.Reader) (v []T, n int, err error) {
 	var (
 		n1 int
 		e  T
-		i  int
 	)
-	if s.lenVl != nil {
-		if err = s.lenVl.Validate(length); err != nil {
-			return
-		}
-	}
 	v = make([]T, length)
-	for i = 0; i < length; i++ {
-		e, n1, err = s.elemSer.Unmarshal(r)
+	for i := 0; i < length; i++ {
+		e, n1, err = elemSer.Unmarshal(r)
 		n += n1
 		if err != nil {
 			return
 		}
-		if s.elemVl != nil {
-			if err = s.elemVl.Validate(e); err != nil {
+		v[i] = e
+	}
+	return
+}
+
+func SizeSlice[T any](v []T, elemSer mus.Serializer[T],
+	lenSer mus.Serializer[int]) (size int) {
+	size = lenSer.Size(len(v))
+	for i := 0; i < len(v); i++ {
+		size += elemSer.Size(v[i])
+	}
+	return
+}
+
+func SkipSlice[T any](elemSer mus.Serializer[T],
+	lenSer mus.Serializer[int], r mus.Reader) (n int, err error) {
+	length, n, err := lenSer.Unmarshal(r)
+	if err != nil {
+		return
+	}
+	if length < 0 {
+		err = com.ErrNegativeLength
+		return
+	}
+	var n1 int
+	for i := 0; i < length; i++ {
+		n1, err = elemSer.Skip(r)
+		n += n1
+		if err != nil {
+			return
+		}
+	}
+	return
+}
+
+func UnmarshalValidSlice[T any](elemSer mus.Serializer[T],
+	lenSer mus.Serializer[int], lenVl com.Validator[int],
+	elemVl com.Validator[T], r mus.Reader) (v []T, n int, err error) {
+	length, n, err := lenSer.Unmarshal(r)
+	if err != nil {
+		return
+	}
+	if length < 0 {
+		err = com.ErrNegativeLength
+		return
+	}
+	if lenVl != nil {
+		if err = lenVl.Validate(length); err != nil {
+			return
+		}
+	}
+	var (
+		n1 int
+		e  T
+	)
+	v = make([]T, length)
+	for i := 0; i < length; i++ {
+		e, n1, err = elemSer.Unmarshal(r)
+		n += n1
+		if err != nil {
+			return
+		}
+		if elemVl != nil {
+			if err = elemVl.Validate(e); err != nil {
 				return
 			}
 		}
