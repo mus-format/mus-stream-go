@@ -48,3 +48,7 @@ typed data serialization using [DTM](https://medium.com/p/21d7be309e8d).
 
 The `MarshallerMUS` interface is defined in the [ext-stream-go](https://github.com/mus-format/ext-stream-go)
 module.
+
+## Version Compatibility
+
+For a complete list of compatible module versions, see [VERSIONS.md](VERSIONS.md).
