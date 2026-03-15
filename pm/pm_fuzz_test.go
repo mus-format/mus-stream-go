@@ -18,13 +18,13 @@ func FuzzPtr(f *testing.F) {
 			ptrMap                        = com.NewPtrMap()
 			revPtrMap                     = com.NewReversePtrMap()
 			baseSer   mus.Serializer[int] = varint.Int
-			ptrSer                        = NewPtrSer[int](ptrMap, revPtrMap, baseSer)
+			ptrSer                        = NewPtrSer(ptrMap, revPtrMap, baseSer)
 			ser                           = Wrap[ctestutil.PtrStruct](ptrMap, revPtrMap, fuzzPtrStructSer{ptrSer})
 
 			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)
-		testutil.Test[ctestutil.PtrStruct]([]ctestutil.PtrStruct{v}, ser, t)
-		testutil.TestSkip[ctestutil.PtrStruct]([]ctestutil.PtrStruct{v}, ser, t)
+		testutil.Test([]ctestutil.PtrStruct{v}, ser, t)
+		testutil.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
 
 		// Check pointer equality after Test
 		buf := bytes.NewBuffer(nil)
@@ -53,7 +53,7 @@ func FuzzPtrUnmarshal(f *testing.F) {
 			ptrMap                        = com.NewPtrMap()
 			revPtrMap                     = com.NewReversePtrMap()
 			baseSer   mus.Serializer[int] = varint.Int
-			ptrSer                        = NewPtrSer[int](ptrMap, revPtrMap, baseSer)
+			ptrSer                        = NewPtrSer(ptrMap, revPtrMap, baseSer)
 			ser                           = Wrap[ctestutil.PtrStruct](ptrMap, revPtrMap, fuzzPtrStructSer{ptrSer})
 		)
 		buf := bytes.NewBuffer(bs)
@@ -71,12 +71,12 @@ func FuzzWrapper(f *testing.F) {
 			ptrMap                        = com.NewPtrMap()
 			revPtrMap                     = com.NewReversePtrMap()
 			baseSer   mus.Serializer[int] = varint.Int
-			ser                           = Wrap[ctestutil.PtrStruct](ptrMap, revPtrMap, fuzzPtrStructSer{NewPtrSer[int](ptrMap, revPtrMap, baseSer)})
+			ser                           = Wrap[ctestutil.PtrStruct](ptrMap, revPtrMap, fuzzPtrStructSer{NewPtrSer(ptrMap, revPtrMap, baseSer)})
 
 			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)
-		testutil.Test[ctestutil.PtrStruct]([]ctestutil.PtrStruct{v}, ser, t)
-		testutil.TestSkip[ctestutil.PtrStruct]([]ctestutil.PtrStruct{v}, ser, t)
+		testutil.Test([]ctestutil.PtrStruct{v}, ser, t)
+		testutil.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
 
 		// Check pointer equality after Test (Test unmarshals into a new variable)
 		// We'll do it manually to be sure.

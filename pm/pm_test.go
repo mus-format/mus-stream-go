@@ -115,7 +115,7 @@ func TestPM(t *testing.T) {
 					)
 					num    = 2
 					mocks  = []*mok.Mock{w.Mock, baseSer.Mock}
-					n, err = NewPtrSer[int](ptrMap, nil, baseSer).Marshal(&num, w)
+					n, err = NewPtrSer(ptrMap, nil, baseSer).Marshal(&num, w)
 				)
 				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
@@ -190,7 +190,7 @@ func TestPM(t *testing.T) {
 					)
 					revPtrMap = com.NewReversePtrMap()
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = NewPtrSer[int](nil, revPtrMap, baseSer).Unmarshal(r)
+					v, n, err = NewPtrSer(nil, revPtrMap, baseSer).Unmarshal(r)
 				)
 				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
@@ -279,7 +279,7 @@ func TestPM(t *testing.T) {
 					)
 					revPtrMap = com.NewReversePtrMap()
 					mocks     = []*mok.Mock{r.Mock}
-					n, err    = NewPtrSer[int](nil, revPtrMap, baseSer).Skip(r)
+					n, err    = NewPtrSer(nil, revPtrMap, baseSer).Skip(r)
 				)
 				ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})

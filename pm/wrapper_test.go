@@ -23,9 +23,9 @@ func TestWrapper(t *testing.T) {
 				ser         = Wrap(ptrMap, revPtrMap, newPtrStructSer(ptrMap, revPtrMap,
 					baseSer))
 			)
-			testutil.Test[ctestutil.PtrStruct]([]ctestutil.PtrStruct{st}, ser,
+			testutil.Test([]ctestutil.PtrStruct{st}, ser,
 				t)
-			testutil.TestSkip[ctestutil.PtrStruct]([]ctestutil.PtrStruct{st},
+			testutil.TestSkip([]ctestutil.PtrStruct{st},
 				ser, t)
 		})
 
@@ -43,7 +43,7 @@ func TestWrapper(t *testing.T) {
 						return
 					},
 				)
-				ser = Wrap[byte](ptrMap, nil, ptrSer)
+				ser = Wrap(ptrMap, nil, ptrSer)
 				w   = mock.NewWriter().RegisterWriteByte(
 					func(b byte) error {
 						if b != wantV {
@@ -90,7 +90,7 @@ func TestWrapper(t *testing.T) {
 						return
 					},
 				)
-				ser = Wrap[byte](nil, revPtrMap, ptrSer)
+				ser = Wrap(nil, revPtrMap, ptrSer)
 				r   = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						b = wantV
@@ -129,7 +129,7 @@ func TestWrapper(t *testing.T) {
 						return wantSize
 					},
 				)
-				ser   = Wrap[byte](ptrMap, nil, ptrSer)
+				ser   = Wrap(ptrMap, nil, ptrSer)
 				mocks = []*mok.Mock{ptrSer.Mock}
 			)
 			size := ser.Size(wantV)
@@ -165,7 +165,7 @@ func TestWrapper(t *testing.T) {
 						return
 					},
 				)
-				ser = Wrap[byte](nil, revPtrMap, ptrSer)
+				ser = Wrap(nil, revPtrMap, ptrSer)
 				r   = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						b = wantV
