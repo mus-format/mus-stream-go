@@ -144,7 +144,7 @@ func UnmarshalSlice[T any](elemSer mus.Serializer[T],
 		e  T
 	)
 	v = make([]T, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		e, n1, err = elemSer.Unmarshal(r)
 		n += n1
 		if err != nil {
