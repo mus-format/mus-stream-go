@@ -6,7 +6,7 @@ import (
 
 	com "github.com/mus-format/common-go"
 	"github.com/mus-format/mus-stream-go"
-	arrops "github.com/mus-format/mus-stream-go/options/array"
+	arropts "github.com/mus-format/mus-stream-go/options/array"
 	"github.com/mus-format/mus-stream-go/ord"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -16,14 +16,14 @@ import (
 //
 // Panics if T is not an array type.
 func NewArraySer[T, V any](elemSer mus.Serializer[V],
-	ops ...arrops.SetOption[V],
+	opts ...arropts.SetOption[V],
 ) (s arraySer[T, V]) {
 	var (
-		o      = arrops.Options[V]{}
+		o      = arropts.Options[V]{}
 		t      = reflect.TypeFor[T]()
 		length = t.Len()
 	)
-	arrops.Apply(ops, &o)
+	arropts.Apply(opts, &o)
 	var lenSer mus.Serializer[int] = varint.PositiveInt
 	if o.LenSer != nil {
 		lenSer = o.LenSer
@@ -41,14 +41,14 @@ func NewArraySer[T, V any](elemSer mus.Serializer[V],
 //
 // Panics if T is not an array type.
 func NewValidArraySer[T, V any](elemSer mus.Serializer[V],
-	ops ...arrops.SetOption[V],
+	opts ...arropts.SetOption[V],
 ) arraySer[T, V] {
 	var (
-		o      = arrops.Options[V]{}
+		o      = arropts.Options[V]{}
 		t      = reflect.TypeFor[T]()
 		length = t.Len()
 	)
-	arrops.Apply(ops, &o)
+	arropts.Apply(opts, &o)
 	var lenSer mus.Serializer[int] = varint.PositiveInt
 	if o.LenSer != nil {
 		lenSer = o.LenSer

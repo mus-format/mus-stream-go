@@ -1,4 +1,4 @@
-package arrops
+package arropts
 
 import (
 	"testing"

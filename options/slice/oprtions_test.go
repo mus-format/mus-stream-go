@@ -1,4 +1,4 @@
-package slops
+package slopts
 
 import (
 	"testing"

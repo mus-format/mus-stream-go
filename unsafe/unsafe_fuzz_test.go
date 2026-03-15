@@ -8,7 +8,7 @@ import (
 	"time"
 
 	com "github.com/mus-format/common-go"
-	strops "github.com/mus-format/mus-stream-go/options/string"
+	stropts "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/test"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -352,7 +352,7 @@ func FuzzUnsafe_String(f *testing.F) {
 
 func FuzzUnsafe_StringUnmarshal(f *testing.F) {
 	// We use Valid serializer to avoid OOM during fuzzing.
-	ser := NewValidStringSer(strops.WithLenValidator(
+	ser := NewValidStringSer(stropts.WithLenValidator(
 		com.ValidatorFn[int](func(v int) error {
 			if v > maxLen {
 				return errors.New("too large length")

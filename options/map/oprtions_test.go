@@ -1,4 +1,4 @@
-package mapops
+package mapopts
 
 import (
 	"testing"

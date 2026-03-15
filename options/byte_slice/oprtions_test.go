@@ -1,4 +1,4 @@
-package bslops
+package bslopts
 
 import (
 	"testing"

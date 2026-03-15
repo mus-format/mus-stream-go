@@ -10,10 +10,10 @@ import (
 	ctestutil "github.com/mus-format/common-go/testutil"
 	com_mock "github.com/mus-format/common-go/testutil/mock"
 	muss "github.com/mus-format/mus-stream-go"
-	bslops "github.com/mus-format/mus-stream-go/options/byte_slice"
-	mapops "github.com/mus-format/mus-stream-go/options/map"
-	slops "github.com/mus-format/mus-stream-go/options/slice"
-	strops "github.com/mus-format/mus-stream-go/options/string"
+	bslopts "github.com/mus-format/mus-stream-go/options/byte_slice"
+	mapopts "github.com/mus-format/mus-stream-go/options/map"
+	slopts "github.com/mus-format/mus-stream-go/options/slice"
+	stropts "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/test"
 	"github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/mus-format/mus-stream-go/varint"
@@ -125,7 +125,7 @@ func TestOrd_String(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				str, lenSer = test.StringSerData(t)
-				ser         = NewStringSer(strops.WithLenSer(lenSer))
+				ser         = NewStringSer(stropts.WithLenSer(lenSer))
 				mocks       = []*mok.Mock{lenSer.Mock}
 			)
 			test.Test([]string{str}, ser, t)
@@ -284,7 +284,7 @@ func TestOrd_ValidString(t *testing.T) {
 				)
 				r         = LengthReader(wantLength)
 				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidStringSer(strops.WithLenValidator(lenVl)).Unmarshal(r)
+				v, n, err = NewValidStringSer(stropts.WithLenValidator(lenVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks,
@@ -304,7 +304,7 @@ func TestOrd_ValidString(t *testing.T) {
 					return 0, nil
 				},
 			)
-			v, n, err = NewValidStringSer(strops.WithLenValidator(com.ValidatorFn[int](lenVl))).Unmarshal(r)
+			v, n, err = NewValidStringSer(stropts.WithLenValidator(com.ValidatorFn[int](lenVl))).Unmarshal(r)
 		)
 		ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
 	})
@@ -584,7 +584,7 @@ func TestOrd_ByteSlice(t *testing.T) {
 	t.Run("We should be able to set a length serializer", func(t *testing.T) {
 		var (
 			sl, lenSer = test.ByteSliceLenSerData(t)
-			ser        = NewByteSliceSer(bslops.WithLenSer(lenSer))
+			ser        = NewByteSliceSer(bslopts.WithLenSer(lenSer))
 			mocks      = []*mok.Mock{lenSer.Mock}
 		)
 		test.Test([][]byte{sl}, ser, t)
@@ -748,7 +748,7 @@ func TestOrd_ValidByteSlice(t *testing.T) {
 					},
 				)
 				mocks     = []*mok.Mock{lenVl.Mock}
-				v, n, err = NewValidByteSliceSer(bslops.WithLenValidator(lenVl)).Unmarshal(r)
+				v, n, err = NewValidByteSliceSer(bslopts.WithLenValidator(lenVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks,
@@ -838,7 +838,7 @@ func TestOrd_Slice(t *testing.T) {
 		var (
 			sl, lenSer, elemSer = test.SliceLenSerData(t)
 			mocks               = []*mok.Mock{elemSer.Mock}
-			ser                 = NewSliceSer(elemSer, slops.WithLenSer[string](lenSer))
+			ser                 = NewSliceSer(elemSer, slopts.WithLenSer[string](lenSer))
 		)
 		test.Test([][]string{sl}, ser, t)
 		test.TestSkip([][]string{sl}, ser, t)
@@ -1085,7 +1085,7 @@ func TestOrd_ValidSlice(t *testing.T) {
 					func() (b byte, err error) { return 4, nil },
 				)
 				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidSliceSer(nil, slops.WithLenValidator[uint](lenVl)).Unmarshal(r)
+				v, n, err = NewValidSliceSer(nil, slopts.WithLenValidator[uint](lenVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks,
@@ -1128,7 +1128,7 @@ func TestOrd_ValidSlice(t *testing.T) {
 					},
 				)
 				mocks     = []*mok.Mock{elemVl.Mock, elemSer.Mock}
-				v, n, err = NewValidSliceSer(elemSer, slops.WithElemValidator(elemVl)).Unmarshal(r)
+				v, n, err = NewValidSliceSer(elemSer, slopts.WithElemValidator(elemVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
@@ -1165,7 +1165,7 @@ func TestOrd_Map(t *testing.T) {
 		var (
 			mp, lenSer, keySer, valueSer = test.MapLenSerData(t)
 			ser                          = NewMapSer(keySer, valueSer,
-				mapops.WithLenSer[string, int](lenSer))
+				mapopts.WithLenSer[string, int](lenSer))
 			mocks = []*mok.Mock{keySer.Mock, valueSer.Mock}
 		)
 		test.Test([]map[string]int{mp}, ser, t)
@@ -1568,7 +1568,7 @@ func TestOrd_ValidMap(t *testing.T) {
 				)
 				mocks     = []*mok.Mock{r.Mock, lenVl.Mock}
 				v, n, err = NewValidMapSer(nil, nil,
-					mapops.WithLenValidator[uint, uint](lenVl)).Unmarshal(r)
+					mapopts.WithLenValidator[uint, uint](lenVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
@@ -1598,7 +1598,7 @@ func TestOrd_ValidMap(t *testing.T) {
 				)
 				mocks     = []*mok.Mock{r.Mock, keySer.Mock, keyVl.Mock}
 				v, n, err = NewValidMapSer(keySer, nil,
-					mapops.WithKeyValidator[uint, uint](keyVl)).Unmarshal(r)
+					mapopts.WithKeyValidator[uint, uint](keyVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks,
@@ -1634,7 +1634,7 @@ func TestOrd_ValidMap(t *testing.T) {
 				)
 				mocks     = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock, valueVl.Mock}
 				v, n, err = NewValidMapSer(keySer, valueSer,
-					mapops.WithValueValidator[uint, uint](valueVl)).Unmarshal(r)
+					mapopts.WithValueValidator[uint, uint](valueVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks,

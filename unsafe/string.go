@@ -6,7 +6,7 @@ import (
 
 	com "github.com/mus-format/common-go"
 	"github.com/mus-format/mus-stream-go"
-	strops "github.com/mus-format/mus-stream-go/options/string"
+	stropts "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/ord"
 	"github.com/mus-format/mus-stream-go/varint"
 )
@@ -16,21 +16,21 @@ var String = NewStringSer()
 
 // NewStringSer returns a new string serializer. To specify a length validator,
 // use NewValidStringSer instead.
-func NewStringSer(ops ...strops.SetOption) stringSer {
-	o := strops.Options{}
-	strops.Apply(ops, &o)
+func NewStringSer(opts ...stropts.SetOption) stringSer {
+	o := stropts.Options{}
+	stropts.Apply(opts, &o)
 
 	return newStringSer(o)
 }
 
 // NewValidStringSer returns a new valid string serializer.
-func NewValidStringSer(ops ...strops.SetOption) validStringSer {
-	o := strops.Options{}
-	strops.Apply(ops, &o)
+func NewValidStringSer(opts ...stropts.SetOption) validStringSer {
+	o := stropts.Options{}
+	stropts.Apply(opts, &o)
 	return validStringSer{newStringSer(o), o.LenVl}
 }
 
-func newStringSer(o strops.Options) stringSer {
+func newStringSer(o stropts.Options) stringSer {
 	var lenSer mus.Serializer[int] = varint.PositiveInt
 	if o.LenSer != nil {
 		lenSer = o.LenSer

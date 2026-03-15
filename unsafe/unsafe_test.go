@@ -14,8 +14,8 @@ import (
 	ctestutil "github.com/mus-format/common-go/testutil"
 	com_mock "github.com/mus-format/common-go/testutil/mock"
 	muss "github.com/mus-format/mus-stream-go"
-	arrops "github.com/mus-format/mus-stream-go/options/array"
-	strops "github.com/mus-format/mus-stream-go/options/string"
+	arropts "github.com/mus-format/mus-stream-go/options/array"
+	stropts "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/raw"
 	"github.com/mus-format/mus-stream-go/test"
 	"github.com/mus-format/mus-stream-go/test/mock"
@@ -284,7 +284,7 @@ func TestUnsafe_String(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				str, lenSer = test.StringSerData(t)
-				ser         = NewStringSer(strops.WithLenSer(lenSer))
+				ser         = NewStringSer(stropts.WithLenSer(lenSer))
 				mocks       = []*mok.Mock{lenSer.Mock}
 			)
 			test.Test([]string{str}, ser, t)
@@ -412,7 +412,7 @@ func TestUnsafe_String(t *testing.T) {
 				)
 				r         = LengthReader(wantLength)
 				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidStringSer(strops.WithLenValidator(lenVl)).Unmarshal(r)
+				v, n, err = NewValidStringSer(stropts.WithLenValidator(lenVl)).Unmarshal(r)
 			)
 			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
@@ -431,7 +431,7 @@ func TestUnsafe_String(t *testing.T) {
 					return 0, nil
 				},
 			)
-			v, n, err = NewValidStringSer(strops.WithLenValidator(lenVl)).Unmarshal(r)
+			v, n, err = NewValidStringSer(stropts.WithLenValidator(lenVl)).Unmarshal(r)
 		)
 		ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
 	})
@@ -928,7 +928,7 @@ func TestUnsafe_Array(t *testing.T) {
 						return wantErr
 					},
 				)
-				ser   = NewValidArraySer[[3]int](elemSer, arrops.WithElemValidator(elemVl))
+				ser   = NewValidArraySer[[3]int](elemSer, arropts.WithElemValidator(elemVl))
 				mocks = []*mok.Mock{r.Mock, elemSer.Mock, elemVl.Mock}
 			)
 			v, n, err := ser.Unmarshal(r)
@@ -940,7 +940,7 @@ func TestUnsafe_Array(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				arr = [3]int{1, 2, 3}
-				ser = NewArraySer[[3]int](varint.Int, arrops.WithLenSer[int](varint.Int))
+				ser = NewArraySer[[3]int](varint.Int, arropts.WithLenSer[int](varint.Int))
 			)
 			test.Test([][3]int{arr}, ser, t)
 			test.TestSkip([][3]int{arr}, ser, t)
@@ -950,7 +950,7 @@ func TestUnsafe_Array(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				arr = [3]int{1, 2, 3}
-				ser = NewValidArraySer[[3]int](varint.Int, arrops.WithLenSer[int](varint.Int))
+				ser = NewValidArraySer[[3]int](varint.Int, arropts.WithLenSer[int](varint.Int))
 			)
 			test.Test([][3]int{arr}, ser, t)
 			test.TestSkip([][3]int{arr}, ser, t)
