@@ -14,8 +14,8 @@ import (
 	mapops "github.com/mus-format/mus-stream-go/options/map"
 	slops "github.com/mus-format/mus-stream-go/options/slice"
 	strops "github.com/mus-format/mus-stream-go/options/string"
-	"github.com/mus-format/mus-stream-go/testutil"
-	"github.com/mus-format/mus-stream-go/testutil/mock"
+	"github.com/mus-format/mus-stream-go/test"
+	"github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/mus-format/mus-stream-go/varint"
 	"github.com/ymz-ncnk/mok"
 )
@@ -25,8 +25,8 @@ func TestOrd(t *testing.T) {
 		t.Run("Bool serializer should work correctly",
 			func(t *testing.T) {
 				ser := Bool
-				testutil.Test(ctestutil.BoolTestCases, ser, t)
-				testutil.TestSkip(ctestutil.BoolTestCases, ser, t)
+				test.Test(ctestutil.BoolTestCases, ser, t)
+				test.TestSkip(ctestutil.BoolTestCases, ser, t)
 			})
 
 		t.Run("If Writer fails to write a byte, Marshal should return error",
@@ -40,7 +40,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = Bool.Marshal(true, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -118,19 +118,19 @@ func TestOrd(t *testing.T) {
 		t.Run("String seralizer should work correctly",
 			func(t *testing.T) {
 				ser := String
-				testutil.Test(ctestutil.StringTestCases, ser, t)
-				testutil.TestSkip(ctestutil.StringTestCases, ser, t)
+				test.Test(ctestutil.StringTestCases, ser, t)
+				test.TestSkip(ctestutil.StringTestCases, ser, t)
 			})
 
 		t.Run("We should be able to set a length serializer",
 			func(t *testing.T) {
 				var (
-					str, lenSer = testutil.StringSerData(t)
+					str, lenSer = test.StringSerData(t)
 					ser         = NewStringSer(strops.WithLenSer(lenSer))
 					mocks       = []*mok.Mock{lenSer.Mock}
 				)
-				testutil.Test([]string{str}, ser, t)
-				testutil.TestSkip([]string{str}, ser, t)
+				test.Test([]string{str}, ser, t)
+				test.TestSkip([]string{str}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -150,7 +150,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = String.Marshal("hello world", w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read string length, Unmarshal should return error",
@@ -262,8 +262,8 @@ func TestOrd(t *testing.T) {
 
 		t.Run("ValidString serializer should work", func(t *testing.T) {
 			ser := NewValidStringSer(nil)
-			testutil.Test(ctestutil.StringTestCases, ser, t)
-			testutil.TestSkip(ctestutil.StringTestCases, ser, t)
+			test.Test(ctestutil.StringTestCases, ser, t)
+			test.TestSkip(ctestutil.StringTestCases, ser, t)
 		})
 
 		t.Run("If lenVl returns an error, Unmarshal should return it",
@@ -372,12 +372,12 @@ func TestOrd(t *testing.T) {
 		t.Run("Pointer seralizer should work correctly",
 			func(t *testing.T) {
 				var (
-					ptr, baseSer = testutil.PtrSerData(t)
+					ptr, baseSer = test.PtrSerData(t)
 					mocks        = []*mok.Mock{baseSer.Mock}
 					ser          = NewPtrSer(baseSer)
 				)
-				testutil.Test([]*int{ptr}, ser, t)
-				testutil.TestSkip([]*int{ptr}, ser, t)
+				test.Test([]*int{ptr}, ser, t)
+				test.TestSkip([]*int{ptr}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -387,8 +387,8 @@ func TestOrd(t *testing.T) {
 		t.Run("Ptr serializer should work correctly with nil pointer",
 			func(t *testing.T) {
 				ser := NewPtrSer(String)
-				testutil.Test([]*string{nil}, ser, t)
-				testutil.TestSkip([]*string{nil}, ser, t)
+				test.Test([]*string{nil}, ser, t)
+				test.TestSkip([]*string{nil}, ser, t)
 			})
 
 		t.Run("If Writer fails to write nil flag == 0, Marshal should return error",
@@ -404,7 +404,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewPtrSer[string](nil).Marshal(nil, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Writer fails to write nil flag == 1, Marshal should return error",
@@ -422,7 +422,7 @@ func TestOrd(t *testing.T) {
 					strPtr = &str
 					n, err = NewPtrSer(String).Marshal(strPtr, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Writer fails to write pointer content, Marshal should return error",
@@ -444,7 +444,7 @@ func TestOrd(t *testing.T) {
 					strPtr = &str
 					n, err = NewPtrSer[string](String).Marshal(strPtr, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read nil flag, Unmarshal should return error",
@@ -566,8 +566,8 @@ func TestOrd(t *testing.T) {
 					sl  = []byte{}
 					ser = ByteSlice
 				)
-				testutil.Test([][]byte{sl}, ser, t)
-				testutil.TestSkip([][]byte{sl}, ser, t)
+				test.Test([][]byte{sl}, ser, t)
+				test.TestSkip([][]byte{sl}, ser, t)
 			})
 
 		t.Run("ByteSlice serializer should work correctly for not empty slice",
@@ -576,18 +576,18 @@ func TestOrd(t *testing.T) {
 					sl  = []byte{1, 2, 45, 255, 123, 70, 0, 0}
 					ser = ByteSlice
 				)
-				testutil.Test([][]byte{sl}, ser, t)
-				testutil.TestSkip([][]byte{sl}, ser, t)
+				test.Test([][]byte{sl}, ser, t)
+				test.TestSkip([][]byte{sl}, ser, t)
 			})
 
 		t.Run("We should be able to set a length serializer", func(t *testing.T) {
 			var (
-				sl, lenSer = testutil.ByteSliceLenSerData(t)
+				sl, lenSer = test.ByteSliceLenSerData(t)
 				ser        = NewByteSliceSer(bslops.WithLenSer(lenSer))
 				mocks      = []*mok.Mock{lenSer.Mock}
 			)
-			testutil.Test([][]byte{sl}, ser, t)
-			testutil.TestSkip([][]byte{sl}, ser, t)
+			test.Test([][]byte{sl}, ser, t)
+			test.TestSkip([][]byte{sl}, ser, t)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -605,7 +605,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = ByteSlice.Marshal([]byte{1}, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read slice length, Unmarshal should return error",
@@ -714,8 +714,8 @@ func TestOrd(t *testing.T) {
 					sl  = []byte{}
 					ser = NewValidByteSliceSer(nil)
 				)
-				testutil.Test([][]byte{sl}, ser, t)
-				testutil.TestSkip([][]byte{sl}, ser, t)
+				test.Test([][]byte{sl}, ser, t)
+				test.TestSkip([][]byte{sl}, ser, t)
 			})
 
 		t.Run("ValidByteSlice seializer should work correctly for not empty slice",
@@ -724,8 +724,8 @@ func TestOrd(t *testing.T) {
 					sl  = []byte{1, 2, 3}
 					ser = NewValidByteSliceSer(nil)
 				)
-				testutil.Test([][]byte{sl}, ser, t)
-				testutil.TestSkip([][]byte{sl}, ser, t)
+				test.Test([][]byte{sl}, ser, t)
+				test.TestSkip([][]byte{sl}, ser, t)
 			})
 
 		t.Run("If lenVl returns an error, Unmarshal should return it",
@@ -813,19 +813,19 @@ func TestOrd(t *testing.T) {
 					sl  = []string{}
 					ser = NewSliceSer(String)
 				)
-				testutil.Test([][]string{sl}, ser, t)
-				testutil.TestSkip([][]string{sl}, ser, t)
+				test.Test([][]string{sl}, ser, t)
+				test.TestSkip([][]string{sl}, ser, t)
 			})
 
 		t.Run("Slice serializer should work correctly for not empty slice",
 			func(t *testing.T) {
 				var (
-					sl, elemSer = testutil.SliceSerData(t)
+					sl, elemSer = test.SliceSerData(t)
 					mocks       = []*mok.Mock{elemSer.Mock}
 					ser         = NewSliceSer(elemSer)
 				)
-				testutil.Test([][]string{sl}, ser, t)
-				testutil.TestSkip([][]string{sl}, ser, t)
+				test.Test([][]string{sl}, ser, t)
+				test.TestSkip([][]string{sl}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -833,12 +833,12 @@ func TestOrd(t *testing.T) {
 			})
 		t.Run("We should be able to set a length serializer", func(t *testing.T) {
 			var (
-				sl, lenSer, elemSer = testutil.SliceLenSerData(t)
+				sl, lenSer, elemSer = test.SliceLenSerData(t)
 				mocks               = []*mok.Mock{elemSer.Mock}
 				ser                 = NewSliceSer(elemSer, slops.WithLenSer[string](lenSer))
 			)
-			testutil.Test([][]string{sl}, ser, t)
-			testutil.TestSkip([][]string{sl}, ser, t)
+			test.Test([][]string{sl}, ser, t)
+			test.TestSkip([][]string{sl}, ser, t)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -856,7 +856,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewSliceSer[uint](nil).Marshal([]uint{1}, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Marshaller fails with an error, Marshal should return it",
@@ -875,7 +875,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock, elemSer.Mock}
 					n, err = NewSliceSer(elemSer).Marshal([]uint{1}, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read slice length, Unmarshal should return error",
@@ -987,19 +987,19 @@ func TestOrd(t *testing.T) {
 					sl  = []string{}
 					ser = NewValidSliceSer[string](nil, nil, nil)
 				)
-				testutil.Test([][]string{sl}, ser, t)
-				testutil.TestSkip([][]string{sl}, ser, t)
+				test.Test([][]string{sl}, ser, t)
+				test.TestSkip([][]string{sl}, ser, t)
 			})
 
 		t.Run("ValidSlice serializer should work correctly for not empty slice",
 			func(t *testing.T) {
 				var (
-					sl, elemSer = testutil.SliceSerData(t)
+					sl, elemSer = test.SliceSerData(t)
 					mocks       = []*mok.Mock{elemSer.Mock}
 					ser         = NewValidSliceSer(elemSer, nil, nil)
 				)
-				testutil.Test([][]string{sl}, ser, t)
-				testutil.TestSkip([][]string{sl}, ser, t)
+				test.Test([][]string{sl}, ser, t)
+				test.TestSkip([][]string{sl}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -1137,19 +1137,19 @@ func TestOrd(t *testing.T) {
 					mp  = map[string]int{}
 					ser = NewMapSer[string, int](nil, nil)
 				)
-				testutil.Test([]map[string]int{mp}, ser, t)
-				testutil.TestSkip([]map[string]int{mp}, ser, t)
+				test.Test([]map[string]int{mp}, ser, t)
+				test.TestSkip([]map[string]int{mp}, ser, t)
 			})
 
 		t.Run("Map serializer should work correctly",
 			func(t *testing.T) {
 				var (
-					mp, keySer, valueSer = testutil.MapSerData(t)
+					mp, keySer, valueSer = test.MapSerData(t)
 					ser                  = NewMapSer(keySer, valueSer)
 					mocks                = []*mok.Mock{keySer.Mock, valueSer.Mock}
 				)
-				testutil.Test([]map[string]int{mp}, ser, t)
-				testutil.TestSkip([]map[string]int{mp}, ser, t)
+				test.Test([]map[string]int{mp}, ser, t)
+				test.TestSkip([]map[string]int{mp}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -1158,13 +1158,13 @@ func TestOrd(t *testing.T) {
 
 		t.Run("We should be able to set a length serializer", func(t *testing.T) {
 			var (
-				mp, lenSer, keySer, valueSer = testutil.MapLenSerData(t)
+				mp, lenSer, keySer, valueSer = test.MapLenSerData(t)
 				ser                          = NewMapSer(keySer, valueSer,
 					mapops.WithLenSer[string, int](lenSer))
 				mocks = []*mok.Mock{keySer.Mock, valueSer.Mock}
 			)
-			testutil.Test([]map[string]int{mp}, ser, t)
-			testutil.TestSkip([]map[string]int{mp}, ser, t)
+			test.Test([]map[string]int{mp}, ser, t)
+			test.TestSkip([]map[string]int{mp}, ser, t)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -1182,7 +1182,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewMapSer[uint, uint](nil, nil).Marshal(nil, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If keySer fails with an error, Marshal should return it",
@@ -1201,7 +1201,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock, keySer.Mock}
 					n, err = NewMapSer[uint, uint](keySer, nil).Marshal(map[uint]uint{1: 1}, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If valueSer fails with an error, Marshal should return it",
@@ -1225,7 +1225,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock, keySer.Mock, valueSer.Mock}
 					n, err = NewMapSer(keySer, valueSer).Marshal(map[uint]uint{1: 1}, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read map length, Unmarshal should return it",
@@ -1388,12 +1388,12 @@ func TestOrd(t *testing.T) {
 		t.Run("ValidMap serializer should work correctly",
 			func(t *testing.T) {
 				var (
-					mp, keySer, valueSer = testutil.MapSerData(t)
+					mp, keySer, valueSer = test.MapSerData(t)
 					mocks                = []*mok.Mock{keySer.Mock, valueSer.Mock}
 					ser                  = NewValidMapSer(keySer, valueSer, nil, nil, nil)
 				)
-				testutil.Test([]map[string]int{mp}, ser, t)
-				testutil.TestSkip([]map[string]int{mp}, ser, t)
+				test.Test([]map[string]int{mp}, ser, t)
+				test.TestSkip([]map[string]int{mp}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -1411,7 +1411,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewValidMapSer[uint, uint](nil, nil, nil, nil, nil).Marshal(nil, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If keySer fails with an error, ValidMap.Marshal should return it",
@@ -1430,7 +1430,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock, keySer.Mock}
 					n, err = NewValidMapSer[uint, uint](keySer, nil, nil, nil, nil).Marshal(map[uint]uint{1: 1}, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If valueSer fails with an error, ValidMap.Marshal should return it",
@@ -1454,7 +1454,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock, keySer.Mock, valueSer.Mock}
 					n, err = NewValidMapSer(keySer, valueSer, nil, nil, nil).Marshal(map[uint]uint{1: 1}, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read map length, ValidMap.Unmarshal should return it",

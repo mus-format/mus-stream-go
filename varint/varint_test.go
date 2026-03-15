@@ -6,8 +6,8 @@ import (
 
 	com "github.com/mus-format/common-go"
 	ctestutil "github.com/mus-format/common-go/testutil"
-	"github.com/mus-format/mus-stream-go/testutil"
-	"github.com/mus-format/mus-stream-go/testutil/mock"
+	"github.com/mus-format/mus-stream-go/test"
+	"github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -26,7 +26,7 @@ func TestVarint(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = marshalUint[uint](300, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Writer fails to write a last one byte, marshalUint should return an error",
@@ -46,7 +46,7 @@ func TestVarint(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = marshalUint[uint](300, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 	})
 
@@ -138,35 +138,35 @@ func TestVarint(t *testing.T) {
 		t.Run("Uint64 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint64
-				testutil.Test(ctestutil.Uint64TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint64TestCases, ser, t)
+				test.Test(ctestutil.Uint64TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint64TestCases, ser, t)
 			})
 		t.Run("Uint32 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint32
-				testutil.Test(ctestutil.Uint32TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint32TestCases, ser, t)
+				test.Test(ctestutil.Uint32TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint32TestCases, ser, t)
 			})
 
 		t.Run("Uint16 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint16
-				testutil.Test(ctestutil.Uint16TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint16TestCases, ser, t)
+				test.Test(ctestutil.Uint16TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint16TestCases, ser, t)
 			})
 
 		t.Run("Uint8 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint8
-				testutil.Test(ctestutil.Uint8TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint8TestCases, ser, t)
+				test.Test(ctestutil.Uint8TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint8TestCases, ser, t)
 			})
 
 		t.Run("Uint serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint
-				testutil.Test(ctestutil.UintTestCases, ser, t)
-				testutil.TestSkip(ctestutil.UintTestCases, ser, t)
+				test.Test(ctestutil.UintTestCases, ser, t)
+				test.TestSkip(ctestutil.UintTestCases, ser, t)
 			})
 	})
 
@@ -175,8 +175,8 @@ func TestVarint(t *testing.T) {
 			t.Run("Int64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int64
-					testutil.Test(ctestutil.Int64TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int64TestCases, ser, t)
+					test.Test(ctestutil.Int64TestCases, ser, t)
+					test.TestSkip(ctestutil.Int64TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -203,8 +203,8 @@ func TestVarint(t *testing.T) {
 			t.Run("Int32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int32
-					testutil.Test(ctestutil.Int32TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int32TestCases, ser, t)
+					test.Test(ctestutil.Int32TestCases, ser, t)
+					test.TestSkip(ctestutil.Int32TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -231,8 +231,8 @@ func TestVarint(t *testing.T) {
 			t.Run("Int16 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int16
-					testutil.Test(ctestutil.Int16TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int16TestCases, ser, t)
+					test.Test(ctestutil.Int16TestCases, ser, t)
+					test.TestSkip(ctestutil.Int16TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -259,8 +259,8 @@ func TestVarint(t *testing.T) {
 			t.Run("Int8 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int8
-					testutil.Test(ctestutil.Int8TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int8TestCases, ser, t)
+					test.Test(ctestutil.Int8TestCases, ser, t)
+					test.TestSkip(ctestutil.Int8TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -287,8 +287,8 @@ func TestVarint(t *testing.T) {
 			t.Run("Int serializer should work correctly",
 				func(t *testing.T) {
 					ser := Int
-					testutil.Test(ctestutil.IntTestCases, ser, t)
-					testutil.TestSkip(ctestutil.IntTestCases, ser, t)
+					test.Test(ctestutil.IntTestCases, ser, t)
+					test.TestSkip(ctestutil.IntTestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -315,8 +315,8 @@ func TestVarint(t *testing.T) {
 			t.Run("PositiveInt64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt64
-					testutil.Test(ctestutil.Int64TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int64TestCases, ser, t)
+					test.Test(ctestutil.Int64TestCases, ser, t)
+					test.TestSkip(ctestutil.Int64TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -343,8 +343,8 @@ func TestVarint(t *testing.T) {
 			t.Run("PositiveInt32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt32
-					testutil.Test(ctestutil.Int32TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int32TestCases, ser, t)
+					test.Test(ctestutil.Int32TestCases, ser, t)
+					test.TestSkip(ctestutil.Int32TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -371,8 +371,8 @@ func TestVarint(t *testing.T) {
 			t.Run("PositiveInt16 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt16
-					testutil.Test(ctestutil.Int16TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int16TestCases, ser, t)
+					test.Test(ctestutil.Int16TestCases, ser, t)
+					test.TestSkip(ctestutil.Int16TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -399,8 +399,8 @@ func TestVarint(t *testing.T) {
 			t.Run("PositiveInt8 serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt8
-					testutil.Test(ctestutil.Int8TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Int8TestCases, ser, t)
+					test.Test(ctestutil.Int8TestCases, ser, t)
+					test.TestSkip(ctestutil.Int8TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -427,8 +427,8 @@ func TestVarint(t *testing.T) {
 			t.Run("PositiveInt serializer should work correctly",
 				func(t *testing.T) {
 					ser := PositiveInt
-					testutil.Test(ctestutil.IntTestCases, ser, t)
-					testutil.TestSkip(ctestutil.IntTestCases, ser, t)
+					test.Test(ctestutil.IntTestCases, ser, t)
+					test.TestSkip(ctestutil.IntTestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -456,8 +456,8 @@ func TestVarint(t *testing.T) {
 		t.Run("Byte serializer should work correctly",
 			func(t *testing.T) {
 				ser := Byte
-				testutil.Test(ctestutil.ByteTestCases, ser, t)
-				testutil.TestSkip(ctestutil.ByteTestCases, ser, t)
+				test.Test(ctestutil.ByteTestCases, ser, t)
+				test.TestSkip(ctestutil.ByteTestCases, ser, t)
 			})
 	})
 
@@ -466,8 +466,8 @@ func TestVarint(t *testing.T) {
 			t.Run("Float64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float64
-					testutil.Test(ctestutil.Float64TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Float64TestCases, ser, t)
+					test.Test(ctestutil.Float64TestCases, ser, t)
+					test.TestSkip(ctestutil.Float64TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -494,8 +494,8 @@ func TestVarint(t *testing.T) {
 			t.Run("Float32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float32
-					testutil.Test(ctestutil.Float32TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Float32TestCases, ser, t)
+					test.Test(ctestutil.Float32TestCases, ser, t)
+					test.TestSkip(ctestutil.Float32TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return an error",

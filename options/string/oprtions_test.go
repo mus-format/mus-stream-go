@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	com_mock "github.com/mus-format/common-go/testutil/mock"
-	"github.com/mus-format/mus-stream-go/testutil/mock"
+	"github.com/mus-format/mus-stream-go/test/mock"
 )
 
 func TestOptions(t *testing.T) {

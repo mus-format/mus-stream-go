@@ -7,7 +7,7 @@ import (
 	com "github.com/mus-format/common-go"
 	ctestutil "github.com/mus-format/common-go/testutil"
 	"github.com/mus-format/mus-stream-go"
-	"github.com/mus-format/mus-stream-go/testutil"
+	"github.com/mus-format/mus-stream-go/test"
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
@@ -23,8 +23,8 @@ func FuzzPtr(f *testing.F) {
 
 			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)
-		testutil.Test([]ctestutil.PtrStruct{v}, ser, t)
-		testutil.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
+		test.Test([]ctestutil.PtrStruct{v}, ser, t)
+		test.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
 
 		// Check pointer equality after Test
 		buf := bytes.NewBuffer(nil)
@@ -75,8 +75,8 @@ func FuzzWrapper(f *testing.F) {
 
 			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)
-		testutil.Test([]ctestutil.PtrStruct{v}, ser, t)
-		testutil.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
+		test.Test([]ctestutil.PtrStruct{v}, ser, t)
+		test.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
 
 		// Check pointer equality after Test (Test unmarshals into a new variable)
 		// We'll do it manually to be sure.

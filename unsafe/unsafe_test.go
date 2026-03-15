@@ -17,8 +17,8 @@ import (
 	arrops "github.com/mus-format/mus-stream-go/options/array"
 	strops "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/raw"
-	"github.com/mus-format/mus-stream-go/testutil"
-	"github.com/mus-format/mus-stream-go/testutil/mock"
+	"github.com/mus-format/mus-stream-go/test"
+	"github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/mus-format/mus-stream-go/varint"
 	"github.com/ymz-ncnk/mok"
 )
@@ -276,19 +276,19 @@ func TestUnsafe(t *testing.T) {
 		t.Run("String serializer should work correctly",
 			func(t *testing.T) {
 				ser := String
-				testutil.Test(ctestutil.StringTestCases, ser, t)
-				testutil.TestSkip(ctestutil.StringTestCases, ser, t)
+				test.Test(ctestutil.StringTestCases, ser, t)
+				test.TestSkip(ctestutil.StringTestCases, ser, t)
 			})
 
 		t.Run("We should be able to set a length serializer",
 			func(t *testing.T) {
 				var (
-					str, lenSer = testutil.StringSerData(t)
+					str, lenSer = test.StringSerData(t)
 					ser         = NewStringSer(strops.WithLenSer(lenSer))
 					mocks       = []*mok.Mock{lenSer.Mock}
 				)
-				testutil.Test([]string{str}, ser, t)
-				testutil.TestSkip([]string{str}, ser, t)
+				test.Test([]string{str}, ser, t)
+				test.TestSkip([]string{str}, ser, t)
 
 				if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 					t.Error(infomap)
@@ -309,7 +309,7 @@ func TestUnsafe(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = String.Marshal(s, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails with an io.EOF, Unmarshal should return io.ErrUnexpectedEOF",
@@ -391,8 +391,8 @@ func TestUnsafe(t *testing.T) {
 		t.Run("ValidString should work correctly",
 			func(t *testing.T) {
 				ser := NewValidStringSer(nil)
-				testutil.Test(ctestutil.StringTestCases, ser, t)
-				testutil.TestSkip(ctestutil.StringTestCases, ser, t)
+				test.Test(ctestutil.StringTestCases, ser, t)
+				test.TestSkip(ctestutil.StringTestCases, ser, t)
 			})
 
 		t.Run("If lenVl validator returns an error, ValidString.Unmarshal should return it",
@@ -495,8 +495,8 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Byte serializer should work correctly",
 			func(t *testing.T) {
 				ser := Byte
-				testutil.Test(ctestutil.ByteTestCases, ser, t)
-				testutil.TestSkip(ctestutil.ByteTestCases, ser, t)
+				test.Test(ctestutil.ByteTestCases, ser, t)
+				test.TestSkip(ctestutil.ByteTestCases, ser, t)
 			})
 	})
 
@@ -504,36 +504,36 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Uint64 should work correctly",
 			func(t *testing.T) {
 				ser := Uint64
-				testutil.Test(ctestutil.Uint64TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint64TestCases, ser, t)
+				test.Test(ctestutil.Uint64TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint64TestCases, ser, t)
 			})
 
 		t.Run("Uint32 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint32
-				testutil.Test(ctestutil.Uint32TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint32TestCases, ser, t)
+				test.Test(ctestutil.Uint32TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint32TestCases, ser, t)
 			})
 
 		t.Run("Uint16 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint16
-				testutil.Test(ctestutil.Uint16TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint16TestCases, ser, t)
+				test.Test(ctestutil.Uint16TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint16TestCases, ser, t)
 			})
 
 		t.Run("Uint8 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint8
-				testutil.Test(ctestutil.Uint8TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Uint8TestCases, ser, t)
+				test.Test(ctestutil.Uint8TestCases, ser, t)
+				test.TestSkip(ctestutil.Uint8TestCases, ser, t)
 			})
 
 		t.Run("Uint serializer should work correctly",
 			func(t *testing.T) {
 				ser := Uint
-				testutil.Test(ctestutil.UintTestCases, ser, t)
-				testutil.TestSkip(ctestutil.UintTestCases, ser, t)
+				test.Test(ctestutil.UintTestCases, ser, t)
+				test.TestSkip(ctestutil.UintTestCases, ser, t)
 			})
 	})
 
@@ -541,36 +541,36 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Int64 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int64
-				testutil.Test(ctestutil.Int64TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Int64TestCases, ser, t)
+				test.Test(ctestutil.Int64TestCases, ser, t)
+				test.TestSkip(ctestutil.Int64TestCases, ser, t)
 			})
 
 		t.Run("Int32 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int32
-				testutil.Test(ctestutil.Int32TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Int32TestCases, ser, t)
+				test.Test(ctestutil.Int32TestCases, ser, t)
+				test.TestSkip(ctestutil.Int32TestCases, ser, t)
 			})
 
 		t.Run("Int16 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int16
-				testutil.Test(ctestutil.Int16TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Int16TestCases, ser, t)
+				test.Test(ctestutil.Int16TestCases, ser, t)
+				test.TestSkip(ctestutil.Int16TestCases, ser, t)
 			})
 
 		t.Run("Int8 serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int8
-				testutil.Test(ctestutil.Int8TestCases, ser, t)
-				testutil.TestSkip(ctestutil.Int8TestCases, ser, t)
+				test.Test(ctestutil.Int8TestCases, ser, t)
+				test.TestSkip(ctestutil.Int8TestCases, ser, t)
 			})
 
 		t.Run("Int serializer should work correctly",
 			func(t *testing.T) {
 				ser := Int
-				testutil.Test(ctestutil.IntTestCases, ser, t)
-				testutil.TestSkip(ctestutil.IntTestCases, ser, t)
+				test.Test(ctestutil.IntTestCases, ser, t)
+				test.TestSkip(ctestutil.IntTestCases, ser, t)
 			})
 	})
 
@@ -579,8 +579,8 @@ func TestUnsafe(t *testing.T) {
 			t.Run("Float64 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float64
-					testutil.Test(ctestutil.Float64TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Float64TestCases, ser, t)
+					test.Test(ctestutil.Float64TestCases, ser, t)
+					test.TestSkip(ctestutil.Float64TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte slice, Unmarshal should return an error",
@@ -607,8 +607,8 @@ func TestUnsafe(t *testing.T) {
 			t.Run("Float32 serializer should work correctly",
 				func(t *testing.T) {
 					ser := Float32
-					testutil.Test(ctestutil.Float32TestCases, ser, t)
-					testutil.TestSkip(ctestutil.Float32TestCases, ser, t)
+					test.Test(ctestutil.Float32TestCases, ser, t)
+					test.TestSkip(ctestutil.Float32TestCases, ser, t)
 				})
 
 			t.Run("If Reader fails to read a byte slice, Unmarshal should return an error",
@@ -636,8 +636,8 @@ func TestUnsafe(t *testing.T) {
 		t.Run("Bool serializer should work correctly",
 			func(t *testing.T) {
 				ser := Bool
-				testutil.Test(ctestutil.BoolTestCases, ser, t)
-				testutil.TestSkip(ctestutil.BoolTestCases, ser, t)
+				test.Test(ctestutil.BoolTestCases, ser, t)
+				test.TestSkip(ctestutil.BoolTestCases, ser, t)
 			})
 
 		t.Run("If Writer fails to write a byte, Marshal should return an error",
@@ -653,7 +653,7 @@ func TestUnsafe(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = Bool.Marshal(true, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -705,14 +705,14 @@ func TestUnsafe(t *testing.T) {
 						sec = time.Now().Unix()
 						tm  = time.Unix(sec, 0)
 					)
-					testutil.Test([]time.Time{tm}, TimeUnixUTC, t)
-					testutil.TestSkip([]time.Time{tm}, TimeUnixUTC, t)
+					test.Test([]time.Time{tm}, TimeUnixUTC, t)
+					test.TestSkip([]time.Time{tm}, TimeUnixUTC, t)
 				})
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testutil.Test([]time.Time{{}}, TimeUnixUTC, t)
-					testutil.TestSkip([]time.Time{{}}, TimeUnixUTC, t)
+					test.Test([]time.Time{{}}, TimeUnixUTC, t)
+					test.TestSkip([]time.Time{{}}, TimeUnixUTC, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -739,14 +739,14 @@ func TestUnsafe(t *testing.T) {
 						milli = time.Now().UnixMilli()
 						tm    = time.UnixMilli(milli)
 					)
-					testutil.Test([]time.Time{tm}, TimeUnixMilliUTC, t)
-					testutil.TestSkip([]time.Time{tm}, TimeUnixMilliUTC, t)
+					test.Test([]time.Time{tm}, TimeUnixMilliUTC, t)
+					test.TestSkip([]time.Time{tm}, TimeUnixMilliUTC, t)
 				})
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testutil.Test([]time.Time{{}}, TimeUnix, t)
-					testutil.TestSkip([]time.Time{{}}, TimeUnix, t)
+					test.Test([]time.Time{{}}, TimeUnix, t)
+					test.TestSkip([]time.Time{{}}, TimeUnix, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -773,14 +773,14 @@ func TestUnsafe(t *testing.T) {
 						milli = time.Now().UnixMicro()
 						tm    = time.UnixMicro(milli)
 					)
-					testutil.Test([]time.Time{tm}, TimeUnixMicroUTC, t)
-					testutil.TestSkip([]time.Time{tm}, TimeUnixMicroUTC, t)
+					test.Test([]time.Time{tm}, TimeUnixMicroUTC, t)
+					test.TestSkip([]time.Time{tm}, TimeUnixMicroUTC, t)
 				})
 
 			t.Run("We should be able to serializer the zero Time",
 				func(t *testing.T) {
-					testutil.Test([]time.Time{{}}, TimeUnix, t)
-					testutil.TestSkip([]time.Time{{}}, TimeUnix, t)
+					test.Test([]time.Time{{}}, TimeUnix, t)
+					test.TestSkip([]time.Time{{}}, TimeUnix, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -807,8 +807,8 @@ func TestUnsafe(t *testing.T) {
 						nano = time.Now().UnixNano()
 						tm   = time.Unix(0, nano)
 					)
-					testutil.Test([]time.Time{tm}, TimeUnixNanoUTC, t)
-					testutil.TestSkip([]time.Time{tm}, TimeUnixNanoUTC, t)
+					test.Test([]time.Time{tm}, TimeUnixNanoUTC, t)
+					test.TestSkip([]time.Time{tm}, TimeUnixNanoUTC, t)
 				})
 
 			t.Run("If Reader fails to read a byte, Unmarshal should return error",
@@ -832,12 +832,12 @@ func TestUnsafe(t *testing.T) {
 	t.Run("array", func(t *testing.T) {
 		t.Run("Array serializer should work correctly", func(t *testing.T) {
 			var (
-				arr, elemSer = testutil.ArraySerData(t)
+				arr, elemSer = test.ArraySerData(t)
 				mocks        = []*mok.Mock{elemSer.Mock}
 				ser          = NewArraySer[[3]int](elemSer)
 			)
-			testutil.Test([][3]int{arr}, ser, t)
-			testutil.TestSkip([][3]int{arr}, ser, t)
+			test.Test([][3]int{arr}, ser, t)
+			test.TestSkip([][3]int{arr}, ser, t)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -864,12 +864,12 @@ func TestUnsafe(t *testing.T) {
 
 		t.Run("Valid array serializer should work correctly", func(t *testing.T) {
 			var (
-				arr, elemSer = testutil.ArraySerData(t)
+				arr, elemSer = test.ArraySerData(t)
 				mocks        = []*mok.Mock{elemSer.Mock}
 				ser          = NewValidArraySer[[3]int](elemSer, nil)
 			)
-			testutil.Test([][3]int{arr}, ser, t)
-			testutil.TestSkip([][3]int{arr}, ser, t)
+			test.Test([][3]int{arr}, ser, t)
+			test.TestSkip([][3]int{arr}, ser, t)
 
 			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
 				t.Error(infomap)
@@ -933,8 +933,8 @@ func TestUnsafe(t *testing.T) {
 					arr = [3]int{1, 2, 3}
 					ser = NewArraySer[[3]int](varint.Int, arrops.WithLenSer[int](varint.Int))
 				)
-				testutil.Test([][3]int{arr}, ser, t)
-				testutil.TestSkip([][3]int{arr}, ser, t)
+				test.Test([][3]int{arr}, ser, t)
+				test.TestSkip([][3]int{arr}, ser, t)
 			})
 
 		t.Run("We should be able to set a length serializer for NewValidArraySer",
@@ -943,8 +943,8 @@ func TestUnsafe(t *testing.T) {
 					arr = [3]int{1, 2, 3}
 					ser = NewValidArraySer[[3]int](varint.Int, arrops.WithLenSer[int](varint.Int))
 				)
-				testutil.Test([][3]int{arr}, ser, t)
-				testutil.TestSkip([][3]int{arr}, ser, t)
+				test.Test([][3]int{arr}, ser, t)
+				test.TestSkip([][3]int{arr}, ser, t)
 			})
 	})
 }

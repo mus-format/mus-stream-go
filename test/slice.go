@@ -1,9 +1,9 @@
-package testutil
+package test
 
 import (
 	"testing"
 
-	"github.com/mus-format/mus-stream-go/testutil/mock"
+	"github.com/mus-format/mus-stream-go/test/mock"
 )
 
 func SliceSerData(t *testing.T) (sl []string, elemSer mock.Serializer[string]) {

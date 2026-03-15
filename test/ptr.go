@@ -1,9 +1,9 @@
-package testutil
+package test
 
 import (
 	"testing"
 
-	mock "github.com/mus-format/mus-stream-go/testutil/mock"
+	mock "github.com/mus-format/mus-stream-go/test/mock"
 )
 
 func PtrSerData(t *testing.T) (ptr *int, baseSer mock.Serializer[int]) {

@@ -8,8 +8,8 @@ import (
 	com "github.com/mus-format/common-go"
 	ctestutil "github.com/mus-format/common-go/testutil"
 	"github.com/mus-format/mus-stream-go"
-	"github.com/mus-format/mus-stream-go/testutil"
-	mock "github.com/mus-format/mus-stream-go/testutil/mock"
+	"github.com/mus-format/mus-stream-go/test"
+	mock "github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -17,15 +17,15 @@ func TestWrapper(t *testing.T) {
 	t.Run("wrapper serializer should work correctly",
 		func(t *testing.T) {
 			var (
-				st, baseSer = testutil.PtrStructSerData(t)
+				st, baseSer = test.PtrStructSerData(t)
 				ptrMap      = com.NewPtrMap()
 				revPtrMap   = com.NewReversePtrMap()
 				ser         = Wrap(ptrMap, revPtrMap, newPtrStructSer(ptrMap, revPtrMap,
 					baseSer))
 			)
-			testutil.Test([]ctestutil.PtrStruct{st}, ser,
+			test.Test([]ctestutil.PtrStruct{st}, ser,
 				t)
-			testutil.TestSkip([]ctestutil.PtrStruct{st},
+			test.TestSkip([]ctestutil.PtrStruct{st},
 				ser, t)
 		})
 

@@ -5,7 +5,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/mus-format/mus-stream-go/testutil"
+	"github.com/mus-format/mus-stream-go/test"
 )
 
 // byte ------------------------------------------------------------------------
@@ -16,8 +16,8 @@ func FuzzByte(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v byte) {
-		testutil.Test([]byte{v}, Byte, t)
-		testutil.TestSkip([]byte{v}, Byte, t)
+		test.Test([]byte{v}, Byte, t)
+		test.TestSkip([]byte{v}, Byte, t)
 	})
 }
 
@@ -39,8 +39,8 @@ func FuzzUint64(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v uint64) {
-		testutil.Test([]uint64{v}, Uint64, t)
-		testutil.TestSkip([]uint64{v}, Uint64, t)
+		test.Test([]uint64{v}, Uint64, t)
+		test.TestSkip([]uint64{v}, Uint64, t)
 	})
 }
 
@@ -62,8 +62,8 @@ func FuzzUint32(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v uint32) {
-		testutil.Test([]uint32{v}, Uint32, t)
-		testutil.TestSkip([]uint32{v}, Uint32, t)
+		test.Test([]uint32{v}, Uint32, t)
+		test.TestSkip([]uint32{v}, Uint32, t)
 	})
 }
 
@@ -85,8 +85,8 @@ func FuzzUint16(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v uint16) {
-		testutil.Test([]uint16{v}, Uint16, t)
-		testutil.TestSkip([]uint16{v}, Uint16, t)
+		test.Test([]uint16{v}, Uint16, t)
+		test.TestSkip([]uint16{v}, Uint16, t)
 	})
 }
 
@@ -108,8 +108,8 @@ func FuzzUint8(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v uint8) {
-		testutil.Test([]uint8{v}, Uint8, t)
-		testutil.TestSkip([]uint8{v}, Uint8, t)
+		test.Test([]uint8{v}, Uint8, t)
+		test.TestSkip([]uint8{v}, Uint8, t)
 	})
 }
 
@@ -131,8 +131,8 @@ func FuzzUint(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v uint) {
-		testutil.Test([]uint{v}, Uint, t)
-		testutil.TestSkip([]uint{v}, Uint, t)
+		test.Test([]uint{v}, Uint, t)
+		test.TestSkip([]uint{v}, Uint, t)
 	})
 }
 
@@ -154,8 +154,8 @@ func FuzzInt64(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v int64) {
-		testutil.Test([]int64{v}, Int64, t)
-		testutil.TestSkip([]int64{v}, Int64, t)
+		test.Test([]int64{v}, Int64, t)
+		test.TestSkip([]int64{v}, Int64, t)
 	})
 }
 
@@ -177,8 +177,8 @@ func FuzzInt32(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v int32) {
-		testutil.Test([]int32{v}, Int32, t)
-		testutil.TestSkip([]int32{v}, Int32, t)
+		test.Test([]int32{v}, Int32, t)
+		test.TestSkip([]int32{v}, Int32, t)
 	})
 }
 
@@ -200,8 +200,8 @@ func FuzzInt16(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v int16) {
-		testutil.Test([]int16{v}, Int16, t)
-		testutil.TestSkip([]int16{v}, Int16, t)
+		test.Test([]int16{v}, Int16, t)
+		test.TestSkip([]int16{v}, Int16, t)
 	})
 }
 
@@ -223,8 +223,8 @@ func FuzzInt8(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v int8) {
-		testutil.Test([]int8{v}, Int8, t)
-		testutil.TestSkip([]int8{v}, Int8, t)
+		test.Test([]int8{v}, Int8, t)
+		test.TestSkip([]int8{v}, Int8, t)
 	})
 }
 
@@ -246,8 +246,8 @@ func FuzzInt(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v int) {
-		testutil.Test([]int{v}, Int, t)
-		testutil.TestSkip([]int{v}, Int, t)
+		test.Test([]int{v}, Int, t)
+		test.TestSkip([]int{v}, Int, t)
 	})
 }
 
@@ -272,8 +272,8 @@ func FuzzPositiveInt64(f *testing.F) {
 		if v < 0 {
 			return
 		}
-		testutil.Test([]int64{v}, PositiveInt64, t)
-		testutil.TestSkip([]int64{v}, PositiveInt64, t)
+		test.Test([]int64{v}, PositiveInt64, t)
+		test.TestSkip([]int64{v}, PositiveInt64, t)
 	})
 }
 
@@ -298,8 +298,8 @@ func FuzzPositiveInt32(f *testing.F) {
 		if v < 0 {
 			return
 		}
-		testutil.Test([]int32{v}, PositiveInt32, t)
-		testutil.TestSkip([]int32{v}, PositiveInt32, t)
+		test.Test([]int32{v}, PositiveInt32, t)
+		test.TestSkip([]int32{v}, PositiveInt32, t)
 	})
 }
 
@@ -324,8 +324,8 @@ func FuzzPositiveInt16(f *testing.F) {
 		if v < 0 {
 			return
 		}
-		testutil.Test([]int16{v}, PositiveInt16, t)
-		testutil.TestSkip([]int16{v}, PositiveInt16, t)
+		test.Test([]int16{v}, PositiveInt16, t)
+		test.TestSkip([]int16{v}, PositiveInt16, t)
 	})
 }
 
@@ -350,8 +350,8 @@ func FuzzPositiveInt8(f *testing.F) {
 		if v < 0 {
 			return
 		}
-		testutil.Test([]int8{v}, PositiveInt8, t)
-		testutil.TestSkip([]int8{v}, PositiveInt8, t)
+		test.Test([]int8{v}, PositiveInt8, t)
+		test.TestSkip([]int8{v}, PositiveInt8, t)
 	})
 }
 
@@ -376,8 +376,8 @@ func FuzzPositiveInt(f *testing.F) {
 		if v < 0 {
 			return
 		}
-		testutil.Test([]int{v}, PositiveInt, t)
-		testutil.TestSkip([]int{v}, PositiveInt, t)
+		test.Test([]int{v}, PositiveInt, t)
+		test.TestSkip([]int{v}, PositiveInt, t)
 	})
 }
 
@@ -399,8 +399,8 @@ func FuzzFloat64(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v float64) {
-		testutil.Test([]float64{v}, Float64, t)
-		testutil.TestSkip([]float64{v}, Float64, t)
+		test.Test([]float64{v}, Float64, t)
+		test.TestSkip([]float64{v}, Float64, t)
 	})
 }
 
@@ -422,8 +422,8 @@ func FuzzFloat32(f *testing.F) {
 		f.Add(seed)
 	}
 	f.Fuzz(func(t *testing.T, v float32) {
-		testutil.Test([]float32{v}, Float32, t)
-		testutil.TestSkip([]float32{v}, Float32, t)
+		test.Test([]float32{v}, Float32, t)
+		test.TestSkip([]float32{v}, Float32, t)
 	})
 }
 

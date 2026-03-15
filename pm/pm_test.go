@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	com "github.com/mus-format/common-go"
-	mock "github.com/mus-format/mus-stream-go/testutil/mock"
+	mock "github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/ymz-ncnk/mok"
 
 	ctestutil "github.com/mus-format/common-go/testutil"
 	"github.com/mus-format/mus-stream-go"
-	"github.com/mus-format/mus-stream-go/testutil"
+	"github.com/mus-format/mus-stream-go/test"
 )
 
 func TestPM(t *testing.T) {
@@ -33,7 +33,7 @@ func TestPM(t *testing.T) {
 				mocks  = []*mok.Mock{w.Mock}
 				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
 			)
-			testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 		t.Run("If marshal of the pointer Nil flag fails with an error, Marshal should return it",
@@ -50,7 +50,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If marshal of the pointer mapping flag fails with an error, Marshal should return it",
@@ -68,7 +68,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If marshal of the pointer id fails with an error, Marshal should return it",
@@ -90,7 +90,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If baseSer.Marshal fails with an error, Marshal should return it",
@@ -117,7 +117,7 @@ func TestPM(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock, baseSer.Mock}
 					n, err = NewPtrSer(ptrMap, nil, baseSer).Marshal(&num, w)
 				)
-				testutil.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
 
 		t.Run("If unmarshal of the pointer flag fails with an error, Unmarshal should return it",

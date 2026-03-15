@@ -1,10 +1,10 @@
-package testutil
+package test
 
 import (
 	"testing"
 
 	ctestutil "github.com/mus-format/common-go/testutil"
-	mock "github.com/mus-format/mus-stream-go/testutil/mock"
+	mock "github.com/mus-format/mus-stream-go/test/mock"
 )
 
 func PtrStructSerData(t *testing.T) (st ctestutil.PtrStruct, baseSer mock.Serializer[int]) {
