@@ -44,7 +44,7 @@ type Marshaller interface {
 }
 
 // MarshallerTyped interface wraps MarhsalTypedMUS and SizeTypedMUS methods.
-// It is intended for use with Typed (former DTS).
+// It is intended for use with the typed packaged.
 type MarshallerTyped interface {
 	MarshalTypedMUS(w Writer) (n int, err error)
 	SizeTypedMUS() (size int)
