@@ -36,3 +36,16 @@ type Serializer[T any] interface {
 	Size(t T) (size int)
 	Skip(r Reader) (n int, err error)
 }
+
+// Marshaller interface wraps MarhsalMUS and SizeMUS methods.
+type Marshaller interface {
+	MarshalMUS(w Writer) (n int, err error)
+	SizeMUS() (size int)
+}
+
+// MarshallerTyped interface wraps MarhsalTypedMUS and SizeTypedMUS methods.
+// It is intended for use with Typed (former DTS).
+type MarshallerTyped interface {
+	MarshalTypedMUS(w Writer) (n int, err error)
+	SizeTypedMUS() (size int)
+}
