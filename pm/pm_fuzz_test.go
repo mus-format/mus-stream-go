@@ -11,7 +11,7 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-func FuzzPtr(f *testing.F) {
+func FuzzPM_Ptr(f *testing.F) {
 	f.Add(1, 1, 2)
 	f.Fuzz(func(t *testing.T, a1, a2, a3 int) {
 		var (
@@ -19,7 +19,7 @@ func FuzzPtr(f *testing.F) {
 			revPtrMap                     = com.NewReversePtrMap()
 			baseSer   mus.Serializer[int] = varint.Int
 			ptrSer                        = NewPtrSer(ptrMap, revPtrMap, baseSer)
-			ser                           = Wrap[ctestutil.PtrStruct](ptrMap, revPtrMap, fuzzPtrStructSer{ptrSer})
+			ser                           = Wrap(ptrMap, revPtrMap, fuzzPtrStructSer{ptrSer})
 
 			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)
@@ -47,14 +47,14 @@ func FuzzPtr(f *testing.F) {
 	})
 }
 
-func FuzzPtrUnmarshal(f *testing.F) {
+func FuzzPM_PtrUnmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		var (
 			ptrMap                        = com.NewPtrMap()
 			revPtrMap                     = com.NewReversePtrMap()
 			baseSer   mus.Serializer[int] = varint.Int
 			ptrSer                        = NewPtrSer(ptrMap, revPtrMap, baseSer)
-			ser                           = Wrap[ctestutil.PtrStruct](ptrMap, revPtrMap, fuzzPtrStructSer{ptrSer})
+			ser                           = Wrap(ptrMap, revPtrMap, fuzzPtrStructSer{ptrSer})
 		)
 		buf := bytes.NewBuffer(bs)
 		ser.Unmarshal(buf)
@@ -64,14 +64,14 @@ func FuzzPtrUnmarshal(f *testing.F) {
 	})
 }
 
-func FuzzWrapper(f *testing.F) {
+func FuzzPM_Wrapper(f *testing.F) {
 	f.Add(1, 2, 3)
 	f.Fuzz(func(t *testing.T, a1, a2, a3 int) {
 		var (
 			ptrMap                        = com.NewPtrMap()
 			revPtrMap                     = com.NewReversePtrMap()
 			baseSer   mus.Serializer[int] = varint.Int
-			ser                           = Wrap[ctestutil.PtrStruct](ptrMap, revPtrMap, fuzzPtrStructSer{NewPtrSer(ptrMap, revPtrMap, baseSer)})
+			ser                           = Wrap(ptrMap, revPtrMap, fuzzPtrStructSer{NewPtrSer(ptrMap, revPtrMap, baseSer)})
 
 			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)

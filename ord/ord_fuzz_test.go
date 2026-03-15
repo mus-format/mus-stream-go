@@ -18,7 +18,7 @@ const maxLen = 1000
 
 // byte_slice ------------------------------------------------------------------
 
-func FuzzByteSlice(f *testing.F) {
+func FuzzOrd_ByteSlice(f *testing.F) {
 	seeds := [][]byte{
 		{},
 		{1, 2, 3},
@@ -36,7 +36,7 @@ func FuzzByteSlice(f *testing.F) {
 	})
 }
 
-func FuzzByteSliceUnmarshal(f *testing.F) {
+func FuzzOrd_ByteSliceUnmarshal(f *testing.F) {
 	// We use Valid serializer to avoid OOM during fuzzing.
 	ser := NewValidByteSliceSer(bslops.WithLenValidator(
 		com.ValidatorFn[int](func(v int) error {
@@ -57,7 +57,7 @@ func FuzzByteSliceUnmarshal(f *testing.F) {
 
 // slice -----------------------------------------------------------------------
 
-func FuzzSlice(f *testing.F) {
+func FuzzOrd_Slice(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		if len(bs) > maxLen {
 			bs = bs[:maxLen]
@@ -72,7 +72,7 @@ func FuzzSlice(f *testing.F) {
 	})
 }
 
-func FuzzSliceUnmarshal(f *testing.F) {
+func FuzzOrd_SliceUnmarshal(f *testing.F) {
 	// We use Valid serializer to avoid OOM during fuzzing.
 	ser := NewValidSliceSer(varint.Int, slops.WithLenValidator[int](
 		com.ValidatorFn[int](func(v int) error {
@@ -93,7 +93,7 @@ func FuzzSliceUnmarshal(f *testing.F) {
 
 // bool ------------------------------------------------------------------------
 
-func FuzzBool(f *testing.F) {
+func FuzzOrd_Bool(f *testing.F) {
 	seeds := []bool{true, false}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -104,7 +104,7 @@ func FuzzBool(f *testing.F) {
 	})
 }
 
-func FuzzBoolUnmarshal(f *testing.F) {
+func FuzzOrd_BoolUnmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Bool.Unmarshal(buf)
@@ -116,7 +116,7 @@ func FuzzBoolUnmarshal(f *testing.F) {
 
 // map -------------------------------------------------------------------------
 
-func FuzzMap(f *testing.F) {
+func FuzzOrd_Map(f *testing.F) {
 	// We constructed seeds for documentation purpose, but we fuzz from bytes.
 	f.Fuzz(func(t *testing.T, b1, b2, b3, b4 byte) {
 		v := map[int]int{int(b1): int(b2), int(b3): int(b4)}
@@ -126,7 +126,7 @@ func FuzzMap(f *testing.F) {
 	})
 }
 
-func FuzzMapUnmarshal(f *testing.F) {
+func FuzzOrd_MapUnmarshal(f *testing.F) {
 	// We use Valid serializer to avoid OOM during fuzzing.
 	ser := NewValidMapSer(varint.Int, varint.Int,
 		mapops.WithLenValidator[int, int](
@@ -148,7 +148,7 @@ func FuzzMapUnmarshal(f *testing.F) {
 
 // string ----------------------------------------------------------------------
 
-func FuzzString(f *testing.F) {
+func FuzzOrd_String(f *testing.F) {
 	seeds := []string{"", "hello", "world", "mus-format"}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -162,7 +162,7 @@ func FuzzString(f *testing.F) {
 	})
 }
 
-func FuzzStringUnmarshal(f *testing.F) {
+func FuzzOrd_StringUnmarshal(f *testing.F) {
 	// We use Valid serializer to avoid OOM during fuzzing.
 	ser := NewValidStringSer(strops.WithLenValidator(
 		com.ValidatorFn[int](func(v int) error {
@@ -183,7 +183,7 @@ func FuzzStringUnmarshal(f *testing.F) {
 
 // ptr -------------------------------------------------------------------------
 
-func FuzzPtr(f *testing.F) {
+func FuzzOrd_Ptr(f *testing.F) {
 	seeds := []int{1, 2, 3}
 	for _, seed := range seeds {
 		f.Add(true, seed)
@@ -200,7 +200,7 @@ func FuzzPtr(f *testing.F) {
 	})
 }
 
-func FuzzPtrUnmarshal(f *testing.F) {
+func FuzzOrd_PtrUnmarshal(f *testing.F) {
 	ser := NewPtrSer(varint.Int)
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)

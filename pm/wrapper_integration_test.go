@@ -9,7 +9,7 @@ import (
 	"github.com/mus-format/mus-stream-go/varint"
 )
 
-func TestIntegrationWrapper(t *testing.T) {
+func TestPMIntegration_Wrapper(t *testing.T) {
 	t.Run("wrapper serializer should work correctly", func(t *testing.T) {
 		var (
 			ptrMap    = com.NewPtrMap()

@@ -11,7 +11,7 @@ import (
 
 // byte ------------------------------------------------------------------------
 
-func FuzzByte(f *testing.F) {
+func FuzzRaw_Byte(f *testing.F) {
 	seeds := []byte{0, 1, 255}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -22,7 +22,7 @@ func FuzzByte(f *testing.F) {
 	})
 }
 
-func FuzzByteUnmarshal(f *testing.F) {
+func FuzzRaw_ByteUnmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Byte.Unmarshal(buf)
@@ -34,7 +34,7 @@ func FuzzByteUnmarshal(f *testing.F) {
 
 // uint64 ----------------------------------------------------------------------
 
-func FuzzUint64(f *testing.F) {
+func FuzzRaw_Uint64(f *testing.F) {
 	seeds := []uint64{0, 1, math.MaxUint64}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -45,7 +45,7 @@ func FuzzUint64(f *testing.F) {
 	})
 }
 
-func FuzzUint64Unmarshal(f *testing.F) {
+func FuzzRaw_Uint64Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Uint64.Unmarshal(buf)
@@ -57,7 +57,7 @@ func FuzzUint64Unmarshal(f *testing.F) {
 
 // uint32 ----------------------------------------------------------------------
 
-func FuzzUint32(f *testing.F) {
+func FuzzRaw_Uint32(f *testing.F) {
 	seeds := []uint32{0, 1, math.MaxUint32}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -68,7 +68,7 @@ func FuzzUint32(f *testing.F) {
 	})
 }
 
-func FuzzUint32Unmarshal(f *testing.F) {
+func FuzzRaw_Uint32Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Uint32.Unmarshal(buf)
@@ -80,7 +80,7 @@ func FuzzUint32Unmarshal(f *testing.F) {
 
 // uint16 ----------------------------------------------------------------------
 
-func FuzzUint16(f *testing.F) {
+func FuzzRaw_Uint16(f *testing.F) {
 	seeds := []uint16{0, 1, math.MaxUint16}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -91,7 +91,7 @@ func FuzzUint16(f *testing.F) {
 	})
 }
 
-func FuzzUint16Unmarshal(f *testing.F) {
+func FuzzRaw_Uint16Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Uint16.Unmarshal(buf)
@@ -103,7 +103,7 @@ func FuzzUint16Unmarshal(f *testing.F) {
 
 // uint8 -----------------------------------------------------------------------
 
-func FuzzUint8(f *testing.F) {
+func FuzzRaw_Uint8(f *testing.F) {
 	seeds := []uint8{0, 1, 255}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -114,7 +114,7 @@ func FuzzUint8(f *testing.F) {
 	})
 }
 
-func FuzzUint8Unmarshal(f *testing.F) {
+func FuzzRaw_Uint8Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Uint8.Unmarshal(buf)
@@ -126,7 +126,7 @@ func FuzzUint8Unmarshal(f *testing.F) {
 
 // uint ------------------------------------------------------------------------
 
-func FuzzUint(f *testing.F) {
+func FuzzRaw_Uint(f *testing.F) {
 	seeds := []uint{0, 1}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -137,7 +137,7 @@ func FuzzUint(f *testing.F) {
 	})
 }
 
-func FuzzUintUnmarshal(f *testing.F) {
+func FuzzRaw_UintUnmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Uint.Unmarshal(buf)
@@ -149,7 +149,7 @@ func FuzzUintUnmarshal(f *testing.F) {
 
 // int64 -----------------------------------------------------------------------
 
-func FuzzInt64(f *testing.F) {
+func FuzzRaw_Int64(f *testing.F) {
 	seeds := []int64{0, 1, -1, math.MaxInt64, math.MinInt64}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -160,7 +160,7 @@ func FuzzInt64(f *testing.F) {
 	})
 }
 
-func FuzzInt64Unmarshal(f *testing.F) {
+func FuzzRaw_Int64Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Int64.Unmarshal(buf)
@@ -172,7 +172,7 @@ func FuzzInt64Unmarshal(f *testing.F) {
 
 // int32 -----------------------------------------------------------------------
 
-func FuzzInt32(f *testing.F) {
+func FuzzRaw_Int32(f *testing.F) {
 	seeds := []int32{0, 1, -1, math.MaxInt32, math.MinInt32}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -183,7 +183,7 @@ func FuzzInt32(f *testing.F) {
 	})
 }
 
-func FuzzInt32Unmarshal(f *testing.F) {
+func FuzzRaw_Int32Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Int32.Unmarshal(buf)
@@ -195,7 +195,7 @@ func FuzzInt32Unmarshal(f *testing.F) {
 
 // int16 -----------------------------------------------------------------------
 
-func FuzzInt16(f *testing.F) {
+func FuzzRaw_Int16(f *testing.F) {
 	seeds := []int16{0, 1, -1, math.MaxInt16, math.MinInt16}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -206,7 +206,7 @@ func FuzzInt16(f *testing.F) {
 	})
 }
 
-func FuzzInt16Unmarshal(f *testing.F) {
+func FuzzRaw_Int16Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Int16.Unmarshal(buf)
@@ -218,7 +218,7 @@ func FuzzInt16Unmarshal(f *testing.F) {
 
 // int8 ------------------------------------------------------------------------
 
-func FuzzInt8(f *testing.F) {
+func FuzzRaw_Int8(f *testing.F) {
 	seeds := []int8{0, 1, -1, math.MaxInt8, math.MinInt8}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -229,7 +229,7 @@ func FuzzInt8(f *testing.F) {
 	})
 }
 
-func FuzzInt8Unmarshal(f *testing.F) {
+func FuzzRaw_Int8Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Int8.Unmarshal(buf)
@@ -241,7 +241,7 @@ func FuzzInt8Unmarshal(f *testing.F) {
 
 // int -------------------------------------------------------------------------
 
-func FuzzInt(f *testing.F) {
+func FuzzRaw_Int(f *testing.F) {
 	seeds := []int{0, 1, -1}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -252,7 +252,7 @@ func FuzzInt(f *testing.F) {
 	})
 }
 
-func FuzzIntUnmarshal(f *testing.F) {
+func FuzzRaw_IntUnmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Int.Unmarshal(buf)
@@ -264,7 +264,7 @@ func FuzzIntUnmarshal(f *testing.F) {
 
 // float64 ---------------------------------------------------------------------
 
-func FuzzFloat64(f *testing.F) {
+func FuzzRaw_Float64(f *testing.F) {
 	seeds := []float64{0, 1, -1, 3.14, math.Inf(1), math.Inf(-1), math.NaN()}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -275,7 +275,7 @@ func FuzzFloat64(f *testing.F) {
 	})
 }
 
-func FuzzFloat64Unmarshal(f *testing.F) {
+func FuzzRaw_Float64Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Float64.Unmarshal(buf)
@@ -287,7 +287,7 @@ func FuzzFloat64Unmarshal(f *testing.F) {
 
 // float32 ---------------------------------------------------------------------
 
-func FuzzFloat32(f *testing.F) {
+func FuzzRaw_Float32(f *testing.F) {
 	seeds := []float32{0, 1, -1, 3.14, float32(math.Inf(1)), float32(math.Inf(-1)), float32(math.NaN())}
 	for _, seed := range seeds {
 		f.Add(seed)
@@ -298,7 +298,7 @@ func FuzzFloat32(f *testing.F) {
 	})
 }
 
-func FuzzFloat32Unmarshal(f *testing.F) {
+func FuzzRaw_Float32Unmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		Float32.Unmarshal(buf)
@@ -310,7 +310,7 @@ func FuzzFloat32Unmarshal(f *testing.F) {
 
 // time ------------------------------------------------------------------------
 
-func FuzzTimeUnix(f *testing.F) {
+func FuzzRaw_TimeUnix(f *testing.F) {
 	f.Fuzz(func(t *testing.T, sec int64) {
 		v := time.Unix(sec, 0)
 		test.Test([]time.Time{v}, TimeUnix, t)
@@ -318,7 +318,7 @@ func FuzzTimeUnix(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnixMilli(f *testing.F) {
+func FuzzRaw_TimeUnixMilli(f *testing.F) {
 	f.Fuzz(func(t *testing.T, milli int64) {
 		v := time.UnixMilli(milli)
 		test.Test([]time.Time{v}, TimeUnixMilli, t)
@@ -326,7 +326,7 @@ func FuzzTimeUnixMilli(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnixMicro(f *testing.F) {
+func FuzzRaw_TimeUnixMicro(f *testing.F) {
 	f.Fuzz(func(t *testing.T, micro int64) {
 		v := time.UnixMicro(micro)
 		test.Test([]time.Time{v}, TimeUnixMicro, t)
@@ -334,7 +334,7 @@ func FuzzTimeUnixMicro(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnixNano(f *testing.F) {
+func FuzzRaw_TimeUnixNano(f *testing.F) {
 	f.Fuzz(func(t *testing.T, nano int64) {
 		v := time.Unix(0, nano)
 		test.Test([]time.Time{v}, TimeUnixNano, t)
@@ -342,7 +342,7 @@ func FuzzTimeUnixNano(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnixUTC(f *testing.F) {
+func FuzzRaw_TimeUnixUTC(f *testing.F) {
 	f.Fuzz(func(t *testing.T, sec int64) {
 		v := time.Unix(sec, 0).UTC()
 		test.Test([]time.Time{v}, TimeUnixUTC, t)
@@ -350,7 +350,7 @@ func FuzzTimeUnixUTC(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnixMilliUTC(f *testing.F) {
+func FuzzRaw_TimeUnixMilliUTC(f *testing.F) {
 	f.Fuzz(func(t *testing.T, milli int64) {
 		v := time.UnixMilli(milli).UTC()
 		test.Test([]time.Time{v}, TimeUnixMilliUTC, t)
@@ -358,7 +358,7 @@ func FuzzTimeUnixMilliUTC(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnixMicroUTC(f *testing.F) {
+func FuzzRaw_TimeUnixMicroUTC(f *testing.F) {
 	f.Fuzz(func(t *testing.T, micro int64) {
 		v := time.UnixMicro(micro).UTC()
 		test.Test([]time.Time{v}, TimeUnixMicroUTC, t)
@@ -366,7 +366,7 @@ func FuzzTimeUnixMicroUTC(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnixNanoUTC(f *testing.F) {
+func FuzzRaw_TimeUnixNanoUTC(f *testing.F) {
 	f.Fuzz(func(t *testing.T, nano int64) {
 		v := time.Unix(0, nano).UTC()
 		test.Test([]time.Time{v}, TimeUnixNanoUTC, t)
@@ -374,7 +374,7 @@ func FuzzTimeUnixNanoUTC(f *testing.F) {
 	})
 }
 
-func FuzzTimeUnmarshal(f *testing.F) {
+func FuzzRaw_TimeUnmarshal(f *testing.F) {
 	f.Fuzz(func(t *testing.T, bs []byte) {
 		buf := bytes.NewBuffer(bs)
 		TimeUnixUTC.Unmarshal(buf)

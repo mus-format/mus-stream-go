@@ -13,7 +13,7 @@ import (
 	"github.com/ymz-ncnk/mok"
 )
 
-func TestWrapper(t *testing.T) {
+func TestPM_Wrapper(t *testing.T) {
 	t.Run("wrapper serializer should work correctly",
 		func(t *testing.T) {
 			var (
