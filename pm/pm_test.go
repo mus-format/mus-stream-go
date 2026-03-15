@@ -9,7 +9,7 @@ import (
 	mock "github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/ymz-ncnk/mok"
 
-	ctestutil "github.com/mus-format/common-go/testutil"
+	ctest "github.com/mus-format/common-go/test"
 	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/test"
 )
@@ -134,7 +134,7 @@ func TestPM_Pointer(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewPtrSer[int](nil, nil, nil).Unmarshal(r)
 			)
-			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -158,7 +158,7 @@ func TestPM_Pointer(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 			)
-			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks,
 				t)
 		})
@@ -191,7 +191,7 @@ func TestPM_Pointer(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewPtrSer(nil, revPtrMap, baseSer).Unmarshal(r)
 			)
-			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -210,7 +210,7 @@ func TestPM_Pointer(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Unmarshal(r)
 			)
-			ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 				mocks, t)
 		})
 
@@ -228,7 +228,7 @@ func TestPM_Pointer(t *testing.T) {
 				mocks  = []*mok.Mock{r.Mock}
 				n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 			)
-			ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If unmarshal of the pointer id fails with an error, Skip should return it",
@@ -250,7 +250,7 @@ func TestPM_Pointer(t *testing.T) {
 				mocks  = []*mok.Mock{r.Mock}
 				n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 			)
-			ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If baseSer.Skip fails with an error, Skip should return it",
@@ -280,7 +280,7 @@ func TestPM_Pointer(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				n, err    = NewPtrSer(nil, revPtrMap, baseSer).Skip(r)
 			)
-			ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("Skip should fail with com.ErrWrongFormat if meets unknown pointer flag",
@@ -297,6 +297,6 @@ func TestPM_Pointer(t *testing.T) {
 				mocks  = []*mok.Mock{r.Mock}
 				n, err = NewPtrSer[int](nil, com.NewReversePtrMap(), nil).Skip(r)
 			)
-			ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 		})
 }

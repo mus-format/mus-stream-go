@@ -3,11 +3,11 @@ package test
 import (
 	"testing"
 
-	ctestutil "github.com/mus-format/common-go/testutil"
+	ctest "github.com/mus-format/common-go/test"
 	mock "github.com/mus-format/mus-stream-go/test/mock"
 )
 
-func PtrStructSerData(t *testing.T) (st ctestutil.PtrStruct, baseSer mock.Serializer[int]) {
+func PtrStructSerData(t *testing.T) (st ctest.PtrStruct, baseSer mock.Serializer[int]) {
 	var (
 		one = 1
 		two = 2
@@ -15,7 +15,7 @@ func PtrStructSerData(t *testing.T) (st ctestutil.PtrStruct, baseSer mock.Serial
 		oneBs   = []byte{2}
 		threeBs = []byte{2}
 	)
-	st = ctestutil.PtrStruct{A1: &one, A2: &one, A3: &two}
+	st = ctest.PtrStruct{A1: &one, A2: &one, A3: &two}
 	baseSer = mock.NewSerializer[int]().
 		// unmarshal
 		RegisterMarshal(m(one, oneBs, t)).

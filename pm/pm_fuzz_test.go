@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	com "github.com/mus-format/common-go"
-	ctestutil "github.com/mus-format/common-go/testutil"
+	ctest "github.com/mus-format/common-go/test"
 	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/test"
 	"github.com/mus-format/mus-stream-go/varint"
@@ -21,10 +21,10 @@ func FuzzPM_Ptr(f *testing.F) {
 			ptrSer                        = NewPtrSer(ptrMap, revPtrMap, baseSer)
 			ser                           = Wrap(ptrMap, revPtrMap, fuzzPtrStructSer{ptrSer})
 
-			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
+			v = ctest.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)
-		test.Test([]ctestutil.PtrStruct{v}, ser, t)
-		test.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
+		test.Test([]ctest.PtrStruct{v}, ser, t)
+		test.TestSkip([]ctest.PtrStruct{v}, ser, t)
 
 		// Check pointer equality after Test
 		buf := bytes.NewBuffer(nil)
@@ -73,10 +73,10 @@ func FuzzPM_Wrapper(f *testing.F) {
 			baseSer   mus.Serializer[int] = varint.Int
 			ser                           = Wrap(ptrMap, revPtrMap, fuzzPtrStructSer{NewPtrSer(ptrMap, revPtrMap, baseSer)})
 
-			v = ctestutil.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
+			v = ctest.PtrStruct{A1: &a1, A2: &a1, A3: &a3}
 		)
-		test.Test([]ctestutil.PtrStruct{v}, ser, t)
-		test.TestSkip([]ctestutil.PtrStruct{v}, ser, t)
+		test.Test([]ctest.PtrStruct{v}, ser, t)
+		test.TestSkip([]ctest.PtrStruct{v}, ser, t)
 
 		// Check pointer equality after Test (Test unmarshals into a new variable)
 		// We'll do it manually to be sure.
@@ -98,7 +98,7 @@ type fuzzPtrStructSer struct {
 	ptrSer mus.Serializer[*int]
 }
 
-func (s fuzzPtrStructSer) Marshal(v ctestutil.PtrStruct, w mus.Writer) (n int,
+func (s fuzzPtrStructSer) Marshal(v ctest.PtrStruct, w mus.Writer) (n int,
 	err error,
 ) {
 	n, err = s.ptrSer.Marshal(v.A1, w)
@@ -116,7 +116,7 @@ func (s fuzzPtrStructSer) Marshal(v ctestutil.PtrStruct, w mus.Writer) (n int,
 	return
 }
 
-func (s fuzzPtrStructSer) Unmarshal(r mus.Reader) (v ctestutil.PtrStruct, n int,
+func (s fuzzPtrStructSer) Unmarshal(r mus.Reader) (v ctest.PtrStruct, n int,
 	err error,
 ) {
 	v.A1, n, err = s.ptrSer.Unmarshal(r)
@@ -134,7 +134,7 @@ func (s fuzzPtrStructSer) Unmarshal(r mus.Reader) (v ctestutil.PtrStruct, n int,
 	return
 }
 
-func (s fuzzPtrStructSer) Size(v ctestutil.PtrStruct) (size int) {
+func (s fuzzPtrStructSer) Size(v ctest.PtrStruct) (size int) {
 	size = s.ptrSer.Size(v.A1)
 	size += s.ptrSer.Size(v.A2)
 	size += s.ptrSer.Size(v.A3)

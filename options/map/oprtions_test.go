@@ -3,7 +3,7 @@ package mapopts
 import (
 	"testing"
 
-	com_mock "github.com/mus-format/common-go/testutil/mock"
+	cmock "github.com/mus-format/common-go/test/mock"
 	"github.com/mus-format/mus-stream-go/test/mock"
 )
 
@@ -11,9 +11,9 @@ func TestOptions(t *testing.T) {
 	var (
 		o           = Options[any, any]{}
 		wantLenSer  = mock.NewSerializer[int]()
-		wantLenVl   = com_mock.NewValidator[int]()
-		wantKeyVl   = com_mock.NewValidator[any]()
-		wantValueVl = com_mock.NewValidator[any]()
+		wantLenVl   = cmock.NewValidator[int]()
+		wantKeyVl   = cmock.NewValidator[any]()
+		wantValueVl = cmock.NewValidator[any]()
 	)
 	Apply([]SetOption[any, any]{
 		WithLenSer[any, any](wantLenSer),

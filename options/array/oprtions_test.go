@@ -3,7 +3,7 @@ package arropts
 import (
 	"testing"
 
-	com_mock "github.com/mus-format/common-go/testutil/mock"
+	cmock "github.com/mus-format/common-go/test/mock"
 	"github.com/mus-format/mus-stream-go/test/mock"
 )
 
@@ -11,11 +11,11 @@ func TestOptions(t *testing.T) {
 	var (
 		o          = Options[any]{}
 		wantLenSer = mock.NewSerializer[int]()
-		wantElemVl = com_mock.NewValidator[any]()
+		wantElemVl = cmock.NewValidator[any]()
 	)
 	Apply([]SetOption[any]{
 		WithLenSer[any](wantLenSer),
-		WithElemValidator[any](wantElemVl),
+		WithElemValidator(wantElemVl),
 	}, &o)
 
 	if o.LenSer != wantLenSer {

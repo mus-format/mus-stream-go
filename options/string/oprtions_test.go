@@ -3,7 +3,7 @@ package stropts
 import (
 	"testing"
 
-	com_mock "github.com/mus-format/common-go/testutil/mock"
+	cmock "github.com/mus-format/common-go/test/mock"
 	"github.com/mus-format/mus-stream-go/test/mock"
 )
 
@@ -11,7 +11,7 @@ func TestOptions(t *testing.T) {
 	var (
 		o          = Options{}
 		wantLenSer = mock.NewSerializer[int]()
-		wantLenVl  = com_mock.NewValidator[int]()
+		wantLenVl  = cmock.NewValidator[int]()
 	)
 	Apply([]SetOption{
 		WithLenSer(wantLenSer),
