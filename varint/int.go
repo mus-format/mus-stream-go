@@ -18,6 +18,8 @@ var (
 	Int = intSer{}
 )
 
+// int64 -----------------------------------------------------------------------
+
 type int64Ser struct{}
 
 // Marshal writes an encoded (Varint) int64 value.
@@ -52,7 +54,7 @@ func (int64Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint64.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// int32 -----------------------------------------------------------------------
 
 type int32Ser struct{}
 
@@ -88,7 +90,7 @@ func (int32Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint32.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// int16 -----------------------------------------------------------------------
 
 type int16Ser struct{}
 
@@ -124,7 +126,7 @@ func (int16Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint16.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// int8 ------------------------------------------------------------------------
 
 type int8Ser struct{}
 
@@ -160,7 +162,7 @@ func (int8Ser) Skip(r mus.Reader) (n int, err error) {
 	return Uint8.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// int -------------------------------------------------------------------------
 
 type intSer struct{}
 
@@ -195,6 +197,8 @@ func (intSer) Size(v int) (size int) {
 func (intSer) Skip(r mus.Reader) (n int, err error) {
 	return Uint.Skip(r)
 }
+
+// -----------------------------------------------------------------------------
 
 func EncodeZigZag[T constraints.Signed](t T) T {
 	if t < 0 {

@@ -110,7 +110,7 @@ func (s validSliceSer[T]) Unmarshal(r mus.Reader) (v []T, n int, err error) {
 	return UnmarshalValidSlice(s.elemSer, s.lenSer, s.lenVl, s.elemVl, r)
 }
 
-// -----------------------------------------------------------------------------
+// valid -----------------------------------------------------------------------
 
 func MarshalSlice[T any](v []T, elemSer mus.Serializer[T],
 	lenSer mus.Serializer[int], w mus.Writer) (n int, err error) {
@@ -206,7 +206,7 @@ func UnmarshalValidSlice[T any](elemSer mus.Serializer[T],
 		e  T
 	)
 	v = make([]T, length)
-	for i := 0; i < length; i++ {
+	for i := range length {
 		e, n1, err = elemSer.Unmarshal(r)
 		n += n1
 		if err != nil {

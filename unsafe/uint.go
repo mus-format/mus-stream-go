@@ -32,6 +32,8 @@ var (
 	skipUint      func(r mus.Reader) (int, error)
 )
 
+// uint64 ----------------------------------------------------------------------
+
 type uint64Ser struct{}
 
 // Marshal writes an encoded (Raw) uint64 value.
@@ -61,7 +63,7 @@ func (s uint64Ser) Skip(r mus.Reader) (n int, err error) {
 	return raw.Uint64.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// uint32 ----------------------------------------------------------------------
 
 type uint32Ser struct{}
 
@@ -92,7 +94,7 @@ func (s uint32Ser) Skip(r mus.Reader) (n int, err error) {
 	return raw.Uint32.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// uint16 ----------------------------------------------------------------------
 
 type uint16Ser struct{}
 
@@ -123,7 +125,7 @@ func (s uint16Ser) Skip(r mus.Reader) (n int, err error) {
 	return raw.Uint16.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// uint8 -----------------------------------------------------------------------
 
 type uint8Ser struct{}
 
@@ -154,7 +156,7 @@ func (s uint8Ser) Skip(r mus.Reader) (n int, err error) {
 	return raw.Uint8.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// uint ------------------------------------------------------------------------
 
 type uintSer struct{}
 
@@ -184,6 +186,8 @@ func (s uintSer) Size(v uint) (n int) {
 func (s uintSer) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(r)
 }
+
+// -----------------------------------------------------------------------------
 
 func setUpUintFuncs(intSize int) {
 	switch intSize {

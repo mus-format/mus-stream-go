@@ -168,7 +168,7 @@ func (s mapSer[T, V]) Skip(r mus.Reader) (
 	return
 }
 
-// -----------------------------------------------------------------------------
+// valid -----------------------------------------------------------------------
 
 type validMapSer[T comparable, V any] struct {
 	mapSer[T, V]

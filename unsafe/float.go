@@ -14,6 +14,8 @@ var (
 	Float32 = float32Ser{}
 )
 
+// float64 ---------------------------------------------------------------------
+
 type float64Ser struct{}
 
 // Marshal writes an encoded float64 value.
@@ -47,7 +49,7 @@ func (s float64Ser) Skip(r mus.Reader) (n int, err error) {
 	return raw.Float64.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// float32 ---------------------------------------------------------------------
 
 type float32Ser struct{}
 

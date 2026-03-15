@@ -19,6 +19,8 @@ var (
 	Uint = uintSer{}
 )
 
+// uint64 ----------------------------------------------------------------------
+
 type uint64Ser struct{}
 
 // Marshal writes an encoded (Varint) uint64 value.
@@ -51,7 +53,7 @@ func (uint64Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint64MaxVarintLen, com.Uint64MaxLastByte, r)
 }
 
-// -----------------------------------------------------------------------------
+// uint32 ----------------------------------------------------------------------
 
 type uint32Ser struct{}
 
@@ -85,7 +87,7 @@ func (uint32Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint32MaxVarintLen, com.Uint32MaxLastByte, r)
 }
 
-// -----------------------------------------------------------------------------
+// uint16 ----------------------------------------------------------------------
 
 type uint16Ser struct{}
 
@@ -119,7 +121,7 @@ func (uint16Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint16MaxVarintLen, com.Uint16MaxLastByte, r)
 }
 
-// -----------------------------------------------------------------------------
+// uint8 -----------------------------------------------------------------------
 
 type uint8Ser struct{}
 
@@ -153,7 +155,7 @@ func (uint8Ser) Skip(r mus.Reader) (n int, err error) {
 	return skipUint(com.Uint8MaxVarintLen, com.Uint8MaxLastByte, r)
 }
 
-// -----------------------------------------------------------------------------
+// uint ------------------------------------------------------------------------
 
 type uintSer struct{}
 

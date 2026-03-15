@@ -109,7 +109,7 @@ func (s byteSliceSer) Skip(r mus.Reader) (n int, err error) {
 	return
 }
 
-// -----------------------------------------------------------------------------
+// valid -----------------------------------------------------------------------
 
 type validByteSliceSer struct {
 	byteSliceSer

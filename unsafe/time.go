@@ -35,7 +35,7 @@ var (
 	TimeUnixNanoUTC = timeUnixNanoUTCSer{}
 )
 
-// -----------------------------------------------------------------------------
+// seconds ---------------------------------------------------------------------
 
 type timeUnixSer struct{}
 
@@ -71,7 +71,7 @@ func (s timeUnixSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// milli -----------------------------------------------------------------------
 
 type timeUnixMilliSer struct{}
 
@@ -111,7 +111,7 @@ func (s timeUnixMilliSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// micro -----------------------------------------------------------------------
 
 type timeUnixMicroSer struct{}
 
@@ -151,7 +151,7 @@ func (s timeUnixMicroSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// nano ------------------------------------------------------------------------
 
 type timeUnixNanoSer struct{}
 
@@ -189,7 +189,7 @@ func (s timeUnixNanoSer) Skip(r mus.Reader) (n int, err error) {
 	return Int64.Skip(r)
 }
 
-// -----------------------------------------------------------------------------
+// seconds utc -----------------------------------------------------------------
 
 type timeUnixUTCSer struct {
 	timeUnixSer
@@ -207,7 +207,7 @@ func (s timeUnixUTCSer) Unmarshal(r mus.Reader) (v time.Time, n int, err error) 
 	return
 }
 
-// -----------------------------------------------------------------------------
+// milli utc -------------------------------------------------------------------
 
 type timeUnixMilliUTCSer struct {
 	timeUnixMilliSer
@@ -225,7 +225,7 @@ func (s timeUnixMilliUTCSer) Unmarshal(r mus.Reader) (v time.Time, n int, err er
 	return
 }
 
-// -----------------------------------------------------------------------------
+// micro utc -------------------------------------------------------------------
 
 type timeUnixMicroUTCSer struct {
 	timeUnixMicroSer
@@ -243,7 +243,7 @@ func (s timeUnixMicroUTCSer) Unmarshal(r mus.Reader) (v time.Time, n int, err er
 	return
 }
 
-// -----------------------------------------------------------------------------
+// nano utc --------------------------------------------------------------------
 
 type timeUnixNanoUTCSer struct {
 	timeUnixNanoSer

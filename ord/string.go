@@ -93,7 +93,7 @@ func (s stringSer) Skip(r mus.Reader) (n int, err error) {
 	return SkipString(r, s.lenSer)
 }
 
-// -----------------------------------------------------------------------------
+// valid -----------------------------------------------------------------------
 
 type validStringSer struct {
 	stringSer
