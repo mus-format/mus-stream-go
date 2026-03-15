@@ -442,7 +442,7 @@ func TestOrd(t *testing.T) {
 					mocks  = []*mok.Mock{w.Mock}
 					str    = "str"
 					strPtr = &str
-					n, err = NewPtrSer[string](String).Marshal(strPtr, w)
+					n, err = NewPtrSer(String).Marshal(strPtr, w)
 				)
 				test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
 			})
@@ -1080,7 +1080,7 @@ func TestOrd(t *testing.T) {
 						func() (b byte, err error) { return 4, nil },
 					)
 					mocks     = []*mok.Mock{r.Mock}
-					v, n, err = NewValidSliceSer[uint](nil, slops.WithLenValidator[uint](lenVl)).Unmarshal(r)
+					v, n, err = NewValidSliceSer(nil, slops.WithLenValidator[uint](lenVl)).Unmarshal(r)
 				)
 				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks,
@@ -1306,7 +1306,7 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock}
-					v, n, err = NewMapSer[uint, uint](keySer, valueSer).Unmarshal(r)
+					v, n, err = NewMapSer(keySer, valueSer).Unmarshal(r)
 				)
 				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
 					mocks, t)
@@ -1380,7 +1380,7 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks  = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock}
-					n, err = NewMapSer[uint, uint](keySer, valueSer).Skip(r)
+					n, err = NewMapSer(keySer, valueSer).Skip(r)
 				)
 				ctestutil.TestSkipResults(wantN, n, wantErr, err, mocks, t)
 			})
@@ -1560,7 +1560,7 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock, lenVl.Mock}
-					v, n, err = NewValidMapSer[uint, uint](nil, nil,
+					v, n, err = NewValidMapSer(nil, nil,
 						mapops.WithLenValidator[uint, uint](lenVl)).Unmarshal(r)
 				)
 				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
@@ -1590,7 +1590,7 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock, keySer.Mock, keyVl.Mock}
-					v, n, err = NewValidMapSer[uint, uint](keySer, nil,
+					v, n, err = NewValidMapSer(keySer, nil,
 						mapops.WithKeyValidator[uint, uint](keyVl)).Unmarshal(r)
 				)
 				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
@@ -1626,7 +1626,7 @@ func TestOrd(t *testing.T) {
 						},
 					)
 					mocks     = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock, valueVl.Mock}
-					v, n, err = NewValidMapSer[uint, uint](keySer, valueSer,
+					v, n, err = NewValidMapSer(keySer, valueSer,
 						mapops.WithValueValidator[uint, uint](valueVl)).Unmarshal(r)
 				)
 				ctestutil.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
