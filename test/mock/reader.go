@@ -2,12 +2,12 @@ package mock
 
 import "github.com/ymz-ncnk/mok"
 
-func NewReader() Reader {
-	return Reader{mok.New("Reader")}
-}
-
 type Reader struct {
 	*mok.Mock
+}
+
+func NewReader() Reader {
+	return Reader{mok.New("Reader")}
 }
 
 func (m Reader) RegisterRead(fn func(p []byte) (n int, err error)) Reader {

@@ -4,12 +4,12 @@ import (
 	"github.com/ymz-ncnk/mok"
 )
 
-func NewWriter() Writer {
-	return Writer{mok.New("Writer")}
-}
-
 type Writer struct {
 	*mok.Mock
+}
+
+func NewWriter() Writer {
+	return Writer{mok.New("Writer")}
 }
 
 func (m Writer) RegisterWrite(fn func(p []byte) (n int, err error)) Writer {

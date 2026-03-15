@@ -6,19 +6,16 @@ import (
 )
 
 type MarshalFn[T any] func(t T, w muss.Writer) (n int, err error)
-
 type UnmarshalFn[T any] func(r muss.Reader) (t T, n int, err error)
-
 type SizeFn[T any] func(t T) (size int)
-
 type SkipFn func(r muss.Reader) (n int, err error)
-
-func NewSerializer[T any]() Serializer[T] {
-	return Serializer[T]{mok.New("Serializer")}
-}
 
 type Serializer[T any] struct {
 	*mok.Mock
+}
+
+func NewSerializer[T any]() Serializer[T] {
+	return Serializer[T]{mok.New("Serializer")}
 }
 
 func (s Serializer[T]) RegisterMarshal(fn MarshalFn[T]) Serializer[T] {
@@ -62,8 +59,7 @@ func (s Serializer[T]) RegisterSkipN(n int, fn SkipFn) Serializer[T] {
 }
 
 func (m Serializer[T]) Marshal(t T, w muss.Writer) (n int, err error) {
-	result, err := m.Call("Marshal", mok.SafeVal[T](t),
-		mok.SafeVal[muss.Writer](w))
+	result, err := m.Call("Marshal", t, w)
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +69,7 @@ func (m Serializer[T]) Marshal(t T, w muss.Writer) (n int, err error) {
 }
 
 func (s Serializer[T]) Unmarshal(r muss.Reader) (t T, n int, err error) {
-	result, err := s.Call("Unmarshal", mok.SafeVal[muss.Reader](r))
+	result, err := s.Call("Unmarshal", r)
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +80,7 @@ func (s Serializer[T]) Unmarshal(r muss.Reader) (t T, n int, err error) {
 }
 
 func (s Serializer[T]) Size(t T) (size int) {
-	result, err := s.Call("Size", mok.SafeVal[T](t))
+	result, err := s.Call("Size", t)
 	if err != nil {
 		panic(err)
 	}
@@ -92,7 +88,7 @@ func (s Serializer[T]) Size(t T) (size int) {
 }
 
 func (s Serializer[T]) Skip(r muss.Reader) (n int, err error) {
-	result, err := s.Call("Skip", mok.SafeVal[muss.Reader](r))
+	result, err := s.Call("Skip", r)
 	if err != nil {
 		panic(err)
 	}

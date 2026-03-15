@@ -8,12 +8,12 @@ import (
 type MarshalMUSFn func(w muss.Writer) (n int, err error)
 type SizeMUSFn func() (size int)
 
-func NewMarshaller() Marshaller {
-	return Marshaller{mok.New("Marshaller")}
-}
-
 type Marshaller struct {
 	*mok.Mock
+}
+
+func NewMarshaller() Marshaller {
+	return Marshaller{mok.New("Marshaller")}
 }
 
 func (m Marshaller) RegisterMarshalMUS(fn MarshalMUSFn) Marshaller {
