@@ -13,7 +13,7 @@ import (
 
 func Test[T any](cases []T, ser muss.Serializer[T], t *testing.T) {
 	var err error
-	for i := 0; i < len(cases); i++ {
+	for i := range cases {
 		var (
 			size = ser.Size(cases[i])
 			buf  = bytes.NewBuffer(make([]byte, 0, size))
@@ -58,7 +58,7 @@ func Test[T any](cases []T, ser muss.Serializer[T], t *testing.T) {
 }
 
 func TestSkip[T any](cases []T, ser muss.Serializer[T], t *testing.T) {
-	for i := 0; i < len(cases); i++ {
+	for i := range cases {
 		var (
 			size = ser.Size(cases[i])
 			buf  = bytes.NewBuffer(make([]byte, 0, size))

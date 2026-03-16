@@ -247,7 +247,7 @@ func skipInteger8(r mus.Reader) (int, error) {
 }
 
 func skipInteger(integerSize int, r mus.Reader) (n int, err error) {
-	for i := 0; i < integerSize; i++ {
+	for range integerSize {
 		_, err = r.ReadByte()
 		if err != nil {
 			return

@@ -166,7 +166,7 @@ func SkipString(r mus.Reader, lenSer mus.Serializer[int]) (n int, err error) {
 		err = com.ErrNegativeLength
 		return
 	}
-	for i := 0; i < length; i++ {
+	for range length {
 		_, err = r.ReadByte()
 		if err != nil {
 			return

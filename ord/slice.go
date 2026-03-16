@@ -158,7 +158,7 @@ func UnmarshalSlice[T any](elemSer mus.Serializer[T],
 func SizeSlice[T any](v []T, elemSer mus.Serializer[T],
 	lenSer mus.Serializer[int]) (size int) {
 	size = lenSer.Size(len(v))
-	for i := 0; i < len(v); i++ {
+	for i := range v {
 		size += elemSer.Size(v[i])
 	}
 	return
@@ -175,7 +175,7 @@ func SkipSlice[T any](elemSer mus.Serializer[T],
 		return
 	}
 	var n1 int
-	for i := 0; i < length; i++ {
+	for range length {
 		n1, err = elemSer.Skip(r)
 		n += n1
 		if err != nil {

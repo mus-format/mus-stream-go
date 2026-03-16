@@ -152,7 +152,7 @@ func (s mapSer[T, V]) Skip(r mus.Reader) (
 		return
 	}
 	var n1 int
-	for i := 0; i < length; i++ {
+	for range length {
 		n1, err = s.keySer.Skip(r)
 		n += n1
 		if err != nil {
@@ -194,7 +194,6 @@ func (s validMapSer[T, V]) Unmarshal(r mus.Reader) (v map[T]V, n int,
 	}
 	var (
 		n1 int
-		i  int
 		k  T
 		p  V
 	)
@@ -204,7 +203,7 @@ func (s validMapSer[T, V]) Unmarshal(r mus.Reader) (v map[T]V, n int,
 		}
 	}
 	v = make(map[T]V, length)
-	for i = 0; i < length; i++ {
+	for range length {
 		k, n1, err = s.keySer.Unmarshal(r)
 		n += n1
 		if err != nil {
