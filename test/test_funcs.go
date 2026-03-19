@@ -119,16 +119,30 @@ func TestSkipOnly(r mus.Reader, ser interface {
 
 // -----------------------------------------------------------------------------
 
-type MarshalResults struct {
-	N     int
-	Err   error
-	Mocks []*mok.Mock
-}
-
 type MarshallerFn[T any] func(v T, w mus.Writer) (int, error)
 
 func (f MarshallerFn[T]) Marshal(v T, w mus.Writer) (int, error) {
 	return f(v, w)
+}
+
+type UnmarshallerFn[T any] func(r mus.Reader) (T, int, error)
+
+func (f UnmarshallerFn[T]) Unmarshal(r mus.Reader) (T, int, error) {
+	return f(r)
+}
+
+type SkipperFn func(r mus.Reader) (int, error)
+
+func (f SkipperFn) Skip(r mus.Reader) (int, error) {
+	return f(r)
+}
+
+type MarshallerResults = MarshalResults
+
+type MarshalResults struct {
+	N     int
+	Err   error
+	Mocks []*mok.Mock
 }
 
 type UnmarshalResults[T any] struct {

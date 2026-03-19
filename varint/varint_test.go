@@ -6,6 +6,7 @@ import (
 
 	com "github.com/mus-format/common-go"
 	ctest "github.com/mus-format/common-go/test"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/test"
 	"github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/ymz-ncnk/mok"
@@ -57,43 +58,49 @@ func TestVarint_unmarshalUint(t *testing.T) {
 	t.Run("If Reader fails to read a byte, unmarshalUint should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   uint64 = 0
-				wantN          = 0
-				wantErr        = errors.New("read byte error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = unmarshalUint[uint64](com.Uint64MaxVarintLen,
-					com.Uint64MaxLastByte, r)
+				ser = test.UnmarshallerFn[uint64](func(r mus.Reader) (uint64, int, error) {
+					return unmarshalUint[uint64](com.Uint64MaxVarintLen,
+						com.Uint64MaxLastByte, r)
+				})
+				want = test.UnmarshalResults[uint64]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("unmarshalUint should return ErrOverflow if there is no varint end",
 		func(t *testing.T) {
 			var (
-				wantV   uint16 = 0
-				wantN          = 3
-				wantErr        = com.ErrOverflow
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = com.ErrOverflow
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 200, nil },
 				).RegisterReadByte(
 					func() (b byte, err error) { return 200, nil },
 				).RegisterReadByte(
 					func() (b byte, err error) { return 4, nil },
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = unmarshalUint[uint16](com.Uint16MaxVarintLen,
-					com.Uint16MaxLastByte, r)
+				ser = test.UnmarshallerFn[uint16](func(r mus.Reader) (uint16, int, error) {
+					return unmarshalUint[uint16](com.Uint16MaxVarintLen,
+						com.Uint16MaxLastByte, r)
+				})
+				want = test.UnmarshalResults[uint16]{
+					V:     0,
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -101,24 +108,28 @@ func TestVarint_skipUint(t *testing.T) {
 	t.Run("If Reader fails to read a byte, skipUint should return an error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = skipUint(com.Uint64MaxVarintLen, com.Uint64MaxLastByte,
-					r)
+				ser = test.SkipperFn(func(r mus.Reader) (int, error) {
+					return skipUint(com.Uint64MaxVarintLen, com.Uint64MaxLastByte,
+						r)
+				})
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("skipUint should return ErrOverflow if there is no varint end",
 		func(t *testing.T) {
 			var (
-				wantN   = 3
 				wantErr = com.ErrOverflow
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 200, nil },
@@ -129,11 +140,17 @@ func TestVarint_skipUint(t *testing.T) {
 				).RegisterReadByte(
 					func() (b byte, err error) { return 200, nil },
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = skipUint(com.Uint16MaxVarintLen, com.Uint16MaxLastByte,
-					r)
+				ser = test.SkipperFn(func(r mus.Reader) (int, error) {
+					return skipUint(com.Uint16MaxVarintLen, com.Uint16MaxLastByte,
+						r)
+				})
+				want = test.SkipResults{
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -178,20 +195,21 @@ func TestVarint_Int64(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int64 = 0
-				wantN         = 0
-				wantErr       = errors.New("read byte error")
-				r             = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Int64.Unmarshal(r)
+				ser  = Int64
+				want = test.UnmarshalResults[int64]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -206,20 +224,21 @@ func TestVarint_Int32(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int32 = 0
-				wantN         = 0
-				wantErr       = errors.New("read byte error")
-				r             = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Int32.Unmarshal(r)
+				ser  = Int32
+				want = test.UnmarshalResults[int32]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -234,20 +253,21 @@ func TestVarint_Int16(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int16 = 0
-				wantN         = 0
-				wantErr       = errors.New("read byte error")
-				r             = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Int16.Unmarshal(r)
+				ser  = Int16
+				want = test.UnmarshalResults[int16]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -262,20 +282,21 @@ func TestVarint_Int8(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int8 = 0
-				wantN        = 0
-				wantErr      = errors.New("read byte error")
-				r            = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Int8.Unmarshal(r)
+				ser  = Int8
+				want = test.UnmarshalResults[int8]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -290,20 +311,21 @@ func TestVarint_Int(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   = 0
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Int.Unmarshal(r)
+				ser  = Int
+				want = test.UnmarshalResults[int]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -318,20 +340,21 @@ func TestVarint_PositiveInt64(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int64 = 0
-				wantN         = 0
-				wantErr       = errors.New("read byte error")
-				r             = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = PositiveInt64.Unmarshal(r)
+				ser  = PositiveInt64
+				want = test.UnmarshalResults[int64]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -346,20 +369,21 @@ func TestVarint_PositiveInt32(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int32 = 0
-				wantN         = 0
-				wantErr       = errors.New("read byte error")
-				r             = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = PositiveInt32.Unmarshal(r)
+				ser  = PositiveInt32
+				want = test.UnmarshalResults[int32]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -374,20 +398,21 @@ func TestVarint_PositiveInt16(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int16 = 0
-				wantN         = 0
-				wantErr       = errors.New("read byte error")
-				r             = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = PositiveInt16.Unmarshal(r)
+				ser  = PositiveInt16
+				want = test.UnmarshalResults[int16]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -402,20 +427,21 @@ func TestVarint_PositiveInt8(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   int8 = 0
-				wantN        = 0
-				wantErr      = errors.New("read byte error")
-				r            = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = PositiveInt8.Unmarshal(r)
+				ser  = PositiveInt8
+				want = test.UnmarshalResults[int8]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -430,20 +456,21 @@ func TestVarint_PositiveInt(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   = 0
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = PositiveInt.Unmarshal(r)
+				ser  = PositiveInt
+				want = test.UnmarshalResults[int]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -464,20 +491,21 @@ func TestVarint_Float64(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   float64 = 0
-				wantN           = 0
-				wantErr         = errors.New("read byte error")
-				r               = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Float64.Unmarshal(r)
+				ser  = Float64
+				want = test.UnmarshalResults[float64]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -492,19 +520,20 @@ func TestVarint_Float32(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   float32 = 0
-				wantN           = 0
-				wantErr         = errors.New("read byte error")
-				r               = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Float32.Unmarshal(r)
+				ser  = Float32
+				want = test.UnmarshalResults[float32]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }

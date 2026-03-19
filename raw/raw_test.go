@@ -142,17 +142,20 @@ func TestRaw_IntegerErrorHandling(t *testing.T) {
 	t.Run("If Reader fails to read a byte, skipInteger64 should return an error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = skipInteger64(r)
+				ser  = test.SkipperFn(skipInteger64)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger32 should return an error",
@@ -174,17 +177,20 @@ func TestRaw_IntegerErrorHandling(t *testing.T) {
 	t.Run("If Reader fails to read a byte, skipInteger32 should return an error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = skipInteger32(r)
+				ser  = test.SkipperFn(skipInteger32)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger16 should return an error",
@@ -202,17 +208,20 @@ func TestRaw_IntegerErrorHandling(t *testing.T) {
 	t.Run("If Reader fails to read a byte, skipInteger16 should return an error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = skipInteger16(r)
+				ser  = test.SkipperFn(skipInteger16)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If Writer fails to write a byte, marshalInteger8 should return it",
@@ -228,17 +237,20 @@ func TestRaw_IntegerErrorHandling(t *testing.T) {
 	t.Run("If Reader fails to read a byte, skipInteger8 should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = skipInteger8(r)
+				ser  = test.SkipperFn(skipInteger8)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -358,33 +370,40 @@ func TestRaw_Float64(t *testing.T) {
 	t.Run("If Reader fails to read a byte, UnmarshalFloat64 should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   float64 = 0
-				wantN           = 0
-				wantErr         = errors.New("read byte error")
-				r               = mock.NewReader().RegisterReadByte(
-					func() (b byte, err error) {
-						return 0, wantErr
-					},
-				)
-				v, n, err = Float64.Unmarshal(r)
-			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
-		})
-
-	t.Run("If Reader fails to read a byte, SkipFloat64 should return an error",
-		func(t *testing.T) {
-			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = Float64.Skip(r)
+				ser  = Float64
+				want = test.UnmarshalResults[float64]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
+		})
+
+	t.Run("If Reader fails to read a byte, SkipFloat64 should return an error",
+		func(t *testing.T) {
+			var (
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
+					func() (b byte, err error) {
+						return 0, wantErr
+					},
+				)
+				ser  = Float64
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
+			)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -399,33 +418,40 @@ func TestRaw_Float32(t *testing.T) {
 	t.Run("If Reader fails to read a byte, UnmarshalFloat32 should return an error",
 		func(t *testing.T) {
 			var (
-				wantV   float32 = 0
-				wantN           = 0
-				wantErr         = errors.New("read byte error")
-				r               = mock.NewReader().RegisterReadByte(
-					func() (b byte, err error) {
-						return 0, wantErr
-					},
-				)
-				v, n, err = Float32.Unmarshal(r)
-			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
-		})
-
-	t.Run("If Reader fails to read a byte, SkipFloat32 should return an error",
-		func(t *testing.T) {
-			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = Float32.Skip(r)
+				ser  = Float32
+				want = test.UnmarshalResults[float32]{
+					V:     0,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
+		})
+
+	t.Run("If Reader fails to read a byte, SkipFloat32 should return an error",
+		func(t *testing.T) {
+			var (
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
+					func() (b byte, err error) {
+						return 0, wantErr
+					},
+				)
+				ser  = Float32
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
+			)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -449,16 +475,19 @@ func TestRaw_TimeUnixUTC(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   = time.Time{}
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { err = wantErr; return },
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = TimeUnixUTC.Unmarshal(r)
+				ser  = TimeUnixUTC
+				want = test.UnmarshalResults[time.Time]{
+					V:     time.Time{},
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -482,16 +511,19 @@ func TestRaw_TimeUnixMilliUTC(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   = time.Time{}
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { err = wantErr; return },
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = TimeUnixMilliUTC.Unmarshal(r)
+				ser  = TimeUnixMilliUTC
+				want = test.UnmarshalResults[time.Time]{
+					V:     time.Time{},
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -515,16 +547,19 @@ func TestRaw_TimeUnixMicroUTC(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   = time.Time{}
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { err = wantErr; return },
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = TimeUnixMicroUTC.Unmarshal(r)
+				ser  = TimeUnixMicroUTC
+				want = test.UnmarshalResults[time.Time]{
+					V:     time.Time{},
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -542,16 +577,19 @@ func TestRaw_TimeUnixNanoUTC(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   = time.Time{}
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { err = wantErr; return },
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = TimeUnixNanoUTC.Unmarshal(r)
+				ser  = TimeUnixNanoUTC
+				want = test.UnmarshalResults[time.Time]{
+					V:     time.Time{},
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -581,16 +619,19 @@ func testUnmarshalIntegerError[T constraints.Integer](k int,
 	t *testing.T,
 ) {
 	var (
-		wantV   T = 0
-		wantN     = k
-		wantErr   = errors.New("read byte error")
-		r         = mock.NewReader().RegisterNReadByte(k,
+		wantErr = errors.New("read byte error")
+		r       = mock.NewReader().RegisterNReadByte(k,
 			func() (b byte, err error) { return 0, nil },
 		).RegisterReadByte(
 			func() (b byte, err error) { return 0, wantErr },
 		)
-		mocks     = []*mok.Mock{r.Mock}
-		v, n, err = fn(r)
+		ser  = test.UnmarshallerFn[T](fn)
+		want = test.UnmarshalResults[T]{
+			V:     0,
+			N:     k,
+			Err:   wantErr,
+			Mocks: []*mok.Mock{r.Mock},
+		}
 	)
-	ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+	test.TestUnmarshalOnly(r, ser, want, t)
 }

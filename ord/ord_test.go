@@ -49,67 +49,78 @@ func TestOrd_Bool(t *testing.T) {
 	t.Run("If Reader fails to read a byte, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   bool = false
-				wantN        = 0
-				wantErr      = errors.New("read byte error")
-				r            = mock.NewReader().RegisterReadByte(
-					func() (b byte, err error) {
-						return 0, wantErr
-					},
-				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Bool.Unmarshal(r)
-			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
-		})
-
-	t.Run("Unmarshal should return ErrWrongFormat if meets wrong format",
-		func(t *testing.T) {
-			var (
-				wantV   bool = false
-				wantN        = 1
-				wantErr      = com.ErrWrongFormat
-				r            = mock.NewReader().RegisterReadByte(
-					func() (b byte, err error) {
-						return 3, nil
-					},
-				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = Bool.Unmarshal(r)
-			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
-		})
-
-	t.Run("If Reader fails to read a byte, Skip should return error",
-		func(t *testing.T) {
-			var (
-				wantN   = 0
 				wantErr = errors.New("read byte error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = Bool.Skip(r)
+				ser  = Bool
+				want = test.UnmarshalResults[bool]{
+					V:     false,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
-	t.Run("Skip should return ErrWrongFormat if meets wrong format",
+	t.Run("Unmarshal should return ErrWrongFormat if meets wrong format",
 		func(t *testing.T) {
 			var (
-				wantN   = 1
 				wantErr = com.ErrWrongFormat
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 3, nil
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = Bool.Skip(r)
+				ser  = Bool
+				want = test.UnmarshalResults[bool]{
+					V:     false,
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
+		})
+
+	t.Run("If Reader fails to read a byte, Skip should return error",
+		func(t *testing.T) {
+			var (
+				wantErr = errors.New("read byte error")
+				r       = mock.NewReader().RegisterReadByte(
+					func() (b byte, err error) {
+						return 0, wantErr
+					},
+				)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
+			)
+			test.TestSkipOnly(r, Bool, want, t)
+		})
+
+	t.Run("Skip should return ErrWrongFormat if meets wrong format",
+		func(t *testing.T) {
+			var (
+				wantErr = com.ErrWrongFormat
+				r       = mock.NewReader().RegisterReadByte(
+					func() (b byte, err error) {
+						return 3, nil
+					},
+				)
+				ser  = Bool
+				want = test.SkipResults{
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
+			)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -130,14 +141,12 @@ func TestOrd_String(t *testing.T) {
 			)
 			test.Test([]string{str}, ser, t)
 			test.TestSkip([]string{str}, ser, t)
-
 			asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 		})
 
 	t.Run("If Writer fails to write string length, Marshal should return error",
 		func(t *testing.T) {
 			var (
-				s       = "hello world"
 				wantErr = errors.New("marshal length error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error {
@@ -151,50 +160,50 @@ func TestOrd_String(t *testing.T) {
 					Mocks: []*mok.Mock{w.Mock},
 				}
 			)
-			test.TestMarshalOnly(s, w, ser, want, t)
+			test.TestMarshalOnly("hello world", w, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read string length, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   string = ""
-				wantN          = 0
-				wantErr        = errors.New("unmarshal length error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = String.Unmarshal(r)
+				ser  = String
+				want = test.UnmarshalResults[string]{
+					V:     "",
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     = ""
-				wantN     = 10
-				wantErr   = com.ErrNegativeLength
-				r         = LengthReader(-1)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = String.Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = String
+				want    = test.UnmarshalResults[string]{
+					V:     "",
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read string content, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   string = ""
-				wantN          = 1 + 2
-				wantErr        = errors.New("unmarshal string content error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal string content error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 6, nil
 					},
@@ -205,46 +214,54 @@ func TestOrd_String(t *testing.T) {
 						return 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = String.Unmarshal(r)
+				ser  = String
+				want = test.UnmarshalResults[string]{
+					V:     "",
+					N:     1 + 2,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read string length, Skip should return error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("unmarshal length error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = String.Skip(r)
+				ser  = String
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("Skip should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantN   = 10
 				wantErr = com.ErrNegativeLength
 				r       = LengthReader(-1)
-				mocks   = []*mok.Mock{r.Mock}
-				n, err  = String.Skip(r)
+				ser     = String
+				want    = test.SkipResults{
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read string content, Skip should return error",
 		func(t *testing.T) {
 			var (
-				wantN   = 2
 				wantErr = errors.New("skip string content error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -255,10 +272,14 @@ func TestOrd_String(t *testing.T) {
 				).RegisterReadByte(
 					func() (b byte, err error) { return 0, wantErr },
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = String.Skip(r)
+				ser  = String
+				want = test.SkipResults{
+					N:     2,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -272,9 +293,7 @@ func TestOrd_ValidString(t *testing.T) {
 	t.Run("If lenVl returns an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV      = ""
 				wantLength = math.MaxInt64 - 1
-				wantN      = 9
 				wantErr    = errors.New("lenVl validator error")
 				lenVl      = cmock.NewValidator[int]().RegisterValidate(
 					func(v int) (err error) {
@@ -284,19 +303,20 @@ func TestOrd_ValidString(t *testing.T) {
 						return wantErr
 					},
 				)
-				r         = LengthReader(wantLength)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidStringSer(stropts.WithLenValidator(lenVl)).Unmarshal(r)
+				r    = LengthReader(wantLength)
+				ser  = NewValidStringSer(stropts.WithLenValidator(lenVl))
+				want = test.UnmarshalResults[string]{
+					V:     "",
+					N:     9,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, lenVl.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If string length == 0 lenVl should work", func(t *testing.T) {
 		var (
-			wantV   = ""
-			wantN   = 1
 			wantErr = errors.New("empty string")
 			lenVl   = func(t int) (err error) {
 				return wantErr
@@ -306,48 +326,57 @@ func TestOrd_ValidString(t *testing.T) {
 					return 0, nil
 				},
 			)
-			v, n, err = NewValidStringSer(stropts.WithLenValidator(com.ValidatorFn[int](lenVl))).Unmarshal(r)
+			ser  = NewValidStringSer(stropts.WithLenValidator(com.ValidatorFn[int](lenVl)))
+			want = test.UnmarshalResults[string]{
+				V:   "",
+				N:   1,
+				Err: wantErr,
+			}
 		)
-		ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
+		test.TestUnmarshalOnly(r, ser, want, t)
 	})
 
 	t.Run("If Reader fails to read string length, valid Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   string = ""
-				wantN          = 0
-				wantErr        = errors.New("unmarshal length error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidStringSer(nil).Unmarshal(r)
+				ser  = NewValidStringSer(nil)
+				want = test.UnmarshalResults[string]{
+					V:     "",
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("Valid Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     = ""
-				wantN     = 10
-				wantErr   = com.ErrNegativeLength
-				r         = LengthReader(-1)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidStringSer(nil).Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = NewValidStringSer(nil)
+				want    = test.UnmarshalResults[string]{
+					V:     "",
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read string content, valid Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   string = ""
-				wantN          = 1 + 2
-				wantErr        = errors.New("unmarshal string content error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal string content error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 6, nil
 					},
@@ -358,10 +387,15 @@ func TestOrd_ValidString(t *testing.T) {
 						return 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidStringSer(nil).Unmarshal(r)
+				ser  = NewValidStringSer(nil)
+				want = test.UnmarshalResults[string]{
+					V:     "",
+					N:     1 + 2,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -375,7 +409,6 @@ func TestOrd_Pointer(t *testing.T) {
 			)
 			test.Test([]*int{ptr}, ser, t)
 			test.TestSkip([]*int{ptr}, ser, t)
-
 			asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 		})
 
@@ -409,7 +442,6 @@ func TestOrd_Pointer(t *testing.T) {
 		func(t *testing.T) {
 			var (
 				str     = "str"
-				strPtr  = &str
 				wantErr = errors.New("write nil flag error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error {
@@ -423,14 +455,13 @@ func TestOrd_Pointer(t *testing.T) {
 					Mocks: []*mok.Mock{w.Mock},
 				}
 			)
-			test.TestMarshalOnly(strPtr, w, ser, want, t)
+			test.TestMarshalOnly(&str, w, ser, want, t)
 		})
 
 	t.Run("If Writer fails to write pointer content, Marshal should return error",
 		func(t *testing.T) {
 			var (
 				str     = "str"
-				strPtr  = &str
 				wantErr = errors.New("Marshaller error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error {
@@ -448,49 +479,53 @@ func TestOrd_Pointer(t *testing.T) {
 					Mocks: []*mok.Mock{w.Mock},
 				}
 			)
-			test.TestMarshalOnly(strPtr, w, ser, want, t)
+			test.TestMarshalOnly(&str, w, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read nil flag, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   *string = nil
-				wantN           = 0
-				wantErr         = errors.New("read nil flag error")
-				r               = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("read nil flag error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewPtrSer[string](nil).Unmarshal(r)
+				ser  = NewPtrSer[string](nil)
+				want = test.UnmarshalResults[*string]{
+					V:     nil,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("UnmarshalPtr should return ErrWrongFormat if meets wrong format", func(t *testing.T) {
 		var (
-			wantV   *string = nil
-			wantN           = 1
-			wantErr         = com.ErrWrongFormat
-			r               = mock.NewReader().RegisterReadByte(
+			wantErr = com.ErrWrongFormat
+			r       = mock.NewReader().RegisterReadByte(
 				func() (b byte, err error) {
 					return 2, nil
 				},
 			)
-			mocks     = []*mok.Mock{r.Mock}
-			v, n, err = NewPtrSer[string](nil).Unmarshal(r)
+			ser  = NewPtrSer[string](nil)
+			want = test.UnmarshalResults[*string]{
+				V:     nil,
+				N:     1,
+				Err:   wantErr,
+				Mocks: []*mok.Mock{r.Mock},
+			}
 		)
-		ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+		test.TestUnmarshalOnly(r, ser, want, t)
 	})
 
 	t.Run("If base serializer fails with an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   *string = nil
-				wantN           = 1
-				wantErr         = errors.New("base serializer error")
-				r               = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("base serializer error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, nil
 					},
@@ -500,48 +535,58 @@ func TestOrd_Pointer(t *testing.T) {
 						return "", 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, baseSer.Mock}
-				v, n, err = NewPtrSer(baseSer).Unmarshal(r)
+				ser  = NewPtrSer(baseSer)
+				want = test.UnmarshalResults[*string]{
+					V:     nil,
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, baseSer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read nil flag, Skip should return error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("read nil flag error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = NewPtrSer[string](nil).Skip(r)
+				ser  = NewPtrSer[string](nil)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("Skip should return ErrWrongFormat if meets wrong format",
 		func(t *testing.T) {
 			var (
-				wantN   = 1
 				wantErr = com.ErrWrongFormat
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 3, nil
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = NewPtrSer[string](nil).Skip(r)
+				ser  = NewPtrSer[string](nil)
+				want = test.SkipResults{
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If baseSer.Skip fails with an error, Skip should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 3
 				wantErr = errors.New("Skipper error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -553,10 +598,14 @@ func TestOrd_Pointer(t *testing.T) {
 						return 2, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = NewPtrSer(baseSer).Skip(r)
+				ser  = NewPtrSer(baseSer)
+				want = test.SkipResults{
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, baseSer.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -614,97 +663,114 @@ func TestOrd_ByteSlice(t *testing.T) {
 	t.Run("If Reader fails to read slice length, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   []byte = nil
-				wantN          = 0
-				wantErr        = errors.New("unmarshal length error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = ByteSlice.Unmarshal(r)
+				ser  = ByteSlice
+				want = test.UnmarshalResults[[]byte]{
+					V:     nil,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     []byte = nil
-				wantN            = 10
-				wantErr          = com.ErrNegativeLength
-				r                = LengthReader(-1)
-				mocks            = []*mok.Mock{r.Mock}
-				v, n, err        = ByteSlice.Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = ByteSlice
+				want    = test.UnmarshalResults[[]byte]{
+					V:     nil,
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read slice content, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   []byte = make([]byte, 2)
-				wantN          = 1
-				wantErr        = errors.New("read slice content error")
+				wantErr = errors.New("read slice content error")
 
 				r = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
-						return byte(len(wantV)), nil
+						return 2, nil
 					},
 				).RegisterRead(
 					func(p []byte) (n int, err error) { return 0, wantErr },
 				)
-				v, n, err = ByteSlice.Unmarshal(r)
+				ser  = ByteSlice
+				want = test.UnmarshalResults[[]byte]{
+					V:   make([]byte, 2),
+					N:   1,
+					Err: wantErr,
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read slice length, Skip should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("unmarshal length error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 0, wantErr },
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = ByteSlice.Skip(r)
+				ser  = ByteSlice
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("Skip should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantN   = 10
 				wantErr = com.ErrNegativeLength
 				r       = LengthReader(-1)
-				mocks   = []*mok.Mock{r.Mock}
-				n, err  = ByteSlice.Skip(r)
+				ser     = ByteSlice
+				want    = test.SkipResults{
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read slice content, Skip should return error",
 		func(t *testing.T) {
 			var (
-				wantV   []byte = make([]byte, 2)
-				wantN          = 1
-				wantErr        = errors.New("read slice content error")
+				wantErr = errors.New("read slice content error")
 
 				r = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
-						return byte(len(wantV)), nil
+						return 2, nil
 					},
 				).RegisterReadByte(
 					func() (b byte, err error) { return 0, wantErr },
 					// func(p []byte) (n int, err error) { return 0, wantErr },
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = ByteSlice.Skip(r)
+				ser  = ByteSlice
+				want = test.SkipResults{
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -732,10 +798,8 @@ func TestOrd_ValidByteSlice(t *testing.T) {
 	t.Run("If lenVl returns an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   []byte = nil
-				wantN          = 1
-				wantErr        = errors.New("lenVl error")
-				lenVl          = cmock.NewValidator[int]().RegisterValidate(
+				wantErr = errors.New("lenVl error")
+				lenVl   = cmock.NewValidator[int]().RegisterValidate(
 					func(v int) (err error) {
 						return wantErr
 					},
@@ -745,59 +809,73 @@ func TestOrd_ValidByteSlice(t *testing.T) {
 						return 4, nil
 					},
 				)
-				mocks     = []*mok.Mock{lenVl.Mock}
-				v, n, err = NewValidByteSliceSer(bslopts.WithLenValidator(lenVl)).Unmarshal(r)
+				ser  = NewValidByteSliceSer(bslopts.WithLenValidator(lenVl))
+				want = test.UnmarshalResults[[]byte]{
+					V:     nil,
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{lenVl.Mock, r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read slice length, ValidByteSlice.Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   []byte = nil
-				wantN          = 0
-				wantErr        = errors.New("unmarshal length error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidByteSliceSer(nil).Unmarshal(r)
+				ser  = NewValidByteSliceSer(nil)
+				want = test.UnmarshalResults[[]byte]{
+					V:     nil,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("ValidByteSlice.Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     []byte = nil
-				wantN            = 10
-				wantErr          = com.ErrNegativeLength
-				r                = LengthReader(-1)
-				mocks            = []*mok.Mock{r.Mock}
-				v, n, err        = NewValidByteSliceSer(nil).Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = NewValidByteSliceSer(nil)
+				want    = test.UnmarshalResults[[]byte]{
+					V:     nil,
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read slice content, ValidByteSlice.Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   []byte = make([]byte, 2)
-				wantN          = 1
-				wantErr        = errors.New("read slice content error")
+				wantErr = errors.New("read slice content error")
 
 				r = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
-						return byte(len(wantV)), nil
+						return 2, nil
 					},
 				).RegisterRead(
 					func(p []byte) (n int, err error) { return 0, wantErr },
 				)
-				v, n, err = NewValidByteSliceSer(nil).Unmarshal(r)
+				ser  = NewValidByteSliceSer(nil)
+				want = test.UnmarshalResults[[]byte]{
+					V:   make([]byte, 2),
+					N:   1,
+					Err: wantErr,
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -839,7 +917,6 @@ func TestOrd_Slice(t *testing.T) {
 	t.Run("If Writer fails to write slice length, Marshal should return error",
 		func(t *testing.T) {
 			var (
-				sl      = []uint{1}
 				wantErr = errors.New("marshal length error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error { return wantErr },
@@ -851,7 +928,7 @@ func TestOrd_Slice(t *testing.T) {
 					Mocks: []*mok.Mock{w.Mock},
 				}
 			)
-			test.TestMarshalOnly(sl, w, ser, want, t)
+			test.TestMarshalOnly([]uint{1}, w, ser, want, t)
 		})
 
 	t.Run("If Marshaller fails with an error, Marshal should return it",
@@ -879,40 +956,44 @@ func TestOrd_Slice(t *testing.T) {
 	t.Run("If Reader fails to read slice length, Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   []string = nil
-				wantN            = 0
-				wantErr          = errors.New("unmarshal length error")
-				r                = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewSliceSer[string](nil).Unmarshal(r)
+				ser  = NewSliceSer[string](nil)
+				want = test.UnmarshalResults[[]string]{
+					V:     nil,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     []string = nil
-				wantN              = 10
-				wantErr            = com.ErrNegativeLength
-				r                  = LengthReader(-1)
-				mocks              = []*mok.Mock{r.Mock}
-				v, n, err          = NewSliceSer[string](nil).Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = NewSliceSer[string](nil)
+				want    = test.UnmarshalResults[[]string]{
+					V:     nil,
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If elemSer fails with an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   []string = make([]string, 2)
-				wantN            = 3
-				wantErr          = errors.New("Unmarshaller error")
-				r                = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("Unmarshaller error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 2, nil
 					},
@@ -922,42 +1003,52 @@ func TestOrd_Slice(t *testing.T) {
 						return "", 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewSliceSer(elemSer).Unmarshal(r)
+				ser  = NewSliceSer(elemSer)
+				want = test.UnmarshalResults[[]string]{
+					V:     make([]string, 2),
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, elemSer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read slice length, Skip should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("unmarshal length error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 0, wantErr },
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = NewSliceSer[string](nil).Skip(r)
+				ser  = NewSliceSer[string](nil)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("Skip should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantN   = 10
 				wantErr = com.ErrNegativeLength
 				r       = LengthReader(-1)
-				mocks   = []*mok.Mock{r.Mock}
-				n, err  = NewSliceSer[string](nil).Skip(r)
+				ser     = NewSliceSer[string](nil)
+				want    = test.SkipResults{
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If elemSer fails with an error, Skip should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 3
 				wantErr = errors.New("Unmarshaller error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -969,10 +1060,14 @@ func TestOrd_Slice(t *testing.T) {
 						return 2, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock, elemSer.Mock}
-				n, err = NewSliceSer(elemSer).Skip(r)
+				ser  = NewSliceSer(elemSer)
+				want = test.SkipResults{
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, elemSer.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -1003,40 +1098,44 @@ func TestOrd_ValidSlice(t *testing.T) {
 	t.Run("If Reader fails to read slice length, ValidSlice.Unmarshal should return error",
 		func(t *testing.T) {
 			var (
-				wantV   []string = nil
-				wantN            = 0
-				wantErr          = errors.New("unmarshal length error")
-				r                = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidSliceSer[string](nil, nil, nil).Unmarshal(r)
+				ser  = NewValidSliceSer[string](nil, nil, nil)
+				want = test.UnmarshalResults[[]string]{
+					V:     nil,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("ValidSlice.Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     []string = nil
-				wantN              = 10
-				wantErr            = com.ErrNegativeLength
-				r                  = LengthReader(-1)
-				mocks              = []*mok.Mock{r.Mock}
-				v, n, err          = NewValidSliceSer[string](nil, nil, nil).Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = NewValidSliceSer[string](nil, nil, nil)
+				want    = test.UnmarshalResults[[]string]{
+					V:     nil,
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If elemSer fails with an error, ValidSlice.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   []string = make([]string, 2)
-				wantN            = 3
-				wantErr          = errors.New("Unmarshaller error")
-				r                = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("Unmarshaller error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 2, nil
 					},
@@ -1046,19 +1145,22 @@ func TestOrd_ValidSlice(t *testing.T) {
 						return "", 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, elemSer.Mock}
-				v, n, err = NewValidSliceSer(elemSer, nil, nil).Unmarshal(r)
+				ser  = NewValidSliceSer(elemSer, nil, nil)
+				want = test.UnmarshalResults[[]string]{
+					V:     make([]string, 2),
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, elemSer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If lenVl validator returns an error, ValidSlice.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   []uint = nil
-				wantN          = 1
-				wantErr        = errors.New("lenVl validator error")
-				lenVl          = cmock.NewValidator[int]().RegisterValidate(
+				wantErr = errors.New("lenVl validator error")
+				lenVl   = cmock.NewValidator[int]().RegisterValidate(
 					func(v int) (err error) {
 						if v != 4 {
 							t.Errorf("unexpected v, want '%v' actual '%v'", 4, v)
@@ -1069,22 +1171,23 @@ func TestOrd_ValidSlice(t *testing.T) {
 				r = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 4, nil },
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidSliceSer(nil, slopts.WithLenValidator[uint](lenVl)).Unmarshal(r)
+				ser  = NewValidSliceSer(nil, slopts.WithLenValidator[uint](lenVl), nil)
+				want = test.UnmarshalResults[[]uint]{
+					V:     nil,
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, lenVl.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If elemVl returns an error, ValidSlice.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   []uint = []uint{10, 0, 0}
-				wantN          = 3
-				wantErr        = errors.New("Validator error")
-				r              = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("Validator error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 3, nil },
-				).RegisterReadByte(
-					func() (b byte, err error) { return 10, nil },
 				)
 				elemVl = cmock.NewValidator[uint]().RegisterValidate(
 					func(v uint) (err error) {
@@ -1110,10 +1213,15 @@ func TestOrd_ValidSlice(t *testing.T) {
 						return 2, 1, nil
 					},
 				)
-				mocks     = []*mok.Mock{elemVl.Mock, elemSer.Mock}
-				v, n, err = NewValidSliceSer(elemSer, slopts.WithElemValidator(elemVl)).Unmarshal(r)
+				ser  = NewValidSliceSer(elemSer, slopts.WithElemValidator(elemVl), nil)
+				want = test.UnmarshalResults[[]uint]{
+					V:     []uint{10, 0, 0},
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, elemVl.Mock, elemSer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 
@@ -1150,7 +1258,6 @@ func TestOrd_Map(t *testing.T) {
 		)
 		test.Test([]map[string]int{mp}, ser, t)
 		test.TestSkip([]map[string]int{mp}, ser, t)
-
 		asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 	})
 
@@ -1223,38 +1330,42 @@ func TestOrd_Map(t *testing.T) {
 	t.Run("If Reader fails to read map length, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   map[uint]uint = nil
-				wantN                 = 0
-				wantErr               = errors.New("unmarshal length error")
-				r                     = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewMapSer[uint, uint](nil, nil).Unmarshal(r)
+				ser  = NewMapSer[uint, uint](nil, nil)
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     nil,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     map[uint]uint = nil
-				wantN                   = 10
-				wantErr                 = com.ErrNegativeLength
-				r                       = LengthReader(-1)
-				mocks                   = []*mok.Mock{r.Mock}
-				v, n, err               = NewMapSer[uint, uint](nil, nil).Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = NewMapSer[uint, uint](nil, nil)
+				want    = test.UnmarshalResults[map[uint]uint]{
+					V:     nil,
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If keySer fails with an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   = make(map[uint]uint, 1)
-				wantN   = 3
 				wantErr = errors.New("keySer error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -1266,17 +1377,20 @@ func TestOrd_Map(t *testing.T) {
 						return 0, 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, keySer.Mock}
-				v, n, err = NewMapSer[uint, uint](keySer, nil).Unmarshal(r)
+				ser  = NewMapSer[uint, uint](keySer, nil)
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     make(map[uint]uint, 1),
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If valueSer fails with an error, Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   = make(map[uint]uint, 1)
-				wantN   = 4
 				wantErr = errors.New("valueSer error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -1293,42 +1407,52 @@ func TestOrd_Map(t *testing.T) {
 						return 0, 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock}
-				v, n, err = NewMapSer(keySer, valueSer).Unmarshal(r)
+				ser  = NewMapSer(keySer, valueSer)
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     make(map[uint]uint, 1),
+					N:     4,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read map length, Skip should return error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("unmarshal length error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 0, wantErr },
 				)
-				mocks  = []*mok.Mock{r.Mock}
-				n, err = NewMapSer[uint, uint](nil, nil).Skip(r)
+				ser  = NewMapSer[uint, uint](nil, nil)
+				want = test.SkipResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("Skip should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantN   = 10
 				wantErr = com.ErrNegativeLength
 				r       = LengthReader(-1)
-				mocks   = []*mok.Mock{r.Mock}
-				n, err  = NewMapSer[uint, uint](nil, nil).Skip(r)
+				ser     = NewMapSer[uint, uint](nil, nil)
+				want    = test.SkipResults{
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If keySer fails with an error, Skip should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 3
 				wantErr = errors.New("keySer error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -1340,16 +1464,19 @@ func TestOrd_Map(t *testing.T) {
 						return 2, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock, keySer.Mock}
-				n, err = NewMapSer[uint, uint](keySer, nil).Skip(r)
+				ser  = NewMapSer[uint, uint](keySer, nil)
+				want = test.SkipResults{
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 
 	t.Run("If valueSer fails with an error, Skip should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 4
 				wantErr = errors.New("valueSer error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -1366,10 +1493,14 @@ func TestOrd_Map(t *testing.T) {
 						return 2, wantErr
 					},
 				)
-				mocks  = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock}
-				n, err = NewMapSer(keySer, valueSer).Skip(r)
+				ser  = NewMapSer(keySer, valueSer)
+				want = test.SkipResults{
+					N:     4,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock},
+				}
 			)
-			ctest.TestSkipResults(wantN, n, wantErr, err, mocks, t)
+			test.TestSkipOnly(r, ser, want, t)
 		})
 }
 
@@ -1456,41 +1587,42 @@ func TestOrd_ValidMap(t *testing.T) {
 	t.Run("If Reader fails to read map length, ValidMap.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   map[uint]uint = nil
-				wantN                 = 0
-				wantErr               = errors.New("unmarshal length error")
-				r                     = mock.NewReader().RegisterReadByte(
+				wantErr = errors.New("unmarshal length error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
 						return 0, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock}
-				v, n, err = NewValidMapSer[uint, uint](nil, nil, nil, nil, nil).Unmarshal(r)
+				ser  = NewValidMapSer[uint, uint](nil, nil, nil, nil, nil)
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     nil,
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("ValidMap.Unmarshal should return ErrNegativeLength if meets negative length",
 		func(t *testing.T) {
 			var (
-				wantV     map[uint]uint = nil
-				wantN                   = 10
-				wantErr                 = com.ErrNegativeLength
-				r                       = LengthReader(-1)
-				mocks                   = []*mok.Mock{r.Mock}
-				v, n, err               = NewValidMapSer[uint, uint](nil, nil, nil, nil, nil).Unmarshal(r)
+				wantErr = com.ErrNegativeLength
+				r       = LengthReader(-1)
+				ser     = NewValidMapSer[uint, uint](nil, nil, nil, nil, nil)
+				want    = test.UnmarshalResults[map[uint]uint]{
+					V:     nil,
+					N:     10,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If keySer fails with an error, ValidMap.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   = make(map[uint]uint, 1)
-				wantN   = 3
 				wantErr = errors.New("key Unmarshaller error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -1502,18 +1634,20 @@ func TestOrd_ValidMap(t *testing.T) {
 						return 0, 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, keySer.Mock}
-				v, n, err = NewValidMapSer[uint, uint](keySer, nil, nil, nil, nil).Unmarshal(r)
+				ser  = NewValidMapSer[uint, uint](keySer, nil, nil, nil, nil)
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     make(map[uint]uint, 1),
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If valueSer fails with an error, ValidMap.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   = make(map[uint]uint, 1)
-				wantN   = 4
 				wantErr = errors.New("valueSer error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) {
@@ -1530,21 +1664,23 @@ func TestOrd_ValidMap(t *testing.T) {
 						return 0, 2, wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock}
-				v, n, err = NewValidMapSer(keySer, valueSer, nil, nil, nil).Unmarshal(r)
+				ser  = NewValidMapSer(keySer, valueSer, nil, nil, nil)
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     make(map[uint]uint, 1),
+					N:     4,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If lenVl validator returns an error, ValidMap.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   map[uint]uint = nil
-				wantN                 = 1
-				mapLen                = 4
-				wantErr               = errors.New("lenVl validator error")
-				r                     = mock.NewReader().RegisterReadByte(
+				mapLen  = 4
+				wantErr = errors.New("lenVl validator error")
+				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return byte(mapLen), nil },
 				)
 				lenVl = cmock.NewValidator[int]().RegisterValidate(
@@ -1555,19 +1691,20 @@ func TestOrd_ValidMap(t *testing.T) {
 						return wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, lenVl.Mock}
-				v, n, err = NewValidMapSer(nil, nil,
-					mapopts.WithLenValidator[uint, uint](lenVl)).Unmarshal(r)
+				ser  = NewValidMapSer(nil, nil, mapopts.WithLenValidator[uint, uint](lenVl))
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     nil,
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, lenVl.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If keyVl returns an error, ValidMap.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   = make(map[uint]uint, 2)
-				wantN   = 2
 				wantErr = errors.New("key Validator error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 4, nil },
@@ -1585,20 +1722,20 @@ func TestOrd_ValidMap(t *testing.T) {
 						return wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, keySer.Mock, keyVl.Mock}
-				v, n, err = NewValidMapSer(keySer, nil,
-					mapopts.WithKeyValidator[uint, uint](keyVl)).Unmarshal(r)
+				ser  = NewValidMapSer(keySer, nil, mapopts.WithKeyValidator[uint, uint](keyVl))
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     make(map[uint]uint, 2),
+					N:     2,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock, keyVl.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 
 	t.Run("If valueVl returns an error, ValidMap.Unmarshal should return it",
 		func(t *testing.T) {
 			var (
-				wantV   = make(map[uint]uint, 2)
-				wantN   = 3
 				wantErr = errors.New("value Validator error")
 				r       = mock.NewReader().RegisterReadByte(
 					func() (b byte, err error) { return 4, nil },
@@ -1621,13 +1758,15 @@ func TestOrd_ValidMap(t *testing.T) {
 						return wantErr
 					},
 				)
-				mocks     = []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock, valueVl.Mock}
-				v, n, err = NewValidMapSer(keySer, valueSer,
-					mapopts.WithValueValidator[uint, uint](valueVl)).Unmarshal(r)
+				ser  = NewValidMapSer(keySer, valueSer, mapopts.WithValueValidator[uint, uint](valueVl))
+				want = test.UnmarshalResults[map[uint]uint]{
+					V:     make(map[uint]uint, 2),
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{r.Mock, keySer.Mock, valueSer.Mock, valueVl.Mock},
+				}
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			test.TestUnmarshalOnly(r, ser, want, t)
 		})
 }
 

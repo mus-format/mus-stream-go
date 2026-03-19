@@ -12,7 +12,7 @@ import (
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
 
-func TestTypedSer(t *testing.T) {
+func TestTyped_Ser(t *testing.T) {
 	t.Run("Marshal, Unmarshal, Size, Skip methods should succeed",
 		func(t *testing.T) {
 			var (
@@ -216,7 +216,7 @@ func TestTypedSer(t *testing.T) {
 		})
 }
 
-func TestDTMSer(t *testing.T) {
+func TestTyped_DTMSer(t *testing.T) {
 	t.Run("Marshal, Unmarshal, Size, Skip should succeed", func(t *testing.T) {
 		var (
 			dtm  = com.DTM(10)
