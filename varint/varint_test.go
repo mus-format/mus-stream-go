@@ -15,23 +15,24 @@ func TestVarint_marshalUint(t *testing.T) {
 	t.Run("If Writer fails to write a byte, marshalUint should return an error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("write byte error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error {
 						return wantErr
 					},
 				)
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = marshalUint[uint](300, w)
+				want = test.MarshalResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(uint(300), w, test.MarshallerFn[uint](marshalUint[uint]), want, t)
 		})
 
 	t.Run("If Writer fails to write a last one byte, marshalUint should return an error",
 		func(t *testing.T) {
 			var (
-				wantN   = 1
 				wantErr = errors.New("write last byte error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error {
@@ -42,10 +43,13 @@ func TestVarint_marshalUint(t *testing.T) {
 						return wantErr
 					},
 				)
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = marshalUint[uint](300, w)
+				want = test.MarshalResults{
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(uint(300), w, test.MarshallerFn[uint](marshalUint[uint]), want, t)
 		})
 }
 

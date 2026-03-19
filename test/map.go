@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	mock "github.com/mus-format/mus-stream-go/test/mock"
 )
 
@@ -25,7 +25,7 @@ func MapSerData(t *testing.T) (mp map[string]int, keySer mock.Serializer[string]
 	)
 	mp = map[string]int{"a": 1, "b": 2, "c": 3}
 	keySer = mock.NewSerializer[string]().RegisterMarshalN(6,
-		func(v string, w muss.Writer) (n int, err error) {
+		func(v string, w mus.Writer) (n int, err error) {
 			switch v {
 			case "a":
 				return w.Write(aBs)
@@ -38,7 +38,7 @@ func MapSerData(t *testing.T) (mp map[string]int, keySer mock.Serializer[string]
 				return
 			}
 		}).RegisterUnmarshalN(3,
-		func(r muss.Reader) (v string, n int, err error) {
+		func(r mus.Reader) (v string, n int, err error) {
 			bs := make([]byte, keySize)
 			n, err = r.Read(bs)
 			if err != nil {
@@ -70,7 +70,7 @@ func MapSerData(t *testing.T) (mp map[string]int, keySer mock.Serializer[string]
 			}
 			return
 		}).RegisterSkipN(3,
-		func(r muss.Reader) (n int, err error) {
+		func(r mus.Reader) (n int, err error) {
 			bs := make([]byte, keySize)
 			n, err = r.Read(bs)
 			if err != nil {
@@ -91,7 +91,7 @@ func MapSerData(t *testing.T) (mp map[string]int, keySer mock.Serializer[string]
 		})
 
 	valueSer = mock.NewSerializer[int]().RegisterMarshalN(6,
-		func(v int, w muss.Writer) (n int, err error) {
+		func(v int, w mus.Writer) (n int, err error) {
 			switch v {
 			case 1:
 				return w.Write(oneBs)
@@ -104,7 +104,7 @@ func MapSerData(t *testing.T) (mp map[string]int, keySer mock.Serializer[string]
 			}
 			return
 		}).RegisterUnmarshalN(3,
-		func(r muss.Reader) (v int, n int, err error) {
+		func(r mus.Reader) (v int, n int, err error) {
 			bs := make([]byte, valSize)
 			n, err = r.Read(bs)
 			if err != nil {
@@ -136,7 +136,7 @@ func MapSerData(t *testing.T) (mp map[string]int, keySer mock.Serializer[string]
 			}
 			return
 		}).RegisterSkipN(3,
-		func(r muss.Reader) (n int, err error) {
+		func(r mus.Reader) (n int, err error) {
 			bs := make([]byte, valSize)
 			n, err = r.Read(bs)
 			if err != nil {

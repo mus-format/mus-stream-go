@@ -17,10 +17,8 @@ import (
 func TestPM_Pointer(t *testing.T) {
 	t.Run("Marshal should be able to marshal the nil pointer", func(t *testing.T) {
 		var (
-			wantN         = 1
-			wantErr error = nil
-			ptrMap        = com.NewPtrMap()
-			w             = mock.NewWriter().RegisterWriteByte(
+			ptrMap = com.NewPtrMap()
+			w      = mock.NewWriter().RegisterWriteByte(
 				func(c byte) (err error) {
 					if c != byte(com.Nil) {
 						err = fmt.Errorf("unexpected byte, want '%v' actual '%v'", com.Nil,
@@ -29,16 +27,19 @@ func TestPM_Pointer(t *testing.T) {
 					return
 				},
 			)
-			mocks  = []*mok.Mock{w.Mock}
-			n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
+			ser  = NewPtrSer[int](ptrMap, nil, nil)
+			want = test.MarshalResults{
+				N:     1,
+				Err:   nil,
+				Mocks: []*mok.Mock{w.Mock},
+			}
 		)
-		test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+		test.TestMarshalOnly(nil, w, ser, want, t)
 	})
 
 	t.Run("If marshal of the pointer Nil flag fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("pointer Nil flag marshal error")
 				ptrMap  = com.NewPtrMap()
 				w       = mock.NewWriter().RegisterWriteByte(
@@ -46,16 +47,19 @@ func TestPM_Pointer(t *testing.T) {
 						return wantErr
 					},
 				)
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(nil, w)
+				ser  = NewPtrSer[int](ptrMap, nil, nil)
+				want = test.MarshalResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(nil, w, ser, want, t)
 		})
 
 	t.Run("If marshal of the pointer mapping flag fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("pointer mapping flag marshal error")
 				ptrMap  = com.NewPtrMap()
 				w       = mock.NewWriter().RegisterWriteByte(
@@ -63,17 +67,20 @@ func TestPM_Pointer(t *testing.T) {
 						return wantErr
 					},
 				)
-				num    = 2
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
+				num  = 2
+				ser  = NewPtrSer[int](ptrMap, nil, nil)
+				want = test.MarshalResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(&num, w, ser, want, t)
 		})
 
 	t.Run("If marshal of the pointer id fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
-				wantN   = 1
 				wantErr = errors.New("pointer id marshal error")
 				ptrMap  = com.NewPtrMap()
 				w       = mock.NewWriter().RegisterWriteByte(
@@ -85,20 +92,23 @@ func TestPM_Pointer(t *testing.T) {
 						return wantErr
 					},
 				)
-				num    = 2
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = NewPtrSer[int](ptrMap, nil, nil).Marshal(&num, w)
+				num  = 2
+				ser  = NewPtrSer[int](ptrMap, nil, nil)
+				want = test.MarshalResults{
+					N:     1,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(&num, w, ser, want, t)
 		})
 
 	t.Run("If baseSer.Marshal fails with an error, Marshal should return it",
 		func(t *testing.T) {
 			var (
-				wantN         = 3
-				wantErr error = errors.New("marshaller error")
-				ptrMap        = com.NewPtrMap()
-				w             = mock.NewWriter().RegisterWriteByte(
+				wantErr = errors.New("marshaller error")
+				ptrMap  = com.NewPtrMap()
+				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) (err error) {
 						return nil
 					},
@@ -112,11 +122,15 @@ func TestPM_Pointer(t *testing.T) {
 						return 1, wantErr
 					},
 				)
-				num    = 2
-				mocks  = []*mok.Mock{w.Mock, baseSer.Mock}
-				n, err = NewPtrSer(ptrMap, nil, baseSer).Marshal(&num, w)
+				num  = 2
+				ser  = NewPtrSer(ptrMap, nil, baseSer)
+				want = test.MarshalResults{
+					N:     3,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock, baseSer.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(&num, w, ser, want, t)
 		})
 
 	t.Run("If unmarshal of the pointer flag fails with an error, Unmarshal should return it",

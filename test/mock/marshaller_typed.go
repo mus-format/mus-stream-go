@@ -1,11 +1,11 @@
 package mock
 
 import (
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/ymz-ncnk/mok"
 )
 
-type MarshalTypedMUSFn func(w muss.Writer) (n int, err error)
+type MarshalTypedMUSFn func(w mus.Writer) (n int, err error)
 type SizeTypedMUSFn func() (size int)
 
 type MarshallerTyped struct {
@@ -36,7 +36,7 @@ func (m MarshallerTyped) RegisterSizeTypedMUSN(n int, fn SizeTypedMUSFn) Marshal
 	return m
 }
 
-func (m MarshallerTyped) MarshalTypedMUS(w muss.Writer) (n int, err error) {
+func (m MarshallerTyped) MarshalTypedMUS(w mus.Writer) (n int, err error) {
 	result, err := m.Call("MarshalTypedMUS", w)
 	if err != nil {
 		panic(err)

@@ -13,13 +13,14 @@ import (
 	com "github.com/mus-format/common-go"
 	ctest "github.com/mus-format/common-go/test"
 	cmock "github.com/mus-format/common-go/test/mock"
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	arropts "github.com/mus-format/mus-stream-go/options/array"
 	stropts "github.com/mus-format/mus-stream-go/options/string"
 	"github.com/mus-format/mus-stream-go/raw"
 	"github.com/mus-format/mus-stream-go/test"
 	"github.com/mus-format/mus-stream-go/test/mock"
 	"github.com/mus-format/mus-stream-go/varint"
+	asserterror "github.com/ymz-ncnk/assert/error"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -137,8 +138,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 			mocks     = []*mok.Mock{r.Mock}
 			v, n, err = unmarshalInteger64[uint64](r)
 		)
-		ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-			mocks, t)
+		ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 	})
 
 	t.Run("If Reader fails with an io.EOF, unmarshalInteger64 should return io.ErrUnexpectedEOF",
@@ -157,8 +157,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger64[uint64](r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails to read a byte slice, unmarshalInteger32 should return an error",
@@ -175,8 +174,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger32[uint32](r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails with an io.EOF, unmarshalInteger32 should return io.ErrUnexpectedEOF",
@@ -195,8 +193,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger32[uint32](r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails to read a byte slice, unmarshalInteger16 should return an error",
@@ -213,8 +210,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger16[uint16](r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails with an io.EOF, unmarshalInteger16 should return io.ErrUnexpectedEOF",
@@ -233,8 +229,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger16[uint16](r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails to read a byte slice, unmarshalInteger8 should return an error",
@@ -251,8 +246,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger8[uint8](r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails with an io.EOF, unmarshalInteger8 should return io.ErrUnexpectedEOF",
@@ -267,8 +261,7 @@ func TestUnsafe_IntegerErrorHandling(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = unmarshalInteger8[uint8](r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -290,26 +283,27 @@ func TestUnsafe_String(t *testing.T) {
 			test.Test([]string{str}, ser, t)
 			test.TestSkip([]string{str}, ser, t)
 
-			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-				t.Error(infomap)
-			}
+			asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 		})
 
 	t.Run("If Writer fails to write a string length, Marshal should return an error",
 		func(t *testing.T) {
 			var (
 				s       = "hello world"
-				wantN   = 0
 				wantErr = errors.New("write error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error {
 						return wantErr
 					},
 				)
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = String.Marshal(s, w)
+				ser  = String
+				want = test.MarshalResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(s, w, ser, want, t)
 		})
 
 	t.Run("If Reader fails with an io.EOF, Unmarshal should return io.ErrUnexpectedEOF",
@@ -330,8 +324,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = String.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails to read a string length, Unmarshal should return an error",
@@ -348,8 +341,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = String.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("Unmarshal should return ErrNegativeLength if meets negative length",
@@ -362,8 +354,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = String.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails to read string content, Unmarshal should return an error",
@@ -384,8 +375,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = String.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("ValidString should work correctly",
@@ -414,8 +404,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewValidStringSer(stropts.WithLenValidator(lenVl)).Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If string length == 0 lenVl should work", func(t *testing.T) {
@@ -450,8 +439,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewValidStringSer(nil).Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("ValidString.Unmarshal should return ErrNegativeLength if meets negative length",
@@ -464,8 +452,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewValidStringSer(nil).Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If Reader fails to read string content, ValidString.Unmarshal should return an error",
@@ -486,8 +473,7 @@ func TestUnsafe_String(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewValidStringSer(nil).Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -611,9 +597,7 @@ func TestUnsafe_Float64(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = Float64.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -639,9 +623,7 @@ func TestUnsafe_Float32(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = Float32.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -656,17 +638,20 @@ func TestUnsafe_Bool(t *testing.T) {
 	t.Run("If Writer fails to write a byte, Marshal should return an error",
 		func(t *testing.T) {
 			var (
-				wantN   = 0
 				wantErr = errors.New("write byte error")
 				w       = mock.NewWriter().RegisterWriteByte(
 					func(c byte) error {
 						return wantErr
 					},
 				)
-				mocks  = []*mok.Mock{w.Mock}
-				n, err = Bool.Marshal(true, w)
+				ser  = Bool
+				want = test.MarshalResults{
+					N:     0,
+					Err:   wantErr,
+					Mocks: []*mok.Mock{w.Mock},
+				}
 			)
-			test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+			test.TestMarshalOnly(true, w, ser, want, t)
 		})
 
 	t.Run("If Reader fails to read a byte, Unmarshal should return an error",
@@ -683,9 +668,7 @@ func TestUnsafe_Bool(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = Bool.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("Unmarshal should return ErrWrongFormat if meets wrong format",
@@ -702,9 +685,7 @@ func TestUnsafe_Bool(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = Bool.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks,
-				t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -737,8 +718,7 @@ func TestUnsafe_TimeUnixUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -771,8 +751,7 @@ func TestUnsafe_TimeUnixMilliUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixMilliUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -805,8 +784,7 @@ func TestUnsafe_TimeUnixMicroUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixMicroUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -833,8 +811,7 @@ func TestUnsafe_TimeUnixNanoUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixNanoUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -848,9 +825,7 @@ func TestUnsafe_Array(t *testing.T) {
 		test.Test([][3]int{arr}, ser, t)
 		test.TestSkip([][3]int{arr}, ser, t)
 
-		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-			t.Error(infomap)
-		}
+		asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 	})
 
 	t.Run("Unmarshal of the too large array should return ErrTooLargeLength",
@@ -867,8 +842,7 @@ func TestUnsafe_Array(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewArraySer[[3]int, int](nil).Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("Valid array serializer should work correctly", func(t *testing.T) {
@@ -880,9 +854,7 @@ func TestUnsafe_Array(t *testing.T) {
 		test.Test([][3]int{arr}, ser, t)
 		test.TestSkip([][3]int{arr}, ser, t)
 
-		if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-			t.Error(infomap)
-		}
+		asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 	})
 
 	t.Run("Valid Unmarshal of the too large array should return ErrTooLargeLength",
@@ -899,8 +871,7 @@ func TestUnsafe_Array(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = NewValidArraySer[[3]int, int](nil, nil).Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("If elemVl returns an error, valid Unmarshal should return it",
@@ -916,7 +887,7 @@ func TestUnsafe_Array(t *testing.T) {
 					},
 				)
 				elemSer = mock.NewSerializer[int]().RegisterUnmarshal(
-					func(r muss.Reader) (t int, n int, err error) {
+					func(r mus.Reader) (t int, n int, err error) {
 						return 11, 1, nil
 					},
 				)
@@ -932,8 +903,7 @@ func TestUnsafe_Array(t *testing.T) {
 				mocks = []*mok.Mock{r.Mock, elemSer.Mock, elemVl.Mock}
 			)
 			v, n, err := ser.Unmarshal(r)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 
 	t.Run("We should be able to set a length serializer for NewArraySer",

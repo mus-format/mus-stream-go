@@ -10,6 +10,7 @@ import (
 	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/test"
 	mock "github.com/mus-format/mus-stream-go/test/mock"
+	asserterror "github.com/ymz-ncnk/assert/error"
 	"github.com/ymz-ncnk/mok"
 )
 
@@ -64,9 +65,7 @@ func TestPM_Wrapper(t *testing.T) {
 			if ptrMap.Len() != 0 {
 				t.Fatal("ptrMap should be empty")
 			}
-			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-				t.Error(infomap)
-			}
+			asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 		})
 
 	t.Run("Unmarshal should call ser.Unmarshal and empty the revPtrMap",
@@ -112,9 +111,7 @@ func TestPM_Wrapper(t *testing.T) {
 			if revPtrMap.Len() != 0 {
 				t.Fatal("revPtrMap should be empty")
 			}
-			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-				t.Error(infomap)
-			}
+			asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 		})
 
 	t.Run("Size should call ser.Size and empty the ptrMap",
@@ -139,9 +136,7 @@ func TestPM_Wrapper(t *testing.T) {
 			if ptrMap.Len() != 0 {
 				t.Fatal("ptrMap should be empty")
 			}
-			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-				t.Error(infomap)
-			}
+			asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 		})
 
 	t.Run("Skip should call ser.Skip and empty the revPtrMap",
@@ -184,9 +179,7 @@ func TestPM_Wrapper(t *testing.T) {
 			if revPtrMap.Len() != 0 {
 				t.Fatal("revPtrMap should be empty")
 			}
-			if infomap := mok.CheckCalls(mocks); len(infomap) > 0 {
-				t.Error(infomap)
-			}
+			asserterror.EqualDeep(t, mok.CheckCalls(mocks), mok.EmptyInfomap)
 		})
 }
 

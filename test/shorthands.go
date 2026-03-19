@@ -4,12 +4,12 @@ import (
 	"reflect"
 	"testing"
 
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/mus-format/mus-stream-go/test/mock"
 )
 
 func m[T comparable](wantV T, wantBs []byte, t *testing.T) mock.MarshalFn[T] {
-	return func(v T, w muss.Writer) (n int, err error) {
+	return func(v T, w mus.Writer) (n int, err error) {
 		if v == wantV {
 			return w.Write(wantBs)
 		}
@@ -19,7 +19,7 @@ func m[T comparable](wantV T, wantBs []byte, t *testing.T) mock.MarshalFn[T] {
 }
 
 func u[T any](wantBs []byte, wantV T, t *testing.T) mock.UnmarshalFn[T] {
-	return func(r muss.Reader) (v T, n int, err error) {
+	return func(r mus.Reader) (v T, n int, err error) {
 		bs := make([]byte, len(wantBs))
 		n, err = r.Read(bs)
 		if err != nil {
@@ -45,7 +45,7 @@ func s[T comparable](wantV T, wantSize int, t *testing.T) mock.SizeFn[T] {
 }
 
 func sk(wantBs []byte, t *testing.T) mock.SkipFn {
-	return func(r muss.Reader) (n int, err error) {
+	return func(r mus.Reader) (n int, err error) {
 		bs := make([]byte, len(wantBs))
 		n, err = r.Read(bs)
 		if err != nil {

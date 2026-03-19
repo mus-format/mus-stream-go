@@ -368,9 +368,7 @@ func TestRaw_Float64(t *testing.T) {
 				)
 				v, n, err = Float64.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				nil,
-				t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
 		})
 
 	t.Run("If Reader fails to read a byte, SkipFloat64 should return an error",
@@ -411,9 +409,7 @@ func TestRaw_Float32(t *testing.T) {
 				)
 				v, n, err = Float32.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				nil,
-				t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, nil, t)
 		})
 
 	t.Run("If Reader fails to read a byte, SkipFloat32 should return an error",
@@ -462,8 +458,7 @@ func TestRaw_TimeUnixUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -496,8 +491,7 @@ func TestRaw_TimeUnixMilliUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixMilliUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -530,8 +524,7 @@ func TestRaw_TimeUnixMicroUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixMicroUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -558,8 +551,7 @@ func TestRaw_TimeUnixNanoUTC(t *testing.T) {
 				mocks     = []*mok.Mock{r.Mock}
 				v, n, err = TimeUnixNanoUTC.Unmarshal(r)
 			)
-			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err,
-				mocks, t)
+			ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 		})
 }
 
@@ -569,17 +561,19 @@ func testMarshalIntegerError[T constraints.Integer](k int,
 ) {
 	var (
 		num     T = 0
-		wantN     = k
 		wantErr   = errors.New("write byte error")
 		w         = mock.NewWriter().RegisterNWriteByte(k,
 			func(c byte) error { return nil },
 		).RegisterWriteByte(
 			func(c byte) error { return wantErr },
 		)
-		mocks  = []*mok.Mock{w.Mock}
-		n, err = fn(num, w)
+		want = test.MarshalResults{
+			N:     k,
+			Err:   wantErr,
+			Mocks: []*mok.Mock{w.Mock},
+		}
 	)
-	test.TestMarshalResults(wantN, n, wantErr, err, mocks, t)
+	test.TestMarshalOnly(num, w, test.MarshallerFn[T](fn), want, t)
 }
 
 func testUnmarshalIntegerError[T constraints.Integer](k int,
@@ -598,6 +592,5 @@ func testUnmarshalIntegerError[T constraints.Integer](k int,
 		mocks     = []*mok.Mock{r.Mock}
 		v, n, err = fn(r)
 	)
-	ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks,
-		t)
+	ctest.TestUnmarshalResults(wantV, v, wantN, n, wantErr, err, mocks, t)
 }

@@ -1,14 +1,14 @@
 package mock
 
 import (
-	muss "github.com/mus-format/mus-stream-go"
+	"github.com/mus-format/mus-stream-go"
 	"github.com/ymz-ncnk/mok"
 )
 
-type MarshalFn[T any] func(t T, w muss.Writer) (n int, err error)
-type UnmarshalFn[T any] func(r muss.Reader) (t T, n int, err error)
+type MarshalFn[T any] func(t T, w mus.Writer) (n int, err error)
+type UnmarshalFn[T any] func(r mus.Reader) (t T, n int, err error)
 type SizeFn[T any] func(t T) (size int)
-type SkipFn func(r muss.Reader) (n int, err error)
+type SkipFn func(r mus.Reader) (n int, err error)
 
 type Serializer[T any] struct {
 	*mok.Mock
@@ -58,7 +58,7 @@ func (s Serializer[T]) RegisterSkipN(n int, fn SkipFn) Serializer[T] {
 	return s
 }
 
-func (m Serializer[T]) Marshal(t T, w muss.Writer) (n int, err error) {
+func (m Serializer[T]) Marshal(t T, w mus.Writer) (n int, err error) {
 	result, err := m.Call("Marshal", t, w)
 	if err != nil {
 		panic(err)
@@ -68,7 +68,7 @@ func (m Serializer[T]) Marshal(t T, w muss.Writer) (n int, err error) {
 	return
 }
 
-func (s Serializer[T]) Unmarshal(r muss.Reader) (t T, n int, err error) {
+func (s Serializer[T]) Unmarshal(r mus.Reader) (t T, n int, err error) {
 	result, err := s.Call("Unmarshal", r)
 	if err != nil {
 		panic(err)
@@ -87,7 +87,7 @@ func (s Serializer[T]) Size(t T) (size int) {
 	return result[0].(int)
 }
 
-func (s Serializer[T]) Skip(r muss.Reader) (n int, err error) {
+func (s Serializer[T]) Skip(r mus.Reader) (n int, err error) {
 	result, err := s.Call("Skip", r)
 	if err != nil {
 		panic(err)
