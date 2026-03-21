@@ -68,6 +68,18 @@ func TestSkip[T any](cases []T, ser mus.Serializer[T], t *testing.T) {
 	}
 }
 
+func TestValidation[T any](testCase T, ser mus.Serializer[T], wantErr error,
+	t *testing.T,
+) {
+	var (
+		size = ser.Size(testCase)
+		buf  = bytes.NewBuffer(make([]byte, 0, size))
+	)
+	ser.Marshal(testCase, buf)
+	_, _, err := ser.Unmarshal(buf)
+	asserterror.EqualError(t, err, wantErr, "unexpected error")
+}
+
 func TestMarshalOnly[T any](v T, w mus.Writer, ser interface {
 	Marshal(T, mus.Writer) (int, error)
 }, want MarshalResults, t *testing.T,
