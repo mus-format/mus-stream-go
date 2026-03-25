@@ -753,7 +753,7 @@ func TestUnsafe_Bool(t *testing.T) {
 }
 
 func TestUnsafe_TimeUnixUTC(t *testing.T) {
-	os.Setenv("TZ", "")
+	_ = os.Setenv("TZ", "")
 	t.Run("TimeUnixUTC serializer should work correctly", func(t *testing.T) {
 		var (
 			sec = time.Now().Unix()
@@ -1013,7 +1013,7 @@ func TestUnsafe_Array(t *testing.T) {
 func LengthReader(length int) mock.Reader {
 	r := mock.NewReader()
 	buf := &bytes.Buffer{}
-	varint.PositiveInt.Marshal(length, buf)
+	_, _ = varint.PositiveInt.Marshal(length, buf)
 	for _, b := range buf.Bytes() {
 		func(b byte) {
 			r.RegisterReadByte(func() (byte, error) {

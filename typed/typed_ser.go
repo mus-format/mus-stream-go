@@ -36,7 +36,8 @@ func (t TypedSer[T]) Marshal(v T, w mus.Writer) (n int, err error) {
 
 // Unmarshal unmarshals DTM + data.
 //
-// Returns ErrWrongDTM if the unmarshalled DTM differs from the typed.DTM().
+// Returns com.WrongDTMError if the unmarshalled DTM differs from the expected
+// one.
 func (t TypedSer[T]) Unmarshal(r mus.Reader) (v T, n int, err error) {
 	dtm, n, err := DTMSer.Unmarshal(r)
 	if err != nil {
@@ -60,7 +61,8 @@ func (t TypedSer[T]) Size(v T) (size int) {
 
 // Skip skips DTM + data.
 //
-// Returns ErrWrongDTM if the unmarshalled DTM differs from the typed.DTM().
+// Returns com.WrongDTMError if the unmarshalled DTM differs from the expected
+// one.
 func (t TypedSer[T]) Skip(r mus.Reader) (n int, err error) {
 	dtm, n, err := DTMSer.Unmarshal(r)
 	if err != nil {

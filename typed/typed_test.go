@@ -50,7 +50,7 @@ func TestTyped_Ser(t *testing.T) {
 
 			buf.Reset()
 
-			fooTypedSer.Marshal(foo, buf)
+			_, _ = fooTypedSer.Marshal(foo, buf)
 			n, err = fooTypedSer.Skip(buf)
 			assertfatal.EqualError(t, err, nil)
 			asserterror.Equal(t, n, size)
@@ -77,7 +77,7 @@ func TestTyped_Ser(t *testing.T) {
 					RegisterSkip(func(r mus.Reader) (n int, err error) {
 						return wantN, nil
 					})
-				fooTypedSer = NewTypedSer[Foo](FooDTM, serMock)
+				fooTypedSer = NewTypedSer(FooDTM, serMock)
 				dtmSize     = DTMSer.Size(FooDTM)
 				size        = dtmSize + wantN
 				buf         = bytes.NewBuffer(make([]byte, 0, size))
@@ -98,7 +98,7 @@ func TestTyped_Ser(t *testing.T) {
 
 			buf.Reset()
 
-			fooTypedSer.Marshal(foo, buf)
+			_, _ = fooTypedSer.Marshal(foo, buf)
 			_, err = DTMSer.Skip(buf)
 			assertfatal.EqualError(t, err, nil)
 
@@ -234,7 +234,7 @@ func TestTyped_DTMSer(t *testing.T) {
 
 		buf.Reset()
 
-		DTMSer.Marshal(dtm, buf)
+		_, _ = DTMSer.Marshal(dtm, buf)
 		n, err = DTMSer.Skip(buf)
 		assertfatal.EqualError(t, err, nil)
 		asserterror.Equal(t, n, size)
