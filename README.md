@@ -1,4 +1,4 @@
-# mus-stream
+# mus-stream: A Streaming Binary Serialization Library for Go
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/mus-format/mus-stream-go.svg)](https://pkg.go.dev/github.com/mus-format/mus-stream-go)
 [![GoReportCard](https://goreportcard.com/badge/mus-format/mus-stream-go)](https://goreportcard.com/report/github.com/mus-format/mus-stream-go)
@@ -38,6 +38,14 @@ required because:
 
 1. They implement the `muss.Writer` and `muss.Reader` interfaces.
 2. They provide the necessary buffering for efficient I/O operations.
+
+## Contributing & Security
+
+We welcome contributions of all kinds! Please see [CONTRIBUTING.md](CONTRIBUTING.md) 
+for details on how to get involved.
+
+If you find a security vulnerability, please refer to our 
+[Security Policy](SECURITY.md) for instructions on how to report it privately.
 
 ## Version Compatibility
 
