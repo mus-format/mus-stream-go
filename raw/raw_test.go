@@ -273,7 +273,6 @@ func TestRaw_Uint64(t *testing.T) {
 }
 
 func TestRaw_Uint32(t *testing.T) {
-
 	t.Run("Uint32 serializer should work correctly",
 		func(t *testing.T) {
 			ser := Uint32
@@ -291,7 +290,6 @@ func TestRaw_Uint16(t *testing.T) {
 }
 
 func TestRaw_Uint8(t *testing.T) {
-
 	t.Run("Uint8 serializer should work correctly",
 		func(t *testing.T) {
 			ser := Uint8
@@ -301,7 +299,6 @@ func TestRaw_Uint8(t *testing.T) {
 }
 
 func TestRaw_Uint(t *testing.T) {
-
 	t.Run("Uint serializer should work correctly",
 		func(t *testing.T) {
 			ser := Uint
@@ -320,7 +317,6 @@ func TestRaw_Int64(t *testing.T) {
 }
 
 func TestRaw_Int32(t *testing.T) {
-
 	t.Run("Int32 serializer should work correctly",
 		func(t *testing.T) {
 			ser := Int32
@@ -330,7 +326,6 @@ func TestRaw_Int32(t *testing.T) {
 }
 
 func TestRaw_Int16(t *testing.T) {
-
 	t.Run("Int16 serializer should work correctly",
 		func(t *testing.T) {
 			ser := Int16
@@ -340,7 +335,6 @@ func TestRaw_Int16(t *testing.T) {
 }
 
 func TestRaw_Int8(t *testing.T) {
-
 	t.Run("Int8 serializer should work correctly",
 		func(t *testing.T) {
 			ser := Int8
@@ -350,7 +344,6 @@ func TestRaw_Int8(t *testing.T) {
 }
 
 func TestRaw_Int(t *testing.T) {
-
 	t.Run("Int serializer should work correctly",
 		func(t *testing.T) {
 			ser := Int
