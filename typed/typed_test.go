@@ -12,7 +12,7 @@ import (
 	assertfatal "github.com/ymz-ncnk/assert/fatal"
 )
 
-func TestTyped_Ser(t *testing.T) {
+func TestSer(t *testing.T) {
 	t.Run("Marshal, Unmarshal, Size, Skip methods should succeed",
 		func(t *testing.T) {
 			var (
@@ -34,7 +34,7 @@ func TestTyped_Ser(t *testing.T) {
 					RegisterSkip(func(r mus.Reader) (n int, err error) {
 						return wantN, nil
 					})
-				fooTypedSer = NewTypedSer(FooDTM, serMock)
+				fooTypedSer = NewSer(FooDTM, serMock)
 				dtmSize     = DTMSer.Size(FooDTM)
 				size        = dtmSize + wantN
 				buf         = bytes.NewBuffer(make([]byte, 0, size))
@@ -65,19 +65,27 @@ func TestTyped_Ser(t *testing.T) {
 					RegisterSize(func(v Foo) (size int) {
 						return wantN
 					}).
-					RegisterMarshal(func(v Foo, w mus.Writer) (n int, err error) {
-						return wantN, nil
-					}).
-					RegisterUnmarshal(func(r mus.Reader) (v Foo, n int, err error) {
-						return foo, wantN, nil
-					}).
-					RegisterMarshal(func(v Foo, w mus.Writer) (n int, err error) {
-						return wantN, nil
-					}).
-					RegisterSkip(func(r mus.Reader) (n int, err error) {
-						return wantN, nil
-					})
-				fooTypedSer = NewTypedSer(FooDTM, serMock)
+					RegisterMarshal(
+						func(v Foo, w mus.Writer) (n int, err error) {
+							return wantN, nil
+						},
+					).
+					RegisterUnmarshal(
+						func(r mus.Reader) (v Foo, n int, err error) {
+							return foo, wantN, nil
+						},
+					).
+					RegisterMarshal(
+						func(v Foo, w mus.Writer) (n int, err error) {
+							return wantN, nil
+						},
+					).
+					RegisterSkip(
+						func(r mus.Reader) (n int, err error) {
+							return wantN, nil
+						},
+					)
+				fooTypedSer = NewSer(FooDTM, serMock)
 				dtmSize     = DTMSer.Size(FooDTM)
 				size        = dtmSize + wantN
 				buf         = bytes.NewBuffer(make([]byte, 0, size))
@@ -111,7 +119,7 @@ func TestTyped_Ser(t *testing.T) {
 		var (
 			wantDTM = FooDTM
 
-			fooTypedSer = NewTypedSer[Foo](FooDTM, nil)
+			fooTypedSer = NewSer[Foo](FooDTM, nil)
 		)
 
 		dtm := fooTypedSer.DTM()
@@ -132,7 +140,7 @@ func TestTyped_Ser(t *testing.T) {
 						return
 					},
 				)
-				fooTypedSer = NewTypedSer[Foo](FooDTM, nil)
+				fooTypedSer = NewSer[Foo](FooDTM, nil)
 				dtmSize     = DTMSer.Size(actualDTM)
 			)
 			foo, n, err := fooTypedSer.Unmarshal(r)
@@ -154,7 +162,7 @@ func TestTyped_Ser(t *testing.T) {
 						return
 					},
 				)
-				fooTypedSer = NewTypedSer[Foo](FooDTM, nil)
+				fooTypedSer = NewSer[Foo](FooDTM, nil)
 				dtmSize     = DTMSer.Size(actualDTM)
 			)
 
@@ -171,7 +179,7 @@ func TestTyped_Ser(t *testing.T) {
 				w = mock.NewWriter().RegisterWriteByte(func(c byte) error {
 					return wantErr
 				})
-				fooTypedSer = NewTypedSer[Foo](FooDTM, nil)
+				fooTypedSer = NewSer[Foo](FooDTM, nil)
 			)
 			_, err := fooTypedSer.Marshal(Foo{}, w)
 			asserterror.EqualError(t, err, wantErr)
@@ -188,7 +196,7 @@ func TestTyped_Ser(t *testing.T) {
 						return
 					},
 				)
-				fooTypedSer = NewTypedSer[Foo](FooDTM, nil)
+				fooTypedSer = NewSer[Foo](FooDTM, nil)
 			)
 			foo, n, err := fooTypedSer.Unmarshal(r)
 			asserterror.EqualError(t, err, wantErr)
@@ -207,7 +215,7 @@ func TestTyped_Ser(t *testing.T) {
 						return
 					},
 				)
-				fooTypedSer = NewTypedSer[Foo](FooDTM, nil)
+				fooTypedSer = NewSer[Foo](FooDTM, nil)
 			)
 
 			n, err := fooTypedSer.Skip(r)
@@ -216,7 +224,7 @@ func TestTyped_Ser(t *testing.T) {
 		})
 }
 
-func TestTyped_DTMSer(t *testing.T) {
+func TestDTMSer(t *testing.T) {
 	t.Run("Marshal, Unmarshal, Size, Skip should succeed", func(t *testing.T) {
 		var (
 			dtm  = com.DTM(10)
