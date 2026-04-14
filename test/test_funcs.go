@@ -131,6 +131,81 @@ func TestSkipOnly(r mus.Reader, ser interface {
 
 // -----------------------------------------------------------------------------
 
+type VersionedCase[K any] interface {
+	Marshal() (mus.Reader, int)
+	GetWant() K
+}
+
+func Version[T, K any](val T, ser mus.Serializer[T], want K) VersionedCase[K] {
+	return vcase[T, K]{val, ser, want}
+}
+
+func VersionSkip[T, K any](val T, ser mus.Serializer[T]) VersionedCase[K] {
+	return vcase[T, K]{Value: val, ser: ser}
+}
+
+func TestVersioned[K any](t *testing.T,
+	ser mus.Serializer[K], cases ...VersionedCase[K],
+) {
+	for i, c := range cases {
+		r, size := c.Marshal()
+		if buf, ok := r.(*bytes.Buffer); ok {
+			asserterror.Equal(t, buf.Len(), size,
+				fmt.Sprintf("case '%v', unexpected size, want '%v' actual '%v'", i, size, buf.Len()))
+		}
+
+		v, n, err := ser.Unmarshal(r)
+		assertfatal.EqualError(t, err, nil,
+			fmt.Sprintf("case '%v', unexpected error", i))
+		asserterror.Equal(t, n, size,
+			fmt.Sprintf("case '%v', unexpected n, want '%v' actual '%v'", i, size, n))
+		asserterror.EqualDeep(t, v, c.GetWant(),
+			fmt.Sprintf("case '%v', unexpected v", i))
+	}
+}
+
+func TestVersionedSkip[K any](t *testing.T,
+	ser mus.Serializer[K], cases ...VersionedCase[K],
+) {
+	for i, c := range cases {
+		r, size := c.Marshal()
+		if buf, ok := r.(*bytes.Buffer); ok {
+			asserterror.Equal(t, buf.Len(), size,
+				fmt.Sprintf("case '%v', unexpected size, want '%v' actual '%v'", i, size, buf.Len()))
+		}
+
+		n, err := ser.Skip(r)
+		assertfatal.EqualError(t, err, nil,
+			fmt.Sprintf("case '%v', unexpected error", i))
+		asserterror.Equal(t, n, size,
+			fmt.Sprintf("case '%v', unexpected n, want '%v' actual '%v'", i, size, n))
+	}
+}
+
+type vcase[T, K any] struct {
+	Value T
+	ser   mus.Serializer[T]
+	Want  K
+}
+
+func (c vcase[T, K]) Marshal() (mus.Reader, int) {
+	var (
+		size = c.ser.Size(c.Value)
+		buf  = bytes.NewBuffer(make([]byte, 0, size))
+	)
+	n, err := c.ser.Marshal(c.Value, buf)
+	if err != nil {
+		panic(err)
+	}
+	return buf, n
+}
+
+func (c vcase[T, K]) GetWant() K {
+	return c.Want
+}
+
+// -----------------------------------------------------------------------------
+
 type MarshallerFn[T any] func(v T, w mus.Writer) (int, error)
 
 func (f MarshallerFn[T]) Marshal(v T, w mus.Writer) (int, error) {
