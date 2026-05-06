@@ -3,6 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/mus-format/mus-stream-go.svg)](https://pkg.go.dev/github.com/mus-format/mus-stream-go)
 [![GoReportCard](https://goreportcard.com/badge/mus-format/mus-stream-go)](https://goreportcard.com/report/github.com/mus-format/mus-stream-go)
 [![codecov](https://codecov.io/gh/mus-format/mus-stream-go/graph/badge.svg?token=91OM0S4D9Q)](https://codecov.io/gh/mus-format/mus-stream-go)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/mus-format/mus-stream-go/badge)](https://scorecard.dev/viewer/?uri=github.com/mus-format/mus-stream-go)
 
 **mus-stream** is a streaming version of the [mus](https://github.com/mus-format/mus-go) 
 serializer. It keeps the same structure but uses `mus.Writer` and `mus.Reader` 
