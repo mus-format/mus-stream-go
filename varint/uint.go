@@ -1,6 +1,8 @@
 package varint
 
 import (
+	"math/bits"
+
 	com "github.com/mus-format/common-go"
 	"github.com/mus-format/mus-stream-go"
 	"golang.org/x/exp/constraints"
@@ -103,9 +105,7 @@ func (uint16Ser) Marshal(v uint16, w mus.Writer) (n int, err error) {
 // In addition to the uint16 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
 func (uint16Ser) Unmarshal(r mus.Reader) (v uint16, n int, err error) {
-	return unmarshalUint[uint16](com.Uint16MaxVarintLen,
-		com.Uint16MaxLastByte,
-		r)
+	return unmarshalUint[uint16](com.Uint16MaxVarintLen, com.Uint16MaxLastByte, r)
 }
 
 // Size returns the size of an encoded (Varint) uint16 value.
@@ -137,9 +137,7 @@ func (uint8Ser) Marshal(v uint8, w mus.Writer) (n int, err error) {
 // In addition to the uint8 value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
 func (uint8Ser) Unmarshal(r mus.Reader) (v uint8, n int, err error) {
-	return unmarshalUint[uint8](com.Uint8MaxVarintLen,
-		com.Uint8MaxLastByte,
-		r)
+	return unmarshalUint[uint8](com.Uint8MaxVarintLen, com.Uint8MaxLastByte, r)
 }
 
 // Size returns the size of an encoded (Varint) uint8 value.
@@ -171,9 +169,7 @@ func (uintSer) Marshal(v uint, w mus.Writer) (n int, err error) {
 // In addition to the uint value and the number of bytes read, it may also
 // return com.ErrOverflow or a Reader error.
 func (uintSer) Unmarshal(r mus.Reader) (v uint, n int, err error) {
-	return unmarshalUint[uint](com.UintMaxVarintLen(),
-		com.UintMaxLastByte(),
-		r)
+	return unmarshalUint[uint](com.UintMaxVarintLen(), com.UintMaxLastByte(), r)
 }
 
 // Size returns the size of an encoded (Varint) uint value.
@@ -234,11 +230,7 @@ func unmarshalUint[T constraints.Unsigned](maxVarintLen int, maxLastByte byte,
 }
 
 func sizeUint[T constraints.Unsigned](t T) (size int) {
-	for t >= 0x80 {
-		t >>= 7
-		size++
-	}
-	return size + 1
+	return (bits.Len64(uint64(t)|1) + 6) / 7
 }
 
 func skipUint(maxVarintLen int, maxLastByte byte, r mus.Reader) (n int,
