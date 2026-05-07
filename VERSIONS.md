@@ -1,3 +1,10 @@
+Release: 2026.05.a
+
+- github.com/mus-format/mus-stream-go          v0.10.2
+- github.com/mus-format/mus-gen-go 			       v0.5.3
+- github.com/mus-format/mus-skill-go 		       v0.2.2
+- github.com/mus-format/ext-protobuf-stream-go v0.0.0-20260506210010-5199f367dc85
+
 Release: 2026.04.b
 
 - github.com/mus-format/mus-stream-go          v0.10.1
